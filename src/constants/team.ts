@@ -1,4 +1,4 @@
-export const DIVISIONS = [ "Owner", "Finance", "Bussiness Team", "IT Team", "Design Team", "QA"] as const;
+export const DIVISIONS = [ "Owner", "Bussiness Team", "IT Team", "Design Team", "QA"] as const;
 export type Division = (typeof DIVISIONS)[number];
 
 export type TeamMember = {
@@ -25,13 +25,12 @@ export const TEAM_DATA: TeamMember[] = [
         id: "owner-1",
         name: "Ignatius Ricky Jonathan ",
         division: "Owner",
-        role: "Product Manager",
-        quoteHighlight: '"User First"',
-        quoteRest:
-        ": Merancang produk yang tidak hanya indah, tapi juga memecahkan masalah.",
-        imageThumbnail: portraitW,
-        imageLarge: largeW,
-        linkedinUrl: " https://www.linkedin.com/in/igrickyjo/ ",
+        role: "",
+        quoteHighlight: 'Like a tree planted by flowing streams,',
+        quoteRest:" it yields its fruit at the proper time, and its leaves never fall off..",
+        imageThumbnail: "assets/Ko Ricky2.jpeg",
+        imageLarge: "assets/Ko Ricky.jpeg",
+        linkedinUrl: "  https://www.linkedin.com/in/igrickyjo/",
     },
 
     // FINANCE
@@ -64,10 +63,10 @@ export const TEAM_DATA: TeamMember[] = [
         name: "Wahyuda Abdia Putra",
         division: "Bussiness Team",
         role: "Partnership Lead",
-        quoteHighlight: '"Win Together"',
-        quoteRest:": Kemitraan yang baik tumbuh dari nilai yang saling menguatkan.",
-        imageThumbnail: portraitW,
-        imageLarge: largeW,
+        quoteHighlight: '',
+        quoteRest:"Kemitraan yang baik tumbuh dari nilai yang saling menguatkan.",
+        imageThumbnail: "assets/IMG_22472.jpg",
+        imageLarge: "assets/IMG_2247.jpg",
         linkedinUrl: " https://www.linkedin.com/in/wahyuda-abdia-putra-63b557407/",
     },
     {
@@ -88,8 +87,8 @@ export const TEAM_DATA: TeamMember[] = [
         name: "Wibowo Raditya Trilaksmono",
         division: "IT Team",
         role: "Tim IT",
-        quoteHighlight: '"The Problem Solvers"',
-        quoteRest:": Karena IT ada untuk memberikan solusi atas setiap tantangan digital.",
+        quoteHighlight: '"Kegagalan bukanlah akhir dari perjalanan,"',
+        quoteRest:" melainkan bukti bahwa kamu sedang berproses dan mencoba sesuatu yang luar biasa.",
         imageThumbnail: "/assets/radit-copy.jpeg",
         imageLarge: "/assets/radit.jpeg",
         linkedinUrl: " https://www.linkedin.com/in/veldrict/",
@@ -107,41 +106,41 @@ export const TEAM_DATA: TeamMember[] = [
     },
     {
         id: "it-3",
-        name: "Ilham Hadi Prabawa",
-        division: "IT Team",
-        role: "Frontend Developer",
-        quoteHighlight: '"Automate Everything"',
-        quoteRest:": Infrastruktur yang andal adalah pondasi pengalaman yang andal.",
-        imageThumbnail: "/assets/ilham foto.png",
-        imageLarge: "/assets/ilham foto besar.png",
-        linkedinUrl: " https://www.linkedin.com/in/ilham-hadi-prabawa-2a886111b/",
-    },
-    {
-        id: "it-4",
         name: "Zulhan Arif Fasya Hidayat",
         division: "IT Team",
         role: "Backend Developer",
-        quoteHighlight: '"Data is Fuel"',
-        quoteRest: ": Pipeline yang sehat membuat keputusan yang sehat.",
+        quoteHighlight: '',
+        quoteRest: "Sophisticated thoughts, questionable decisions.",
         imageThumbnail: "/assets/sul - Copy.jpeg",
         imageLarge: "/assets/sul.jpeg",
         linkedinUrl: " https://www.linkedin.com/in/zulhanariffasyahidayat/?locale=en "
     },
+    {
+        id: "it-4",
+        name: "Rachmat Robby Pratama",
+        division: "IT Team",
+        role: "Frontend Developer",
+        quoteHighlight: '"Beyond the Interface"',
+        quoteRest:": Bukan sekadar membangun tampilan, tetapi menciptakan pengalaman pengguna yang berkesan",
+        imageThumbnail: "/assets/robby2.png",
+        imageLarge: "/assets/robby.png",
+        linkedinUrl: " https://www.linkedin.com/in/rachmatrobbypratama/",
+    },
+    {
+        id: "it-5",
+        name: "Mohammad Havid Farell Adani",
+        division: "IT Team",
+        role: "Frontend Developer",
+        quoteHighlight: '',
+        quoteRest:"Consistency is boring until it works",
+        imageThumbnail: "/assets/farel2.jpg",
+        imageLarge: "/assets/farel.jpg",
+        linkedinUrl: " https://www.linkedin.com/in/mohammad-havid-farell-adani/",
+    },    
 
     // DESIGN TEAM
     {
         id: "Design-1",
-        name: "Mahendra Raihan",
-        division: "Design Team",
-        role: "UX/UI Designer",
-        quoteHighlight: '"Design is a Process"',
-        quoteRest: ": Desain yang baik adalah hasil dari pemahaman yang mendalam tentang pengguna.",
-        imageThumbnail: "/assets/tes - Copy.jpg",
-        imageLarge: "/assets/tes.jpg",
-        linkedinUrl: " https://www.linkedin.com/in/mahendra-raihan-1ab716199/"
-    },
-    {
-        id: "Design-2",
         name: "Yanuar Rizki",
         division: "Design Team",
         role: "UX/UI Designer",
@@ -151,6 +150,18 @@ export const TEAM_DATA: TeamMember[] = [
         imageLarge: "/assets/yoga foto besar.png",
         linkedinUrl: "https://www.linkedin.com/in/yanuar-rizki-94805b23b/"
     },
+    {
+        id: "Design-2",
+        name: "Ramdani Firman Saputra",
+        division: "Design Team",
+        role: "UX/UI Designer",
+        quoteHighlight: '"Design is a Process"',
+        quoteRest: ": Desain yang baik adalah hasil dari pemahaman yang mendalam tentang pengguna.",
+        imageThumbnail: "/assets/ramdani2.jpeg",
+        imageLarge: "/assets/ramdani.jpeg",
+        linkedinUrl: " https://www.linkedin.com/in/ramdani-firman-saputra-3649532b9/"
+    },
+    
 
     // QA
     {
