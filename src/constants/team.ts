@@ -34,30 +34,30 @@ export const TEAM_DATA: TeamMember[] = [
     },
 
     // FINANCE
-    {
-        id: "finance-1",
-        name: "Hansen Tegu",
-        division: "Finance",
-        role: "UX Researcher",
-        quoteHighlight: '"Listen Closely"',
-        quoteRest:": Setiap insight pengguna adalah peta menuju pengalaman yang lebih baik.",
-        imageThumbnail: portraitM,
-        imageLarge: largeM,
-        linkedinUrl: "https://www.linkedin.com/in/hansenteguh/",
-    },
+    // {
+    //     id: "finance-1",
+    //     name: "Hansen Tegu",
+    //     division: "Finance",
+    //     role: "UX Researcher",
+    //     quoteHighlight: '"Listen Closely"',
+    //     quoteRest:": Setiap insight pengguna adalah peta menuju pengalaman yang lebih baik.",
+    //     imageThumbnail: portraitM,
+    //     imageLarge: largeM,
+    //     linkedinUrl: "https://www.linkedin.com/in/hansenteguh/",
+    // },
 
     // --- BUSSINESS TEAM ---
-    {
-        id: "bus-1",
-        name: "Erlinda Yunita Kesuma",
-        division: "Bussiness Team",
-        role: "Business Development",
-        quoteHighlight: '"Growth Mindset"',
-        quoteRest:": Membuka peluang baru dan memperluas ekosistem merchant lokal.",
-        imageThumbnail: portraitM,
-        imageLarge: largeM,
-        linkedinUrl: " https://www.linkedin.com/in/erlinda-yunita-972a66a9/",
-    },
+    // {
+    //     id: "bus-1",
+    //     name: "Erlinda Yunita Kesuma",
+    //     division: "Bussiness Team",
+    //     role: "Business Development",
+    //     quoteHighlight: '"Growth Mindset"',
+    //     quoteRest:": Membuka peluang baru dan memperluas ekosistem merchant lokal.",
+    //     imageThumbnail: portraitM,
+    //     imageLarge: largeM,
+    //     linkedinUrl: " https://www.linkedin.com/in/erlinda-yunita-972a66a9/",
+    // },
     {
         id: "bus-2",
         name: "Wahyuda Abdia Putra",
