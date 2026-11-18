@@ -44,7 +44,8 @@ export default function LoginPage() {
       } else if (roleLower.includes("supervisor") || roleLower.includes("spv")) {
         router.push("/login/admin/supervisor");
       } else if (roleLower.includes("admin")) {
-        router.push("/login/admin/staff");
+        // Sementara: semua akun admin diarahkan ke Supervisor Admin
+        router.push("/login/admin/supervisor");
       } else {
         router.push("/login/sales/staff");
       }
