@@ -20,7 +20,7 @@ export default function AdminSidebar() {
         {/* Dashboard Icon */}
         <Link 
           href="/login/admin/supervisor" 
-          className={`p-2 rounded-lg transition-colors ${isActive('/login/admin/supervisor') ? 'bg-gray-100 text-gray-800' : 'hover:text-gray-800 cursor-pointer'}`}
+          className={`p-2 rounded-lg transition-colors ${pathname === '/login/admin/supervisor' ? 'bg-gray-100 text-gray-800' : 'hover:text-gray-800 cursor-pointer'}`}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
         </Link>
@@ -39,6 +39,15 @@ export default function AdminSidebar() {
           className={`p-2 rounded-lg transition-colors ${isActive('/login/admin/supervisor/report') ? 'bg-gray-100 text-gray-800' : 'hover:text-gray-800 cursor-pointer'}`}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        </Link>
+
+        {/* KYC / Verifikasi Identitas Icon */}
+        <Link 
+          href="/login/admin/supervisor/kyc" 
+          title="Verifikasi KYC"
+          className={`p-2 rounded-lg transition-colors ${isActive('/login/admin/supervisor/kyc') ? 'bg-gray-100 text-gray-800' : 'hover:text-gray-800 cursor-pointer'}`}
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
         </Link>
         
       </nav>
