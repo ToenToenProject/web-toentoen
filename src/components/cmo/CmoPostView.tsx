@@ -208,7 +208,7 @@ export const CmoPostView: React.FC = () => {
             </div>
 
             {/* Card Footer with Counters & CTA */}
-            <div className="border-t border-gray-100 px-3.5 py-2.5 bg-gray-50/50 flex items-center justify-between gap-2">
+            <div className="border-t border-gray-100 px-3 sm:px-3.5 py-2 sm:py-2.5 bg-gray-50/50 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2">
               {/* Counters */}
               <div className="flex items-center gap-2.5 text-[11px] text-gray-600">
                 {/* Like */}

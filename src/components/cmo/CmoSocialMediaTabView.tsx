@@ -121,36 +121,38 @@ export const CmoSocialMediaTabView: React.FC = () => {
             </div>
 
             {/* 7-Day Calendar Grid */}
-            <div className="grid grid-cols-7 border-t border-b border-gray-200 divide-x divide-gray-200 min-h-[220px]">
-              {CMO_WEEKLY_CALENDAR.map((day: CalendarDay) => (
-                <div key={day.dayName + day.dateNumber} className="p-2 flex flex-col">
-                  {/* Day header */}
-                  <div className="flex items-center justify-center gap-1 mb-2.5 text-center">
-                    <span className="text-xs font-bold text-gray-700">
-                      {day.dayName} {day.dateNumber}
-                    </span>
-                    {day.isToday && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-                    )}
-                  </div>
+            <div className="overflow-x-auto pb-2 -mx-1 px-1 sm:mx-0 sm:px-0">
+              <div className="grid grid-cols-7 border-t border-b border-gray-200 divide-x divide-gray-200 min-h-[220px] min-w-[620px]">
+                {CMO_WEEKLY_CALENDAR.map((day: CalendarDay) => (
+                  <div key={day.dayName + day.dateNumber} className="p-2 flex flex-col">
+                    {/* Day header */}
+                    <div className="flex items-center justify-center gap-1 mb-2.5 text-center">
+                      <span className="text-xs font-bold text-gray-700">
+                        {day.dayName} {day.dateNumber}
+                      </span>
+                      {day.isToday && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                      )}
+                    </div>
 
-                  {/* Day cards */}
-                  <div className="space-y-2 flex-1">
-                    {day.posts.map((evt: CalendarPostItem, idx: number) => (
-                      <div
-                        key={idx}
-                        className="bg-white border border-gray-200 rounded-lg p-2 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
-                      >
-                        <div className="text-[11px] font-bold text-gray-900">{evt.channel}</div>
-                        <div className="text-[10px] text-gray-600 leading-tight mt-0.5 line-clamp-2">
-                          {evt.title}
+                    {/* Day cards */}
+                    <div className="space-y-2 flex-1">
+                      {day.posts.map((evt: CalendarPostItem, idx: number) => (
+                        <div
+                          key={idx}
+                          className="bg-white border border-gray-200 rounded-lg p-2 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
+                        >
+                          <div className="text-[11px] font-bold text-gray-900">{evt.channel}</div>
+                          <div className="text-[10px] text-gray-600 leading-tight mt-0.5 line-clamp-2">
+                            {evt.title}
+                          </div>
+                          <div className="text-[10px] text-gray-400 mt-1 font-mono">{evt.time}</div>
                         </div>
-                        <div className="text-[10px] text-gray-400 mt-1 font-mono">{evt.time}</div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 

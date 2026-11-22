@@ -60,6 +60,8 @@ export default function SupervisorInboxPage() {
   const [selectedTicket, setSelectedTicket] = useState(ticketsData[0]);
   const [activeTab, setActiveTab] = useState<'queue' | 'solved'>('queue');
   const [filterType, setFilterType] = useState('All');
+  // Mobile: tampilkan daftar ATAU chat (pola master-detail)
+  const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
 
   // Helper render Bintang Rating
   const renderStars = (count: number) => {
@@ -71,10 +73,10 @@ export default function SupervisorInboxPage() {
   };
 
   return (
-    <div className="flex h-screen bg-white text-gray-800 font-sans overflow-hidden">
+    <div className="flex h-full min-h-0 bg-white text-gray-800 font-sans overflow-hidden">
       
       {/* ================= COLUMN 1: TICKET LIST ================= */}
-      <div className="w-80 border-r border-gray-200 flex flex-col h-full bg-white shrink-0">
+      <div className={`${mobileView === 'chat' ? 'hidden md:flex' : 'flex'} w-full md:w-72 lg:w-80 border-r border-gray-200 flex-col h-full bg-white shrink-0`}>
         <div className="p-4 border-b border-gray-100 space-y-3">
           <h1 className="text-xl font-bold text-gray-900">Inbox</h1>
           
@@ -142,7 +144,7 @@ export default function SupervisorInboxPage() {
             return (
               <div
                 key={idx}
-                onClick={() => setSelectedTicket(ticket)}
+                onClick={() => { setSelectedTicket(ticket); setMobileView('chat'); }}
                 className={`p-3 rounded-xl border cursor-pointer transition-all ${
                   isSelected 
                     ? 'border-gray-400 bg-white shadow-sm ring-1 ring-gray-300' 
@@ -174,22 +176,30 @@ export default function SupervisorInboxPage() {
       </div>
 
       {/* ================= COLUMN 2: CHAT CONVERSATION ================= */}
-      <div className="flex-1 flex flex-col h-full bg-white border-r border-gray-200">
+      <div className={`${mobileView === 'list' ? 'hidden md:flex' : 'flex'} flex-1 min-w-0 flex-col h-full bg-white xl:border-r border-gray-200`}>
         
         {/* Chat Header */}
-        <div className="p-4 border border-gray-300 rounded-xl m-4 mb-2 flex justify-between items-center bg-white shadow-sm">
-          <div>
-            <h2 className="text-base font-bold text-gray-900">Hi team, I renewed our annual...</h2>
+        <div className="p-3 sm:p-4 border border-gray-300 rounded-xl m-3 sm:m-4 mb-2 flex justify-between items-center gap-2 bg-white shadow-sm">
+          <button
+            type="button"
+            onClick={() => setMobileView('list')}
+            className="md:hidden -ml-1 p-1.5 rounded-lg text-gray-600 hover:bg-gray-100 shrink-0"
+            aria-label="Kembali ke daftar"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-sm sm:text-base font-bold text-gray-900 truncate">Hi team, I renewed our annual...</h2>
             <span className="text-xs text-gray-500 font-medium">{selectedTicket.id}</span>
           </div>
-          <span className="bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded-lg flex items-center space-x-1">
+          <span className="shrink-0 bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded-lg flex items-center space-x-1">
             <span>Solved</span>
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" /></svg>
           </span>
         </div>
 
         {/* Conversation Stream */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 text-xs">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 text-xs">
           
           {/* Sarah Message 1 */}
           <div className="flex items-start space-x-3 max-w-xl">
@@ -284,7 +294,7 @@ export default function SupervisorInboxPage() {
       </div>
 
       {/* ================= COLUMN 3: CUSTOMER PROFILE SIDEBAR ================= */}
-      <div className="w-80 p-4 border-l border-gray-200 h-full overflow-y-auto space-y-4 shrink-0 bg-white">
+      <div className="hidden xl:block w-80 p-4 border-l border-gray-200 h-full overflow-y-auto space-y-4 shrink-0 bg-white">
         
         {/* Profile Header */}
         <div className="flex flex-col items-center text-center space-y-1">

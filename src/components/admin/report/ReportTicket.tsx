@@ -131,18 +131,18 @@ export default function ReportTicketComponent() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#f8f9fa] font-sans text-gray-800">
+    <div className="flex flex-col h-full min-h-0 bg-[#f8f9fa] font-sans text-gray-800">
       
       {/* HEADER */}
-      <header className="flex justify-between items-center px-6 py-4 bg-white border-b border-gray-200">
-        <h1 className="text-2xl font-extrabold text-gray-900">Report &amp; Support Ticket</h1>
+      <header className="flex justify-between items-center px-3 sm:px-6 py-3 sm:py-4 bg-white border-b border-gray-200">
+        <h1 className="text-lg sm:text-2xl font-extrabold text-gray-900">Report &amp; Support Ticket</h1>
       </header>
 
       {/* MAIN CONTENT */}
-      <div className="flex flex-1 overflow-hidden p-6 gap-6">
+      <div className="flex flex-1 min-h-0 overflow-hidden p-3 sm:p-6 gap-4 sm:gap-6">
         
         {/* SIDEBAR CATEGORY */}
-        <aside className="w-64 bg-white border border-gray-300 rounded-xl flex flex-col overflow-hidden shrink-0">
+        <aside className="hidden lg:flex w-56 xl:w-64 bg-white border border-gray-300 rounded-xl flex-col overflow-hidden shrink-0">
           <div className="p-4 border-b border-gray-200">
             <h2 className="font-bold text-lg mb-4">Report</h2>
           </div>
@@ -178,13 +178,13 @@ export default function ReportTicketComponent() {
         </aside>
 
         {/* KANBAN BOARD */}
-        <div className="flex-1 flex gap-4 overflow-x-auto min-w-0">
+        <div className="flex-1 flex gap-3 sm:gap-4 overflow-x-auto min-w-0 snap-x snap-mandatory pb-2">
           {[
             { title: "Unsolved", data: unsolvedTickets, color: "bg-red-600" },
             { title: "Pending", data: pendingTickets, color: "bg-orange-500" },
             { title: "Solved", data: solvedTickets, color: "bg-green-600" }
           ].map(col => (
-            <div key={col.title} className="w-[320px] shrink-0 bg-white border border-gray-300 rounded-xl flex flex-col">
+            <div key={col.title} className="w-[85vw] sm:w-[320px] snap-start shrink-0 bg-white border border-gray-300 rounded-xl flex flex-col">
               <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 rounded-t-xl">
                 <div>
                   <h3 className="font-bold text-lg text-gray-900">{col.title}</h3>
@@ -203,9 +203,17 @@ export default function ReportTicketComponent() {
 
         {/* TICKET DETAIL / CHAT */}
         {activeTicket && (
-          <aside className="w-[380px] bg-white border border-gray-300 rounded-xl flex flex-col shrink-0 relative">
+          <aside className="fixed inset-0 z-50 xl:static xl:z-auto w-full xl:w-[340px] 2xl:w-[380px] bg-white xl:border border-gray-300 xl:rounded-xl flex flex-col shrink-0">
             <div className="p-4 border-b border-gray-200 flex justify-between items-start">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setSelectedTicketId(null)}
+                  className="xl:hidden -ml-1 p-1.5 rounded-lg text-gray-600 hover:bg-gray-100 shrink-0"
+                  aria-label="Tutup detail tiket"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
                 <img src={activeTicket.avatar} alt={activeTicket.name} className="w-12 h-12 rounded-full object-cover" />
                 <div>
                   <div className="flex items-center space-x-2">
@@ -230,7 +238,7 @@ export default function ReportTicketComponent() {
               <button onClick={() => handleActionClick('Decline')} className="flex-1 bg-red-600 text-white font-semibold py-2 rounded-lg text-sm">Decline</button>
             </div>
 
-            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl">
+            <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] bg-gray-50 border-t border-gray-200 xl:rounded-b-xl">
               <div className="relative">
                 <textarea 
                   value={chatInput}

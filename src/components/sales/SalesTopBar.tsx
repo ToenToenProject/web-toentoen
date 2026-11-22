@@ -12,7 +12,7 @@ interface SalesTopBarProps {
 
 export const SalesTopBar: React.FC<SalesTopBarProps> = ({ profile, onOpenAccount, onLogout }) => {
   return (
-    <div className="flex items-center justify-end w-full gap-4 pb-6">
+    <div className="flex items-center justify-end w-full gap-2 sm:gap-4 pb-4 sm:pb-6 flex-wrap sm:flex-nowrap">
       {/* User profile button / pill */}
       <button
         type="button"

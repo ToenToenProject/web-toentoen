@@ -207,19 +207,19 @@ export default function SupervisorReportPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 font-sans overflow-hidden">
+    <div className="flex flex-col h-full min-h-0 bg-gray-50 font-sans overflow-hidden">
       
       {/* 1. TOP HEADER */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between shrink-0 shadow-sm">
-        <div className="flex items-center space-x-6">
-          <h1 className="text-xl font-extrabold text-gray-900">Report & Support Ticket</h1>
+      <header className="bg-white border-b border-gray-200 px-3 sm:px-6 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-3 shrink-0 shadow-sm">
+        <div className="flex flex-wrap items-center gap-3 lg:gap-6 min-w-0">
+          <h1 className="text-lg sm:text-xl font-extrabold text-gray-900">Report & Support Ticket</h1>
           
           <div className="flex bg-white rounded-lg border border-gray-300 overflow-hidden text-sm font-medium">
             <button className="bg-teal-500 text-white px-5 py-1.5 transition-colors">Report</button>
             <button className="text-gray-600 px-5 py-1.5 hover:bg-gray-50 transition-colors">Support Ticket</button>
           </div>
 
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
             <span>Date</span>
             <select className="border border-gray-300 rounded-md px-3 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-teal-500 cursor-pointer">
               <option>Start</option>
@@ -231,13 +231,13 @@ export default function SupervisorReportPage() {
             <span className="text-gray-400 px-1">/</span>
             <button className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-1.5 rounded-md text-xs font-bold transition-colors">Live</button>
             
-            <span className="ml-4 font-bold text-gray-700">By</span>
+            <span className="sm:ml-2 font-bold text-gray-700">By</span>
             
             {/* SELECTOR FILTER STAFF ADMIN */}
             <div className="relative" ref={dropdownRef}>
               <button 
                 onClick={() => setShowStaffDropdown(!showStaffDropdown)}
-                className="flex items-center justify-between border border-gray-300 rounded-md px-3 py-1.5 bg-white text-sm font-medium w-56 hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 transition-colors text-left"
+                className="flex items-center justify-between border border-gray-300 rounded-md px-3 py-1.5 bg-white text-sm font-medium w-48 sm:w-56 hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 transition-colors text-left"
               >
                 <span className="truncate text-gray-800">
                   {selectedStaff ? selectedStaff.name : "Search Staff Admin..."}
@@ -249,7 +249,7 @@ export default function SupervisorReportPage() {
 
               {/* DROPDOWN MENU - SELALU MENAMPILKAN SELURUH STAFF */}
               {showStaffDropdown && (
-                <div className="absolute top-full mt-1 left-0 w-64 bg-white border border-gray-200 shadow-xl rounded-lg z-50 py-1 overflow-hidden">
+                <div className="absolute top-full mt-1 left-0 w-64 max-w-[calc(100vw-1.5rem)] bg-white border border-gray-200 shadow-xl rounded-lg z-50 py-1 overflow-hidden">
                   
                   {/* Search box internal jika staff sangat banyak */}
                   <div className="px-2 pb-2 pt-1.5 border-b border-gray-100">
@@ -310,16 +310,16 @@ export default function SupervisorReportPage() {
           </div>
         </div>
 
-        <div className="text-sm font-semibold text-gray-800">
+        <div className="hidden lg:block text-sm font-semibold text-gray-800">
           Today: January 27, 2027
         </div>
       </header>
 
       {/* 2. MAIN CONTENT AREA */}
-      <div className="flex flex-1 overflow-hidden p-4 gap-4">
+      <div className="flex flex-1 min-h-0 overflow-hidden p-3 sm:p-4 gap-4">
         
         {/* KOLOM KIRI: REPORT CATEGORY SIDEBAR */}
-        <div className="w-64 flex flex-col shrink-0 bg-transparent">
+        <div className="hidden lg:flex w-56 xl:w-64 flex-col shrink-0 bg-transparent">
           <h2 className="font-bold text-gray-900 mb-3 text-lg">Report</h2>
           <div className="relative mb-4">
             <svg className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -356,10 +356,10 @@ export default function SupervisorReportPage() {
         </div>
 
         {/* KOLOM TENGAH: KANBAN BOARD */}
-        <div className="flex-1 flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
+        <div className="flex-1 min-w-0 flex gap-3 sm:gap-4 overflow-x-auto pb-2 custom-scrollbar snap-x snap-mandatory">
           
           {/* UNSOLVED COLUMN */}
-          <div className="w-[300px] flex flex-col border border-gray-300 rounded-xl bg-white shrink-0 shadow-sm overflow-hidden">
+          <div className="w-[85vw] sm:w-[300px] snap-start flex flex-col border border-gray-300 rounded-xl bg-white shrink-0 shadow-sm overflow-hidden">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
               <div>
                 <h3 className="font-bold text-gray-900 text-lg leading-tight">Unsolved</h3>
@@ -401,7 +401,7 @@ export default function SupervisorReportPage() {
           </div>
 
           {/* PENDING COLUMN */}
-          <div className="w-[300px] flex flex-col border border-gray-300 rounded-xl bg-white shrink-0 shadow-sm overflow-hidden">
+          <div className="w-[85vw] sm:w-[300px] snap-start flex flex-col border border-gray-300 rounded-xl bg-white shrink-0 shadow-sm overflow-hidden">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
               <div>
                 <h3 className="font-bold text-gray-900 text-lg leading-tight">Pending</h3>
@@ -451,7 +451,7 @@ export default function SupervisorReportPage() {
           </div>
 
           {/* SOLVED COLUMN */}
-          <div className="w-[300px] flex flex-col border border-gray-300 rounded-xl bg-white shrink-0 shadow-sm overflow-hidden">
+          <div className="w-[85vw] sm:w-[300px] snap-start flex flex-col border border-gray-300 rounded-xl bg-white shrink-0 shadow-sm overflow-hidden">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
               <div>
                 <h3 className="font-bold text-gray-900 text-lg leading-tight">Solved</h3>
@@ -497,7 +497,7 @@ export default function SupervisorReportPage() {
         </div>
 
         {/* KOLOM KANAN: CHAT & ACTIONS PANEL */}
-        <div className="w-[380px] border border-gray-300 rounded-xl bg-white flex flex-col shrink-0 shadow-sm overflow-hidden relative">
+        <div className={`${selectedTicket ? 'fixed inset-0 z-50 flex' : 'hidden'} xl:static xl:z-auto xl:flex w-full xl:w-[340px] 2xl:w-[380px] xl:border border-gray-300 xl:rounded-xl bg-white flex-col shrink-0 shadow-sm overflow-hidden`}>
           
           {!selectedTicket ? (
             <div className="flex-1 flex flex-col items-center justify-center text-gray-400 p-6 text-center">
@@ -508,6 +508,14 @@ export default function SupervisorReportPage() {
             <>
               {/* Detail User Header */}
               <div className="p-4 border-b border-gray-100 flex items-start space-x-3 shrink-0 bg-white shadow-sm z-10">
+                <button
+                  type="button"
+                  onClick={() => setSelectedTicket(null)}
+                  className="xl:hidden -ml-1 p-1.5 rounded-lg text-gray-600 hover:bg-gray-100 shrink-0"
+                  aria-label="Tutup detail tiket"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
                 <img src={selectedTicket.avatar} alt="Profile" className="w-10 h-10 rounded-full object-cover border border-gray-200 shrink-0" />
                 <div className="flex-1 text-sm">
                   <div className="flex items-center justify-between">
@@ -535,7 +543,7 @@ export default function SupervisorReportPage() {
                     {msg.sender === 'user' && (
                       <img src={selectedTicket.avatar} alt="User" className="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-200" />
                     )}
-                    <div className={`p-3 shadow-sm text-sm max-w-[260px] ${
+                    <div className={`p-3 shadow-sm text-sm max-w-[80%] xl:max-w-[260px] ${
                       msg.sender === 'admin' 
                         ? 'bg-teal-500 text-white rounded-2xl rounded-tr-none' 
                         : 'bg-white border border-gray-200 rounded-2xl rounded-tl-none text-gray-800'
@@ -550,7 +558,7 @@ export default function SupervisorReportPage() {
               </div>
 
               {/* Action Buttons & Chat Input */}
-              <div className="p-4 bg-white shrink-0 border-t border-gray-100 space-y-3 relative">
+              <div className="p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-white shrink-0 border-t border-gray-100 space-y-3 relative">
                 <div className="flex space-x-2">
                     <button onClick={() => handleAction('Agree')} className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-lg flex-1 transition-colors">Agree</button>
                     <button onClick={() => handleAction('Pending')} className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-4 py-2 rounded-lg flex-1 transition-colors">Pending</button>

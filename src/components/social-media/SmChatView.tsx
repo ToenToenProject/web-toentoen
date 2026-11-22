@@ -15,6 +15,7 @@ export const SmChatView: React.FC = () => {
   const [messages, setMessages] = useState<SmChatMessage[]>(SM_CHAT_MESSAGES);
   const [replyText, setReplyText] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
 
   const channels = ['All', 'Whatsapp', 'Instagram', 'Facebook', 'Linkedin', 'Tiktok'];
 
@@ -33,18 +34,27 @@ export const SmChatView: React.FC = () => {
     setReplyText('');
   };
 
+  const handleSelectContact = (contact: SmChatContact) => {
+    setSelectedContact(contact);
+    setMobileView('chat');
+  };
+
   const filteredContacts = SM_CHAT_CONTACTS.filter((contact) =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs flex h-[calc(100vh-140px)] min-h-[550px]">
-      {/* Left Contact List (w-80) */}
-      <div className="w-80 border-r border-gray-200 flex flex-col shrink-0 bg-[#FBFBFC]">
+    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs flex h-[calc(100vh-120px)] sm:h-[calc(100vh-140px)] min-h-[500px]">
+      {/* Left Contact List (Full width on mobile if mobileView === 'list', w-80 on desktop) */}
+      <div
+        className={`w-full md:w-80 border-r border-gray-200 flex flex-col shrink-0 bg-[#FBFBFC] ${
+          mobileView === 'chat' ? 'hidden md:flex' : 'flex'
+        }`}
+      >
         {/* Header */}
-        <div className="p-4 border-b border-gray-100 space-y-3">
+        <div className="p-3 sm:p-4 border-b border-gray-100 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-gray-900">Chat</h2>
+            <h2 className="text-base sm:text-lg font-bold text-gray-900">Chat</h2>
             {/* Filter Dropdown */}
             <button
               type="button"
@@ -103,7 +113,7 @@ export const SmChatView: React.FC = () => {
             return (
               <div
                 key={contact.id}
-                onClick={() => setSelectedContact(contact)}
+                onClick={() => handleSelectContact(contact)}
                 className={`p-3 flex items-center gap-3 cursor-pointer transition-colors ${
                   isSelected
                     ? 'bg-white shadow-xs border-l-4 border-l-[#00A896]'
@@ -135,11 +145,27 @@ export const SmChatView: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Chat Panel */}
-      <div className="flex-1 flex flex-col bg-white">
+      {/* Right Chat Panel (Full width on mobile when mobileView === 'chat', flex-1 on desktop) */}
+      <div
+        className={`flex-1 flex flex-col bg-white min-w-0 ${
+          mobileView === 'list' ? 'hidden md:flex' : 'flex'
+        }`}
+      >
         {/* Chat Header */}
         <div className="p-3.5 border-b border-gray-200 flex items-center gap-3">
-          <div className="relative">
+          {/* Back button for mobile */}
+          <button
+            type="button"
+            onClick={() => setMobileView('list')}
+            className="md:hidden p-1.5 -ml-1 text-gray-500 hover:text-gray-800 rounded-lg hover:bg-gray-100"
+            title="Kembali ke daftar kontak"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </button>
+
+          <div className="relative shrink-0">
             <img
               src={selectedContact.avatar}
               alt={selectedContact.name}
@@ -150,8 +176,8 @@ export const SmChatView: React.FC = () => {
             </span>
           </div>
 
-          <div>
-            <h3 className="text-xs font-bold text-gray-900 leading-tight">
+          <div className="min-w-0">
+            <h3 className="text-xs font-bold text-gray-900 leading-tight truncate">
               {selectedContact.name}
             </h3>
             <span className="text-[11px] text-gray-500 leading-tight">
@@ -161,7 +187,7 @@ export const SmChatView: React.FC = () => {
         </div>
 
         {/* Message Area */}
-        <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50/30">
+        <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-gray-50/30">
           {messages.map((msg) => {
             const isMe = msg.sender === 'you';
 
@@ -179,7 +205,7 @@ export const SmChatView: React.FC = () => {
                 )}
 
                 <div
-                  className={`max-w-md rounded-2xl p-4 text-xs leading-relaxed shadow-2xs ${
+                  className={`max-w-[85%] sm:max-w-md rounded-2xl p-3.5 sm:p-4 text-xs leading-relaxed shadow-2xs ${
                     isMe
                       ? 'bg-[#D1F2EB] text-gray-900 rounded-tr-none'
                       : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none'
@@ -188,7 +214,7 @@ export const SmChatView: React.FC = () => {
                   <div className="font-bold mb-1 text-[11px]">
                     {isMe ? 'You' : 'Sarah'}
                   </div>
-                  <p>{msg.text}</p>
+                  <p className="break-words">{msg.text}</p>
                   <div className="flex items-center justify-end gap-1 text-[10px] text-gray-500 mt-2">
                     <span>{msg.time}</span>
                     {isMe && (
@@ -202,7 +228,7 @@ export const SmChatView: React.FC = () => {
         </div>
 
         {/* Bottom Reply Area */}
-        <div className="p-3.5 border-t border-gray-200 bg-white">
+        <div className="p-2.5 sm:p-3.5 border-t border-gray-200 bg-white">
           <div className="border border-gray-200 rounded-xl p-2.5 bg-gray-50/60 focus-within:bg-white focus-within:border-[#00A896] transition-colors">
             <textarea
               rows={2}
@@ -220,7 +246,7 @@ export const SmChatView: React.FC = () => {
 
             <div className="flex items-center justify-between pt-1 border-t border-gray-100/80">
               {/* Action Icons */}
-              <div className="flex items-center gap-2 text-gray-400">
+              <div className="flex items-center gap-1.5 sm:gap-2 text-gray-400">
                 <button type="button" className="hover:text-gray-600 p-1" title="Attachment">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
@@ -242,7 +268,7 @@ export const SmChatView: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSendMessage}
-                className="flex items-center gap-1.5 px-4 py-1.5 bg-gray-900 hover:bg-black text-white text-xs font-semibold rounded-lg shadow-2xs transition-colors"
+                className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 bg-gray-900 hover:bg-black text-white text-xs font-semibold rounded-lg shadow-2xs transition-colors shrink-0"
               >
                 <span>Send</span>
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">

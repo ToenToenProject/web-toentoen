@@ -8,6 +8,8 @@ interface MainChatAreaProps {
   isUpdatingStatus: boolean;
   onUpdateStatus: () => void;
   onSendMessage: (text: string) => Promise<void>;
+  /** Mobile: kembali ke daftar chat */
+  onBack?: () => void;
 }
 
 export const MainChatArea: React.FC<MainChatAreaProps> = ({ 
@@ -15,7 +17,8 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
   isLoadingDetail,
   isUpdatingStatus, 
   onUpdateStatus, 
-  onSendMessage 
+  onSendMessage,
+  onBack
 }) => {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -46,11 +49,21 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
   return (
     <>
       {/* MAIN CHAT AREA (Tengah) */}
-      <section className="flex-1 flex flex-col bg-gray-50/50 relative min-w-[400px]">
+      <section className="flex-1 flex flex-col bg-gray-50/50 relative min-w-0 h-full">
         {/* Header Chat — selalu tampil langsung, tanpa loading */}
-        <div className="bg-white border-b border-gray-200 flex justify-between items-center px-6 py-4 m-4 rounded-xl shadow-sm z-10 gap-4">
-          <div className="flex-1">
-            <h2 className="text-base md:text-lg font-bold text-gray-900 leading-tight mb-1">
+        <div className="bg-white border-b border-gray-200 flex justify-between items-center px-3 sm:px-6 py-3 sm:py-4 m-3 sm:m-4 rounded-xl shadow-sm z-10 gap-2 sm:gap-4">
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="md:hidden -ml-1 p-1.5 rounded-lg text-gray-600 hover:bg-gray-100 shrink-0"
+              aria-label="Kembali ke daftar"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+            </button>
+          )}
+          <div className="flex-1 min-w-0">
+            <h2 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 leading-tight mb-1 truncate">
               {activeChat.ticketTitle}
             </h2>
             <p className="text-xs text-gray-500 font-medium">
@@ -60,7 +73,7 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
           <button 
             onClick={onUpdateStatus}
             disabled={isUpdatingStatus}
-            className={`px-4 py-2.5 rounded-lg text-sm font-medium flex items-center space-x-2 text-white disabled:opacity-50 flex-shrink-0 transition-colors
+            className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium flex items-center space-x-2 text-white disabled:opacity-50 flex-shrink-0 transition-colors
               ${activeChat.status === 'Done' ? 'bg-green-600 hover:bg-green-700' : (activeChat.status === 'Process' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-red-500 hover:bg-red-600')}
             `}>
             <span>
@@ -71,7 +84,7 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
         </div>
 
         {/* Chat Messages — skeleton saat loading, pesan saat sudah ada data */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+        <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-4 sm:space-y-6">
           {isLoadingDetail ? (
             /* Skeleton ringan — tidak unmount, hanya shimmer di area messages */
             <>
@@ -93,7 +106,7 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
                 {msg.sender === 'user' && (
                   <img src={activeChat.avatar} alt="Avatar" className="w-8 h-8 rounded-full mr-2 mt-auto mb-1 object-cover" />
                 )}
-                <div className={`max-w-[70%] rounded-2xl p-4 shadow-sm relative group
+                <div className={`max-w-[85%] sm:max-w-[70%] rounded-2xl p-3 sm:p-4 shadow-sm relative group break-words
                   ${msg.sender === 'user' ? 'bg-white border border-gray-200 rounded-bl-sm' : 'bg-[#e0f5f0] text-gray-800 rounded-br-sm'}
                 `}>
                   {msg.sender === 'user' && <p className="font-bold text-sm mb-1 text-gray-900">{activeChat.name}</p>}
@@ -127,7 +140,7 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
         )}
 
         {/* Chat Input */}
-        <div className="p-4 bg-white border-t border-gray-200 mx-4 mb-4 rounded-xl shadow-sm z-10">
+        <div className="p-3 sm:p-4 bg-white border-t border-gray-200 mx-3 sm:mx-4 mb-3 sm:mb-4 rounded-xl shadow-sm z-10">
           <div className="relative">
             <textarea 
               value={message}
@@ -135,7 +148,7 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
               onKeyDown={handleKeyDown}
               disabled={isSending}
               placeholder="Write a reply..." 
-              className="w-full bg-gray-50 rounded-xl p-4 pr-32 border border-gray-200 focus:outline-none focus:ring-1 focus:ring-teal-500 resize-none h-24 text-sm disabled:opacity-50"
+              className="w-full bg-gray-50 rounded-xl p-3 sm:p-4 pb-14 sm:pb-4 sm:pr-32 border border-gray-200 focus:outline-none focus:ring-1 focus:ring-teal-500 resize-none h-28 sm:h-24 text-sm disabled:opacity-50"
             ></textarea>
             
             <div className="absolute bottom-4 left-4 flex space-x-3 text-gray-400">
@@ -148,7 +161,7 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
               <button 
                 onClick={handleSend}
                 disabled={isSending || !message.trim()}
-                className="bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg text-sm font-bold flex items-center space-x-2 transition-colors">
+                className="bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white px-4 sm:px-6 py-2 rounded-lg text-sm font-bold flex items-center space-x-2 transition-colors">
                 <span>{isSending ? 'Sending...' : 'Send'}</span>
                 {!isSending && <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>}
               </button>

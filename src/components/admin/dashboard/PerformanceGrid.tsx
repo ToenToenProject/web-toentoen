@@ -7,13 +7,13 @@ interface Props {
 
 export const PerformanceGrid: React.FC<Props> = ({ metrics }) => {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+    <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6 shadow-sm">
       <h3 className="font-semibold text-gray-800 mb-4">Performance overview</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
         {metrics.map((metric, idx) => (
           <div key={idx} className="border border-gray-200 rounded-xl p-4 flex flex-col justify-between">
             <h4 className="text-xs font-semibold text-gray-500 tracking-wider mb-2">{metric.title}</h4>
-            <div className="text-3xl font-bold text-gray-900 mb-4">{metric.mainValue}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{metric.mainValue}</div>
             
             {metric.subMetrics ? (
               <div className="flex space-x-4 text-xs font-medium">

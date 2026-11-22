@@ -58,7 +58,7 @@ export const LiveChatView = ({ onBack }: Props) => {
   return (
     <div className="flex flex-1 flex-col bg-white">
       {/* Chat header */}
-      <div className="flex items-center gap-3 px-6 py-4">
+      <div className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4">
         <button
           type="button"
           onClick={onBack}
@@ -81,25 +81,25 @@ export const LiveChatView = ({ onBack }: Props) => {
       </div>
 
       {/* Chat messages */}
-      <div className="flex flex-1 flex-col gap-6 px-6 py-6">
+      <div className="flex flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
         {/* Agent bubble (right, teal) */}
         <div className="flex justify-end">
-          <div className="relative h-24 w-64 rounded-t-2xl rounded-bl-2xl bg-[#00c2a8]">
+          <div className="relative h-24 w-56 sm:w-64 max-w-[80%] rounded-t-2xl rounded-bl-2xl bg-[#00c2a8]">
             <span className="absolute -bottom-2 right-6 h-0 w-0 border-l-[10px] border-t-[10px] border-l-transparent border-t-[#00c2a8]" />
           </div>
         </div>
 
         {/* User bubble (left, gray) */}
         <div className="flex justify-start">
-          <div className="relative h-24 w-56 rounded-t-2xl rounded-br-2xl bg-gray-300">
+          <div className="relative h-24 w-48 sm:w-56 max-w-[75%] rounded-t-2xl rounded-br-2xl bg-gray-300">
             <span className="absolute -bottom-2 left-6 h-0 w-0 border-r-[10px] border-t-[10px] border-r-transparent border-t-gray-300" />
           </div>
         </div>
       </div>
 
       {/* Input — spellCheck off agar teks tidak merah, warna teks hitam */}
-      <div className="flex items-center gap-3 px-6 py-5">
-        <div className="flex flex-1 items-center gap-2 rounded-full bg-gray-100 px-5 py-3">
+      <div className="flex items-center gap-2 sm:gap-3 px-3 py-3 sm:px-6 sm:py-5">
+        <div className="flex flex-1 min-w-0 items-center gap-2 rounded-full bg-gray-100 px-4 py-3 sm:px-5">
           <input
             type="text"
             placeholder="Type something"

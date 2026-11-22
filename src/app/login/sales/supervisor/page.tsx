@@ -27,7 +27,7 @@ export default function SalesSupervisorPage() {
     <SalesAuthGuard>
       {({ onLogout }) => (
         // flex h-screen overflow-hidden memastikan sidebar terkunci dan tidak bisa di-scroll
-        <div className="flex h-screen w-full bg-[#F9FAFB] font-sans text-gray-800 overflow-hidden">
+        <div className="flex h-[100dvh] w-full bg-[#F9FAFB] font-sans text-gray-800 overflow-hidden">
           {/* Left Minimal Sidebar (Terkunci permanen, tidak bisa ke-scroll) */}
           <SalesSidebar
             currentView={currentView === 'staff-detail' ? 'dashboard' : currentView}
@@ -35,8 +35,8 @@ export default function SalesSupervisorPage() {
           />
 
           {/* Main Scrollable Area (Hanya area ini yang bisa di-scroll) */}
-          <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden min-w-0">
-            <main className="p-6 sm:p-8 max-w-7xl w-full mx-auto pb-16">
+          <div className="flex-1 h-[100dvh] overflow-y-auto overflow-x-hidden min-w-0">
+            <main className="p-3 sm:p-5 md:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-16">
               {/* Top Bar with user pill & logout */}
               <SalesTopBar
                 profile={SUPERVISOR_PROFILE}

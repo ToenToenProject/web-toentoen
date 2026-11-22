@@ -27,9 +27,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8 rounded-2xl bg-white p-10 shadow-xl border border-gray-100">
+      <div className="w-full max-w-md space-y-6 sm:space-y-8 rounded-2xl bg-white p-6 sm:p-10 shadow-xl border border-gray-100">
         <div>
-          <h2 className="mt-2 text-center text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="mt-2 text-center text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
             Welcome Back
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">

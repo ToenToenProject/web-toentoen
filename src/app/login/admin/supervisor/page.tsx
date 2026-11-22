@@ -75,9 +75,9 @@ export default function SupervisorDashboardPage() {
     return (
         <main className="w-full bg-white min-h-screen pb-8">
             {/* HEADER */}
-            <header className="bg-white border border-gray-300 px-6 py-3 flex justify-between items-center m-4 rounded-xl shadow-sm">
-                <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden border border-gray-200">
+            <header className="bg-white border border-gray-300 px-3 sm:px-6 py-3 flex justify-between items-center gap-3 m-3 sm:m-4 rounded-xl shadow-sm">
+                <div className="flex items-center space-x-3 min-w-0">
+                    <div className="w-10 h-10 shrink-0 rounded-full bg-gray-300 overflow-hidden border border-gray-200">
                         <img src="https://i.pravatar.cc/150?img=1" alt="Profile" className="w-full h-full object-cover" />
                     </div>
                     <div>
@@ -87,26 +87,26 @@ export default function SupervisorDashboardPage() {
                 </div>
                 <button 
                     onClick={() => router.push('/login')} 
-                    className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-colors"
+                    className="shrink-0 bg-teal-500 hover:bg-teal-600 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-colors"
                 >
-                    <span>Log Out</span>
+                    <span className="hidden sm:inline">Log Out</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
                 </button>
             </header>
 
-            <div className="px-6 pt-2 space-y-4">
+            <div className="px-3 sm:px-6 pt-2 space-y-4">
                 <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
 
                 {/* OVERVIEW BAR */}
-                <div className="bg-white border border-gray-300 rounded-xl p-4 flex justify-between items-center shadow-sm">
+                <div className="bg-white border border-gray-300 rounded-xl p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 shadow-sm">
                     <h3 className="font-semibold text-gray-800 text-sm">Support Operations Overview</h3>
-                    <div className="flex space-x-3">
-                        <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-700">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                        <select className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-700">
                             <option>Today, January 27, 2027</option>
                         </select>
-                        <button className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-colors">
+                        <button className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 transition-colors">
                             <span>Export report</span>
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         </button>
@@ -114,13 +114,13 @@ export default function SupervisorDashboardPage() {
                 </div>
 
                 {/* PERFORMANCE METRICS GRID */}
-                <div className="bg-white border border-gray-300 rounded-xl p-6 shadow-sm">
+                <div className="bg-white border border-gray-300 rounded-xl p-4 sm:p-6 shadow-sm">
                     <h3 className="font-semibold text-gray-800 text-sm mb-4">Performance overview</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
                         {performanceMetrics.map((metric, idx) => (
                             <div key={idx} className="border border-gray-300 rounded-xl p-4 flex flex-col justify-between">
                                 <h4 className="text-xs font-semibold text-gray-900 uppercase tracking-wider mb-2">{metric.title}</h4>
-                                <div className="text-3xl font-bold text-gray-900 mb-4">{metric.mainValue}</div>
+                                <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{metric.mainValue}</div>
                                 
                                 {metric.subMetrics ? (
                                     <div className="flex space-x-3 text-xs font-medium">
@@ -145,7 +145,7 @@ export default function SupervisorDashboardPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     
                     {/* URGENT ALERTS */}
-                    <div className="bg-white border border-gray-300 rounded-xl shadow-sm flex flex-col lg:col-span-1 h-[600px]">
+                    <div className="bg-white border border-gray-300 rounded-xl shadow-sm flex flex-col lg:col-span-1 max-h-[480px] lg:max-h-none lg:h-[600px]">
                         <div className="p-5 border-b border-gray-200">
                             <h3 className="font-bold text-gray-900 text-sm">Urgent alerts & SLA breaches</h3>
                             <p className="text-xs text-gray-500 mt-1">Requires action</p>
@@ -199,7 +199,7 @@ export default function SupervisorDashboardPage() {
                                 <p className="text-xs text-gray-500 mt-1">Live queue load and resolution contribution</p>
                             </div>
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left text-sm text-gray-900">
+                                <table className="w-full min-w-[520px] text-left text-sm text-gray-900">
                                     <thead className="text-xs font-bold text-gray-700 bg-gray-200 uppercase">
                                         <tr>
                                             <th scope="col" className="px-6 py-3">AGENT</th>

@@ -9,13 +9,13 @@ export default function AdminLayout({
 }) {
   return (
     // Pembungkus background putih/abu-abu dan layout flex kita pindahkan ke sini
-    <div className="flex h-screen bg-gray-50 font-sans overflow-hidden">
+    <div className="flex h-[100dvh] bg-gray-50 font-sans overflow-hidden">
       
-      {/* Sidebar akan selalu muncul di sisi kiri */}
+      {/* Mobile: navigasi bawah. md ke atas: sidebar kiri */}
       <AdminSidebar />
       
       {/* children ini adalah isi dari page.tsx (Dashboard, Inbox, dll) */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-w-0 overflow-y-auto pb-16 md:pb-0">
         {children}
       </div>
       

@@ -23,6 +23,8 @@ export default function InboxPage() {
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  // Mobile: tampilkan daftar ATAU chat (pola master-detail)
+  const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
 
   const getToken = () => localStorage.getItem("token") || "";
 
@@ -223,15 +225,19 @@ export default function InboxPage() {
   };
 
   return (
-    <div className="flex h-screen bg-white font-sans overflow-hidden">
-      <ChatListPanel 
-        chatList={chatList} 
-        isLoadingList={isLoadingList} 
-        searchQuery={searchQuery} 
-        setSearchQuery={setSearchQuery} 
-        selectedChatId={selectedChatId} 
-        setSelectedChatId={setSelectedChatId} 
-      />
+    <div className="flex h-full min-h-0 bg-white font-sans overflow-hidden">
+      <div className={`${mobileView === 'chat' ? 'hidden md:flex' : 'flex'} w-full md:w-auto h-full shrink-0`}>
+        <ChatListPanel 
+          chatList={chatList} 
+          isLoadingList={isLoadingList} 
+          searchQuery={searchQuery} 
+          setSearchQuery={setSearchQuery} 
+          selectedChatId={selectedChatId} 
+          setSelectedChatId={(id) => { setSelectedChatId(id); setMobileView('chat'); }} 
+        />
+      </div>
+
+      <div className={`${mobileView === 'list' ? 'hidden md:flex' : 'flex'} flex-1 min-w-0 h-full`}>
 
       {/* Selalu render MainChatArea jika sudah ada data — transisi smooth ala WhatsApp */}
       {activeChat ? (
@@ -241,6 +247,7 @@ export default function InboxPage() {
           isUpdatingStatus={isUpdatingStatus} 
           onUpdateStatus={handleUpdateStatus} 
           onSendMessage={handleSendMessage}
+          onBack={() => setMobileView('list')}
         />
       ) : isLoadingDetail ? (
         /* Skeleton awal saat belum ada chat sama sekali */
@@ -259,6 +266,7 @@ export default function InboxPage() {
           Pilih percakapan untuk memulai
         </section>
       )}
+      </div>
     </div>
   );
 }

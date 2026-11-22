@@ -74,10 +74,11 @@ export const CSListView = ({
   selectedIndex,
 }: Props) => {
   return (
-    <div className="flex flex-1 flex-col bg-white px-6 py-6">
+    <div className="flex flex-1 flex-col bg-white px-3 py-4 sm:px-6 sm:py-6 min-w-0">
       <h2 className="text-base font-bold text-gray-900 sm:text-lg">{title}</h2>
 
-      <div className="mt-4">
+      <div className="mt-4 overflow-x-auto">
+        <div className="min-w-[640px]">
         {/* Header */}
         <div className="grid grid-cols-[36px_140px_1fr_1fr_1fr] items-center gap-3 px-3 py-2 text-xs font-bold text-gray-700">
           <EmptyCheckbox active={false} />
@@ -115,6 +116,7 @@ export const CSListView = ({
             );
           })}
         </ul>
+        </div>
       </div>
     </div>
   );

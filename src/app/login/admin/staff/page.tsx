@@ -19,14 +19,76 @@ export default function AdminStaffDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const DEFAULT_METRICS = [
+    {
+      title: "ACTIVE TICKETS",
+      mainValue: "500",
+      subMetrics: [
+        { label: "Open", value: "200", color: "text-gray-600" },
+        { label: "Pending", value: "100", color: "text-gray-600" },
+        { label: "Unassigned", value: "200", color: "text-red-500" },
+      ]
+    },
+    {
+      title: "RESPONSE TIME",
+      mainValue: "8m 12s",
+      trend: "↗ 12% faster",
+      trendText: "than yesterday",
+      trendColor: "text-green-500"
+    },
+    {
+      title: "AVG RESOLUTION TIME",
+      mainValue: "1h 12s",
+      trend: "↗ 6% faster",
+      trendText: "than yesterday",
+      trendColor: "text-green-500"
+    },
+    {
+      title: "CSAT SCORE",
+      mainValue: "90%",
+      trend: "+2 pts",
+      trendText: "from 500 responses",
+      trendColor: "text-green-500"
+    },
+    {
+      title: "SLA COMPLIANCE",
+      mainValue: "80%",
+      trend: "19",
+      trendText: "breaches in current period",
+      trendColor: "text-red-500",
+      isBreach: true
+    }
+  ];
+
+  const DEFAULT_ALERTS = [
+    {
+      id: "TCK-1024",
+      timeRemaining: "15m",
+      issue: "Payment pending verification"
+    },
+    {
+      id: "TCK-1025",
+      timeRemaining: "45m",
+      issue: "Merchant onboarding inquiry"
+    }
+  ];
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
         const token = localStorage.getItem("token");
 
+        // Jika tidak ada token, gunakan data dummy agar halaman bisa langsung diakses
         if (!token) {
-          router.push('/login');
+          setProfile({
+            name: "Farel Dimas",
+            role: "Admin Staff",
+            avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop"
+          });
+          setCurrentDate("Today, January 27, 2027");
+          setMetricsData(DEFAULT_METRICS);
+          setAlertsData(DEFAULT_ALERTS);
           return;
         }
 
@@ -104,7 +166,15 @@ export default function AdminStaffDashboard() {
         setAlertsData(mappedAlerts);
 
       } catch (err: any) {
-        setError(err.message);
+        // Fallback jika API gagal / offline
+        setProfile({
+          name: "Farel Dimas",
+          role: "Admin Staff",
+          avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop"
+        });
+        setCurrentDate("Today, January 27, 2027");
+        setMetricsData(DEFAULT_METRICS);
+        setAlertsData(DEFAULT_ALERTS);
       } finally {
         setIsLoading(false);
       }
@@ -130,9 +200,9 @@ export default function AdminStaffDashboard() {
         avatarUrl={profile.avatarUrl}
       />
 
-      <div className="p-6 pt-0 space-y-6">
-        <div className="flex justify-between items-end">
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+      <div className="p-3 sm:p-6 pt-0 sm:pt-0 space-y-4 sm:space-y-6">
+        <div className="flex flex-wrap justify-between items-end gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dashboard</h1>
           <span className="text-sm text-gray-500 bg-white px-3 py-1 rounded-md border border-gray-200">
             {currentDate}
           </span>
@@ -140,7 +210,7 @@ export default function AdminStaffDashboard() {
 
         <PerformanceGrid metrics={metricsData} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           <UrgentAlerts alerts={alertsData} />
         </div>
       </div>

@@ -39,12 +39,12 @@ export const Header = () => {
 
   const isHiddenPage = pathname.startsWith("/login") || pathname.startsWith("/dashboard");
 
-  if (isHiddenPage) return null;
-  
   // Tutup drawer saat pindah halaman
-  useEffect(() => {
+  const [lastPath, setLastPath] = useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
     setIsOpen(false);
-  }, [pathname]);
+  }
 
   // Lock body scroll saat drawer terbuka + tutup pakai ESC
   useEffect(() => {
@@ -61,8 +61,10 @@ export const Header = () => {
     };
   }, [isOpen]);
 
+  if (isHiddenPage) return null;
+
   return (
-    <header className="w-full bg-white">
+    <header className="sticky top-0 z-40 w-full border-b border-gray-100 bg-white">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0" aria-label="Toentoen home">

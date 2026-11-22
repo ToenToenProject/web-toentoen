@@ -12,18 +12,18 @@ interface SmSidebarProps {
 
 export const SmSidebar: React.FC<SmSidebarProps> = ({ currentView, onNavigate }) => {
   return (
-    <aside className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 space-y-6 shrink-0 h-screen sticky top-0 z-20 overflow-hidden select-none">
+    <aside className="fixed inset-x-0 bottom-0 z-40 flex h-16 w-full shrink-0 select-none items-center border-t border-gray-200 bg-white pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:z-20 md:h-screen md:w-16 md:flex-col md:gap-6 md:overflow-hidden md:border-r md:border-t-0 md:py-4">
       {/* Brand Icon TO+EN */}
       <div 
         onClick={() => onNavigate('dashboard')}
-        className="w-10 h-10 bg-[#00c2a8] rounded-xl text-white flex flex-col items-center justify-center font-extrabold text-[11px] leading-tight cursor-pointer shadow-xs hover:opacity-90 transition-opacity"
+        className="w-10 h-10 bg-[#00c2a8] rounded-xl text-white hidden md:flex flex-col items-center justify-center font-extrabold text-[11px] leading-tight cursor-pointer shadow-xs hover:opacity-90 transition-opacity"
       >
         <span>TO</span>
         <span>+EN</span>
       </div>
 
       {/* Navigation Icons */}
-      <nav className="flex flex-col space-y-4">
+      <nav className="flex w-full flex-row items-center justify-around md:w-auto md:flex-col md:justify-start md:gap-4">
         {/* 1. Dashboard Grid Icon */}
         <button
           type="button"

@@ -104,7 +104,7 @@ export const InteractiveTeam = () => {
           <div className="relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-6">
             {/* Left: thumbnails 3-col, landscape frame */}
             <div className="lg:col-span-3">
-              <div className="grid w-full max-w-[300px] grid-cols-3 gap-2.5">
+              <div className="grid w-full max-w-[300px] mx-auto lg:mx-0 grid-cols-3 gap-2.5">
                 {filteredTeam.map((member) => {
                   const isActive = selected?.id === member.id;
                   return (
@@ -144,7 +144,7 @@ export const InteractiveTeam = () => {
                   key={`large-${selected.id}`}
                   src={selected.imageLarge}
                   alt={selected.name}
-                  className="team-fade h-[300px] w-auto rounded-xl object-cover shadow-2xl sm:h-[360px] lg:h-[440px]"
+                  className="team-fade h-[260px] sm:h-[360px] lg:h-[440px] max-w-full w-auto rounded-xl object-cover shadow-2xl"
                 />
               )}
             </div>

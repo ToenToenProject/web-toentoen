@@ -21,11 +21,11 @@ export const UrgentAlerts: React.FC<Props> = ({ alerts }) => {
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col lg:col-span-1">
-      <div className="p-6 border-b border-gray-100">
+      <div className="p-4 sm:p-6 border-b border-gray-100">
         <h3 className="font-semibold text-gray-800">Urgent alerts &amp; SLA breaches</h3>
         <p className="text-xs text-gray-500 mt-1">Requires action</p>
       </div>
-      <div className="p-6 space-y-4 overflow-y-auto max-h-[400px]">
+      <div className="p-4 sm:p-6 space-y-4 overflow-y-auto max-h-[400px]">
         {alerts.map((alert, idx) => (
           <div key={idx} className="border border-gray-200 rounded-xl p-4">
             <div className="flex justify-between text-xs mb-2">

@@ -40,9 +40,9 @@ export const ChatListPanel: React.FC<ChatListPanelProps> = ({
   });
 
   return (
-    <section className="w-[320px] lg:w-[360px] border-r border-gray-200 flex flex-col bg-white">
-      <div className="p-4 border-b border-gray-200">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Inbox</h1>
+    <section className="w-full md:w-[300px] lg:w-[360px] h-full border-r border-gray-200 flex flex-col bg-white">
+      <div className="p-3 sm:p-4 border-b border-gray-200">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Inbox</h1>
         
         <div className="relative mb-4">
           <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -122,19 +122,19 @@ export const ChatListPanel: React.FC<ChatListPanelProps> = ({
                 ${selectedChatId === chat.id ? (chat.isInactive ? 'bg-red-50 border-r-2 border-r-red-500' : 'bg-teal-50 border-r-2 border-r-teal-500') : (chat.isInactive ? 'bg-red-50/50 hover:bg-red-50' : 'hover:bg-gray-50')}
               `}
             >
-              <div className="flex justify-between items-start mb-1">
-                <div className="flex items-center space-x-2">
-                  <img src={chat.avatar} alt={chat.name} className="w-10 h-10 rounded-full bg-gray-200 object-cover" />
-                  <div>
-                    <div className="flex items-center space-x-2">
+              <div className="flex justify-between items-start gap-2 mb-1">
+                <div className="flex items-center space-x-2 min-w-0">
+                  <img src={chat.avatar} alt={chat.name} className="w-10 h-10 shrink-0 rounded-full bg-gray-200 object-cover" />
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-2">
                       <span className="font-bold text-gray-900 text-sm">{chat.name}</span>
                       <span className="text-xs text-gray-500">({chat.role})</span>
                       {chat.isVip && <span className="bg-yellow-400 text-black text-[10px] font-bold px-1.5 rounded">VIP</span>}
                     </div>
-                    <p className="text-xs text-gray-500 truncate w-40 mt-0.5">{chat.lastMessage}</p>
+                    <p className="text-xs text-gray-500 truncate mt-0.5">{chat.lastMessage}</p>
                   </div>
                 </div>
-                <span className="text-xs text-gray-400">{chat.lastTime}</span>
+                <span className="text-xs text-gray-400 shrink-0">{chat.lastTime}</span>
               </div>
               <div className="mt-2 ml-12">
                 <StatusBadge status={chat.status} />

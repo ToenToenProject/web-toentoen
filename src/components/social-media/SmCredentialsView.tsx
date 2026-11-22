@@ -54,7 +54,7 @@ export const SmCredentialsView: React.FC<SmCredentialsViewProps> = ({ onBack }) 
           <h2 className="text-sm font-bold text-gray-900">Connected channel access</h2>
           <p className="text-xs text-gray-500 mb-4">Account roles are assigned through the organization directory.</p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {channels.map((chan) => (
               <div
                 key={chan.channel}

@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function ReportPage() {
   return (
-    <main>
+    <main className="h-full">
       <ReportTicketComponent />
     </main>
   );

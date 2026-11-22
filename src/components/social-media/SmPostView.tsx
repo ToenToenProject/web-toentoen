@@ -276,11 +276,11 @@ export const SmPostView: React.FC = () => {
       {activeModalPost && (
         <div
           onClick={() => setActiveModalPost(null)}
-          className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl max-w-2xl w-full p-5 shadow-2xl relative border border-gray-100 flex flex-col justify-between animate-in fade-in zoom-in-95 duration-150"
+            className="bg-white rounded-2xl max-w-2xl w-full p-4 sm:p-5 shadow-2xl relative border border-gray-100 flex flex-col justify-between animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto"
           >
             {/* Close button */}
             <button
