@@ -159,6 +159,7 @@ export const SalesDashboardView: React.FC = () => {
     const start = (currentPage - 1) * pageSize;
     return merchants.slice(start, start + pageSize);
   }, [merchants, isServerPaginated, currentPage, pageSize]);
+  const paginatedMerchants = displayedMerchants;
 
   const overviewCards = [
     {
