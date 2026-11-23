@@ -171,7 +171,10 @@ function SupervisorInboxContent() {
         setLoading(true);
         // Untuk tab antrean supervisor, muat seluruh tiket aktif (antrean baru QUEUE maupun IN_PROGRESS yang sedang berjalan)
         const statusParam = activeTab === 'queue' ? 'all' : 'SOLVED';
-        const res = await adminService.getTickets({ status: statusParam }).catch(() => null);
+        const res = await adminService.getTickets({
+          status: statusParam,
+          search: searchQuery.trim() || undefined,
+        }).catch(() => null);
         
         if (isMounted) {
           if (res?.tickets && res.tickets.length > 0) {
@@ -283,7 +286,7 @@ function SupervisorInboxContent() {
 
     fetchSupervisorTickets();
     return () => { isMounted = false; };
-  }, [activeTab]);
+  }, [activeTab, searchQuery]);
 
   // 2. Fetch ticket messages & customer profile when selectedTicket changes
   useEffect(() => {
