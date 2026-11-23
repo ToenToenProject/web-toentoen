@@ -9,6 +9,7 @@ import {
   SmLoginHistoryEntry,
 } from '@/constants/socialMediaData';
 import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
+import { Check } from 'lucide-react';
 
 interface SmCredentialsViewProps {
   onBack?: () => void;
@@ -105,7 +106,14 @@ export const SmCredentialsView: React.FC<SmCredentialsViewProps> = ({ onBack }) 
               onClick={() => setRequested(true)}
               className="px-3.5 py-2 bg-[#00A896] hover:bg-[#008f80] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors shrink-0"
             >
-              {requested ? 'Requested ✓' : 'Request password change'}
+              {requested ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-white" />
+                  <span>Requested</span>
+                </span>
+              ) : (
+                'Request password change'
+              )}
             </button>
           </div>
 

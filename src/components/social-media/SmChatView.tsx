@@ -8,6 +8,7 @@ import {
   SmChatContact,
   SmChatMessage,
 } from '@/constants/socialMediaData';
+import { CheckCheck } from 'lucide-react';
 
 export const SmChatView: React.FC = () => {
   const [selectedChannel, setSelectedChannel] = useState<string>('All');
@@ -218,7 +219,7 @@ export const SmChatView: React.FC = () => {
                   <div className="flex items-center justify-end gap-1 text-[10px] text-gray-500 mt-2">
                     <span>{msg.time}</span>
                     {isMe && (
-                      <span className="text-[#00A896] font-bold">✓✓</span>
+                      <CheckCheck className="w-3.5 h-3.5 text-[#00A896]" />
                     )}
                   </div>
                 </div>

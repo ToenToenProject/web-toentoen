@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { adminApi } from '@/constants/api/admin/report';
+import { Flag } from 'lucide-react';
 
 // --- TIPE DATA ---
 type TicketStatus = 'Unsolved' | 'Pending' | 'Solved';
@@ -292,8 +293,9 @@ function TicketCard({ ticket, isActive, onClick }: { ticket: Ticket, isActive: b
             <div className="flex flex-col items-end gap-1">
               <span className="text-xs text-gray-400">{ticket.time}</span>
               {ticket.priority !== null && (
-                <span className={`text-xs font-bold px-2 py-0.5 rounded ${flagColor}`}>
-                  🚩 {ticket.priority}
+                <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded ${flagColor}`}>
+                  <Flag className="w-3 h-3 shrink-0" />
+                  <span>{ticket.priority}</span>
                 </span>
               )}
             </div>

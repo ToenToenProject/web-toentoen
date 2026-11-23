@@ -9,6 +9,7 @@ import {
   CustomerProfileSkeleton 
 } from '@/components/ui/Skeleton';
 import { RoleGuard } from '@/components/auth/RoleGuard';
+import { Lightbulb, CheckCheck, Check } from 'lucide-react';
 
 interface CustomerAccountOverview {
   account_since?: string;
@@ -637,7 +638,7 @@ function SupervisorInboxContent() {
                   <p className="leading-relaxed whitespace-pre-wrap">{msg.message}</p>
                   <div className="flex justify-end items-center space-x-1 text-[10px] text-teal-800 pt-1 font-medium">
                     <span>{timeStr} {adminTimezone}</span>
-                    <span className="text-teal-600 font-black">✓✓</span>
+                    <CheckCheck className="w-3.5 h-3.5 text-teal-600 inline" />
                   </div>
                 </div>
               </div>
@@ -707,7 +708,10 @@ function SupervisorInboxContent() {
 
                 {/* Footer Petunjuk */}
                 <div className="px-4 py-2 bg-gray-50/80 border-t border-gray-100 text-[10px] text-gray-500 flex items-center justify-between">
-                  <span>💡 Klik salah satu untuk mengisi ke kotak input</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                    <span>Klik salah satu untuk mengisi ke kotak input</span>
+                  </span>
                   <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded text-[9px] font-mono text-gray-400 shadow-2xs">ESC</kbd>
                 </div>
               </div>
@@ -821,7 +825,7 @@ function SupervisorInboxContent() {
                 title="Salin email"
               >
                 {copiedField === 'email' ? (
-                  <span className="text-[10px] text-emerald-600 font-bold">✓</span>
+                  <Check className="w-3 h-3 text-emerald-600" />
                 ) : (
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                 )}
@@ -838,7 +842,7 @@ function SupervisorInboxContent() {
                 title="Salin nomor telepon"
               >
                 {copiedField === 'phone' ? (
-                  <span className="text-[10px] text-emerald-600 font-bold">✓</span>
+                  <Check className="w-3 h-3 text-emerald-600" />
                 ) : (
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                 )}

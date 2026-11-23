@@ -3,6 +3,7 @@
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { PhoneMockups } from "@/components/home/hero/PhoneMockups";
 import { useEarlyAccess } from "@/context/EarlyAccessContext";
+import { Rocket } from "lucide-react";
 
 export const HeroSection = () => {
     const { openEarlyAccess } = useEarlyAccess();
@@ -25,7 +26,8 @@ export const HeroSection = () => {
             {/* Teks */}
             <div className="flex flex-col lg:col-span-7">
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#00c2a8]/20 px-3.5 py-1.5 text-xs font-semibold text-[#5fd9c4] backdrop-blur-xs ring-1 ring-[#00c2a8]/30 w-fit">
-                    <span>🚀 Platform Perdagangan Hyperlocal Dua Arah</span>
+                    <Rocket className="w-3.5 h-3.5 text-[#5fd9c4]" />
+                    <span>Platform Perdagangan Hyperlocal Dua Arah</span>
                 </div>
                 <h1 className="mb-6 text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[52px]">
                 Temukan Apapun di Sekitarmu—

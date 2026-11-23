@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { NewsHero } from '@/components/news/NewsHero';
 import { NewsCard } from '@/components/news/NewsCard';
 import { NEWS_DATA } from '@/constants/news';
+import { Check } from 'lucide-react';
 
 const CATEGORIES = ['Semua', 'UPDATE', 'TIPS UMKM', 'INSIGHT', 'COMMUNITY', 'EDUKASI'];
 
@@ -107,8 +108,9 @@ export default function NewsPage() {
                                 </button>
                             </form>
                         ) : (
-                            <div className="rounded-2xl bg-white/10 p-4 border border-white/20 text-[#5fd9c4] font-medium text-sm">
-                                ✓ Terima kasih! Email <strong>{email}</strong> telah berhasil didaftarkan ke buletin Toentoen.
+                            <div className="rounded-2xl bg-white/10 p-4 border border-white/20 text-[#5fd9c4] font-medium text-sm flex items-center gap-2">
+                                <Check className="w-4 h-4 text-[#5fd9c4] shrink-0" />
+                                <span>Terima kasih! Email <strong>{email}</strong> telah berhasil didaftarkan ke buletin Toentoen.</span>
                             </div>
                         )}
                     </div>

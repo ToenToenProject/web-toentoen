@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { Check } from 'lucide-react';
 
 export const SmCreatePostView: React.FC = () => {
   const [selectedChannels, setSelectedChannels] = useState<string[]>(['Instagram', 'Linkedin']);
@@ -173,7 +174,14 @@ export const SmCreatePostView: React.FC = () => {
               onClick={handleSchedule}
               className="px-5 py-2 bg-[#00A896] hover:bg-[#008f80] text-white text-xs font-semibold rounded-lg shadow-2xs transition-colors"
             >
-              {isScheduled ? 'Scheduled ✓' : 'Schedule post'}
+              {isScheduled ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-white" />
+                  <span>Scheduled</span>
+                </span>
+              ) : (
+                'Schedule post'
+              )}
             </button>
           </div>
         </div>

@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import { SalesProfile } from '@/constants/salesData';
+import { Check, Copy } from 'lucide-react';
 
 interface SalesTopBarProps {
   profile: SalesProfile;
@@ -74,10 +75,20 @@ export const SalesTopBar: React.FC<SalesTopBarProps> = ({
             <button
               type="button"
               onClick={handleCopy}
-              className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-teal-300 text-teal-700 hover:bg-teal-100 transition-colors shadow-2xs"
+              className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-teal-300 text-teal-700 hover:bg-teal-100 transition-colors shadow-2xs inline-flex items-center gap-1"
               title="Salin Kode Referral"
             >
-              {copied ? '✓ Tersalin' : 'Salin'}
+              {copied ? (
+                <>
+                  <Check className="w-3 h-3 text-emerald-600" />
+                  <span>Tersalin</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3 h-3 text-teal-600" />
+                  <span>Salin</span>
+                </>
+              )}
             </button>
           </div>
         </div>

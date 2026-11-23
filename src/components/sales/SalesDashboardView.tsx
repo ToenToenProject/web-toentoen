@@ -10,6 +10,16 @@ import {
 import { RegisterMerchantModal } from './RegisterMerchantModal';
 import { MerchantHistoryModal } from './MerchantHistoryModal';
 import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
+import {
+  Coins,
+  Check,
+  X,
+  Clock,
+  FileText,
+  MessageSquare,
+  Calendar,
+  ChevronDown,
+} from 'lucide-react';
 
 const DEFAULT_OVERVIEW: SalesOverviewCards = {
   managedMerchants: {
@@ -265,8 +275,8 @@ export const SalesDashboardView: React.FC = () => {
         {overview.incentiveSummary && (
           <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-teal-50 via-emerald-50/50 to-white border border-teal-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center space-x-3">
-              <span className="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
-                💰
+              <span className="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <Coins className="w-5 h-5 text-amber-300" />
               </span>
               <div>
                 <h4 className="text-xs font-bold text-gray-900">
@@ -418,23 +428,43 @@ export const SalesDashboardView: React.FC = () => {
 
                         {/* Monthly Goals */}
                         <td className="py-3.5 px-4 text-center">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                             m.monthlyGoals === 'Achieved'
                               ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                               : 'bg-rose-50 text-rose-600 border border-rose-200'
                           }`}>
-                            {m.monthlyGoals === 'Achieved' ? '✓ Tercapai' : '✕ Belum'}
+                            {m.monthlyGoals === 'Achieved' ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>Tercapai</span>
+                              </>
+                            ) : (
+                              <>
+                                <X className="w-3.5 h-3.5 text-rose-500" />
+                                <span>Belum</span>
+                              </>
+                            )}
                           </span>
                         </td>
 
                         {/* Weekly Goals */}
                         <td className="py-3.5 px-4 text-center">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                             m.weeklyGoals === 'Achieved'
                               ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                               : 'bg-rose-50 text-rose-600 border border-rose-200'
                           }`}>
-                            {m.weeklyGoals === 'Achieved' ? '✓ Tercapai' : '✕ Belum'}
+                            {m.weeklyGoals === 'Achieved' ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>Tercapai</span>
+                              </>
+                            ) : (
+                              <>
+                                <X className="w-3.5 h-3.5 text-rose-500" />
+                                <span>Belum</span>
+                              </>
+                            )}
                           </span>
                         </td>
 
@@ -443,27 +473,30 @@ export const SalesDashboardView: React.FC = () => {
                           <div className="inline-flex items-center gap-1 bg-gray-50 border border-gray-200/90 rounded-xl px-2 py-1 shadow-2xs">
                             <span
                               title={`Jam Buka: ${daily?.minimumOpenHours?.value ?? 0} Jam (Target ≥ 6 Jam)`}
-                              className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                              className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold ${
                                 daily?.minimumOpenHours?.passed ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200/70 text-gray-600'
                               }`}
                             >
-                              ⏱ {daily?.minimumOpenHours?.value ?? 0}j
+                              <Clock className="w-3 h-3 text-current opacity-80" />
+                              <span>{daily?.minimumOpenHours?.value ?? 0}j</span>
                             </span>
                             <span
                               title={`Postingan: ${daily?.numberOfPostsToday?.value ?? 0} (Target ≥ 1 Post)`}
-                              className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                              className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold ${
                                 daily?.numberOfPostsToday?.passed ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200/70 text-gray-600'
                               }`}
                             >
-                              📝 {daily?.numberOfPostsToday?.value ?? 0}p
+                              <FileText className="w-3 h-3 text-current opacity-80" />
+                              <span>{daily?.numberOfPostsToday?.value ?? 0}p</span>
                             </span>
                             <span
                               title={`Balasan Sinyal: ${daily?.signalPostReplyToday?.value ?? 0} (Target ≥ 1)`}
-                              className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                              className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold ${
                                 daily?.signalPostReplyToday?.passed ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200/70 text-gray-600'
                               }`}
                             >
-                              💬 {daily?.signalPostReplyToday?.value ?? 0}b
+                              <MessageSquare className="w-3 h-3 text-current opacity-80" />
+                              <span>{daily?.signalPostReplyToday?.value ?? 0}b</span>
                             </span>
 
                             {/* Tombol Rincian Harian yang Halus */}
@@ -475,9 +508,7 @@ export const SalesDashboardView: React.FC = () => {
                               }`}
                               title={isExpanded ? 'Tutup rincian harian' : 'Buka rincian harian'}
                             >
-                              <svg className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
-                              </svg>
+                              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                             </button>
                           </div>
                         </td>
@@ -513,7 +544,7 @@ export const SalesDashboardView: React.FC = () => {
                             <div className="border border-teal-200/70 rounded-2xl p-4 bg-white shadow-xs max-w-3xl mx-auto">
                               <div className="flex items-center justify-between pb-2 mb-3 border-b border-gray-100">
                                 <span className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
-                                  <span>📅</span>
+                                  <Calendar className="w-4 h-4 text-teal-600" />
                                   <span>Rincian Kepatuhan Harian: {m.store?.name}</span>
                                 </span>
                                 <span className="text-[10px] text-gray-400 font-mono">
@@ -524,26 +555,50 @@ export const SalesDashboardView: React.FC = () => {
                               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 {/* Minimum Open Hours */}
                                 <div className="text-center p-3 rounded-xl bg-gray-50/80 border border-gray-100">
-                                  <p className="text-[11px] text-gray-500 font-medium">Jam Buka (Target ≥ 6 Jam)</p>
-                                  <p className={`text-sm font-black mt-1 ${daily.minimumOpenHours.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
-                                    {daily.minimumOpenHours.value} Jam [{daily.minimumOpenHours.icon}]
+                                  <p className="text-[11px] text-gray-500 font-medium flex items-center justify-center gap-1">
+                                    <Clock className="w-3.5 h-3.5 text-gray-400" />
+                                    <span>Jam Buka (Target ≥ 6 Jam)</span>
                                   </p>
+                                  <div className={`flex items-center justify-center gap-1.5 text-sm font-black mt-1.5 ${daily.minimumOpenHours.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
+                                    <span>{daily.minimumOpenHours.value} Jam</span>
+                                    {daily.minimumOpenHours.passed ? (
+                                      <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                                    ) : (
+                                      <X className="w-4 h-4 text-rose-500 shrink-0" />
+                                    )}
+                                  </div>
                                 </div>
 
                                 {/* Number of Posts Today */}
                                 <div className="text-center p-3 rounded-xl bg-gray-50/80 border border-gray-100">
-                                  <p className="text-[11px] text-gray-500 font-medium">Postingan (Target ≥ 1 Post)</p>
-                                  <p className={`text-sm font-black mt-1 ${daily.numberOfPostsToday.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
-                                    {daily.numberOfPostsToday.value} Post [{daily.numberOfPostsToday.icon}]
+                                  <p className="text-[11px] text-gray-500 font-medium flex items-center justify-center gap-1">
+                                    <FileText className="w-3.5 h-3.5 text-gray-400" />
+                                    <span>Postingan (Target ≥ 1 Post)</span>
                                   </p>
+                                  <div className={`flex items-center justify-center gap-1.5 text-sm font-black mt-1.5 ${daily.numberOfPostsToday.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
+                                    <span>{daily.numberOfPostsToday.value} Post</span>
+                                    {daily.numberOfPostsToday.passed ? (
+                                      <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                                    ) : (
+                                      <X className="w-4 h-4 text-rose-500 shrink-0" />
+                                    )}
+                                  </div>
                                 </div>
 
                                 {/* Signal Post Reply */}
                                 <div className="text-center p-3 rounded-xl bg-gray-50/80 border border-gray-100">
-                                  <p className="text-[11px] text-gray-500 font-medium">Sinyal Balasan (Target ≥ 1)</p>
-                                  <p className={`text-sm font-black mt-1 ${daily.signalPostReplyToday.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
-                                    {daily.signalPostReplyToday.value} Reply [{daily.signalPostReplyToday.icon}]
+                                  <p className="text-[11px] text-gray-500 font-medium flex items-center justify-center gap-1">
+                                    <MessageSquare className="w-3.5 h-3.5 text-gray-400" />
+                                    <span>Sinyal Balasan (Target ≥ 1)</span>
                                   </p>
+                                  <div className={`flex items-center justify-center gap-1.5 text-sm font-black mt-1.5 ${daily.signalPostReplyToday.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
+                                    <span>{daily.signalPostReplyToday.value} Reply</span>
+                                    {daily.signalPostReplyToday.passed ? (
+                                      <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                                    ) : (
+                                      <X className="w-4 h-4 text-rose-500 shrink-0" />
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             </div>

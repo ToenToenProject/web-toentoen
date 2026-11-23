@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { salesService, MerchantHistoryResponse } from '@/services/salesService';
+import { Check, X } from 'lucide-react';
 
 interface MerchantHistoryModalProps {
   isOpen: boolean;
@@ -146,16 +147,28 @@ export const MerchantHistoryModal: React.FC<MerchantHistoryModalProps> = ({
                           </td>
                           <td className="py-2 px-3 text-center">
                             {h.hasPost ? (
-                              <span className="text-emerald-600 font-bold">✓ Ya</span>
+                              <span className="inline-flex items-center gap-1 text-emerald-600 font-bold">
+                                <Check className="w-3.5 h-3.5" />
+                                <span>Ya</span>
+                              </span>
                             ) : (
-                              <span className="text-gray-400 font-medium">✕ Belum</span>
+                              <span className="inline-flex items-center gap-1 text-gray-400 font-medium">
+                                <X className="w-3.5 h-3.5" />
+                                <span>Belum</span>
+                              </span>
                             )}
                           </td>
                           <td className="py-2 px-3 text-center">
                             {h.hasReply ? (
-                              <span className="text-emerald-600 font-bold">✓ Aktif</span>
+                              <span className="inline-flex items-center gap-1 text-emerald-600 font-bold">
+                                <Check className="w-3.5 h-3.5" />
+                                <span>Aktif</span>
+                              </span>
                             ) : (
-                              <span className="text-gray-400 font-medium">✕ Pasif</span>
+                              <span className="inline-flex items-center gap-1 text-gray-400 font-medium">
+                                <X className="w-3.5 h-3.5" />
+                                <span>Pasif</span>
+                              </span>
                             )}
                           </td>
                           <td className="py-2 px-3 text-center">

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useEarlyAccess } from "@/context/EarlyAccessContext";
+import { User, Store } from "lucide-react";
 
 export const EarlyAccessModal = () => {
   const { isOpen, initialRole, closeEarlyAccess } = useEarlyAccess();
@@ -61,24 +62,26 @@ export const EarlyAccessModal = () => {
               <button
                 type="button"
                 onClick={() => setRole("user")}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
+                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
                   role === "user"
                     ? "bg-white text-gray-900 shadow-xs"
                     : "text-gray-500 hover:text-gray-800"
                 }`}
               >
-                👤 Konsumen (Toeners)
+                <User className="w-3.5 h-3.5 shrink-0" />
+                <span>Konsumen (Toeners)</span>
               </button>
               <button
                 type="button"
                 onClick={() => setRole("merchant")}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
+                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
                   role === "merchant"
                     ? "bg-[#00c2a8] text-white shadow-xs"
                     : "text-gray-500 hover:text-gray-800"
                 }`}
               >
-                🏪 Pelaku Usaha (Merchant)
+                <Store className="w-3.5 h-3.5 shrink-0" />
+                <span>Pelaku Usaha (Merchant)</span>
               </button>
             </div>
 

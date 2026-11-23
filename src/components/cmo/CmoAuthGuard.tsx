@@ -1,21 +1,119 @@
 // src/components/cmo/CmoAuthGuard.tsx
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { logoutUser } from '@/services/authService';
+import { logoutUser, checkSession } from '@/services/authService';
+import { useAuth } from '@/context/AuthContext';
+import { UserSession } from '@/types/auth';
 
 interface CmoAuthGuardProps {
-  children: (props: { onLogout: () => void }) => React.ReactNode;
+  children: (props: { onLogout: () => void; user: UserSession | null }) => React.ReactNode;
 }
 
 export const CmoAuthGuard: React.FC<CmoAuthGuardProps> = ({ children }) => {
   const router = useRouter();
+  const { user: contextUser } = useAuth();
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(contextUser);
+  const [isVerifying, setIsVerifying] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   const handleLogout = async () => {
     await logoutUser();
   };
 
-  // Login dinonaktifkan sementara: langsung izinkan akses tanpa cek token
-  return <>{children({ onLogout: handleLogout })}</>;
+  useEffect(() => {
+    let isMounted = true;
+
+    const verifyAccess = async () => {
+      let activeUser: UserSession | null = contextUser;
+
+      // 1. Cek LocalStorage (Fast Path)
+      if (!activeUser && typeof window !== 'undefined') {
+        try {
+          const cached = localStorage.getItem('user');
+          if (cached) {
+            activeUser = JSON.parse(cached);
+          }
+        } catch {
+          // Abaikan parsing error
+        }
+      }
+
+      // 2. Verifikasi Sesi via /api/v1/auth/me
+      if (!activeUser) {
+        try {
+          const sessionUser = await checkSession();
+          if (sessionUser) {
+            activeUser = {
+              id: sessionUser.id,
+              workerId: sessionUser.workerId || '',
+              email: sessionUser.email,
+              name: sessionUser.name || 'CMO',
+              role: sessionUser.role,
+              permissions: sessionUser.permissions || [],
+              passwordChangeCount: sessionUser.passwordChangeCount || 0,
+              ktpUploaded: sessionUser.ktpUploaded || false,
+              phone: sessionUser.phone,
+              address: sessionUser.address,
+            };
+          }
+        } catch {
+          // Sesi tidak ditemukan
+        }
+      }
+
+      if (!isMounted) return;
+
+      // 3. Jika tidak login, redirect ke /login
+      if (!activeUser) {
+        setIsAuthorized(false);
+        setIsVerifying(false);
+        router.replace('/login');
+        return;
+      }
+
+      // 4. Verifikasi Role: C_LEVEL, CMO, MARKETING, atau MANAGERIAL
+      const roleUpper = (activeUser.role || '').toUpperCase();
+      const hasCmoAccess =
+        roleUpper === 'C_LEVEL' ||
+        roleUpper.includes('CMO') ||
+        roleUpper.includes('MARKETING') ||
+        roleUpper === 'MANAGERIAL';
+
+      if (!hasCmoAccess) {
+        setIsAuthorized(false);
+        setIsVerifying(false);
+        router.replace('/login');
+        return;
+      }
+
+      setCurrentUser(activeUser);
+      setIsAuthorized(true);
+      setIsVerifying(false);
+    };
+
+    verifyAccess();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [contextUser, router]);
+
+  if (isVerifying) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-[#F9FAFB]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-9 w-9 animate-spin rounded-full border-3 border-[#00A896] border-t-transparent" />
+          <p className="text-xs font-semibold text-gray-500">Memverifikasi otorisasi CMO...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return null;
+  }
+
+  return <>{children({ onLogout: handleLogout, user: currentUser })}</>;
 };
