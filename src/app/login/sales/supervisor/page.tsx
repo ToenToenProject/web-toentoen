@@ -43,9 +43,9 @@ export default function SalesSupervisorPage() {
               onNavigate={(view) => setCurrentView(view)}
             />
 
-            {/* Main Scrollable Area (Hanya area ini yang bisa di-scroll) */}
+            {/* Main Scrollable Area */}
             <div className="flex-1 h-[100dvh] overflow-y-auto overflow-x-hidden min-w-0">
-              <main className="p-3 sm:p-5 md:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-16">
+              <main className="w-full bg-white min-h-screen pb-8">
                 {/* Top Bar with user pill & logout */}
                 <SalesTopBar
                   profile={dynamicProfile}
@@ -54,23 +54,25 @@ export default function SalesSupervisorPage() {
                   onLogout={onLogout}
                 />
 
-                {/* View Switcher */}
-                {currentView === 'dashboard' && (
-                  <SupervisorDashboardView onSelectStaff={handleSelectStaff} />
-                )}
+                <div className="px-3 sm:px-6 pt-2 space-y-4">
+                  {/* View Switcher */}
+                  {currentView === 'dashboard' && (
+                    <SupervisorDashboardView onSelectStaff={handleSelectStaff} />
+                  )}
 
-                {currentView === 'account' && (
-                  <SupervisorAccountView
-                    onBackToDashboard={() => setCurrentView('dashboard')}
-                  />
-                )}
+                  {currentView === 'account' && (
+                    <SupervisorAccountView
+                      onBackToDashboard={() => setCurrentView('dashboard')}
+                    />
+                  )}
 
-                {currentView === 'staff-detail' && (
-                  <SupervisorStaffDetailView
-                    staff={selectedStaff}
-                    onBack={() => setCurrentView('dashboard')}
-                  />
-                )}
+                  {currentView === 'staff-detail' && (
+                    <SupervisorStaffDetailView
+                      staff={selectedStaff}
+                      onBack={() => setCurrentView('dashboard')}
+                    />
+                  )}
+                </div>
               </main>
             </div>
           </div>
