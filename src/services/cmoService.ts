@@ -74,6 +74,35 @@ export const cmoService = {
   },
 
   /**
+   * Downloads support operations CSV report with authorization headers.
+   */
+  exportSupportReport: async (date?: string): Promise<void> => {
+    const formattedDate = date || new Date().toISOString().split("T")[0];
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const response = await fetch(`${BASE_URL}/cmo/support-overview/export?date=${formattedDate}`, {
+      method: "GET",
+      headers: {
+        ...(token && token.startsWith("ey") ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Export support report failed: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = `cmo_support_overview_${formattedDate}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  },
+
+  /**
    * Fetch social media operations and publication schedule summary.
    * GET /api/v1/cmo/social-overview
    */

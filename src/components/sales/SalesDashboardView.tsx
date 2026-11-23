@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import {
   salesService,
   SalesOverviewCards,
@@ -88,14 +88,23 @@ export const SalesDashboardView: React.FC = () => {
   const [serverPagination, setServerPagination] = useState<SalesPaginationMeta | null>(null);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [selectedHistoryMerchant, setSelectedHistoryMerchant] = useState<{ id: string; name: string } | null>(null);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
+  const [isExporting, setIsExporting] = useState(false);
 
-  const fetchDashboard = async () => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const fetchDashboard = useCallback(async () => {
     try {
       setLoading(true);
       const res = await salesService.getSalesDashboard({
         date: selectedDate,
         status: statusFilter,
-        search: searchQuery.trim() || undefined,
+        search: debouncedSearch.trim() || undefined,
         limit: pageSize,
         page: currentPage,
       });
@@ -114,23 +123,51 @@ export const SalesDashboardView: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  }, [selectedDate, statusFilter, debouncedSearch, pageSize, currentPage]);
+
+  // Track previous filters to detect when page must be reset to 1
+  const prevFiltersRef = useRef({
+    selectedDate,
+    statusFilter,
+    pageSize,
+    debouncedSearch,
+  });
+
+  useEffect(() => {
+    const prev = prevFiltersRef.current;
+    const filterChanged =
+      prev.selectedDate !== selectedDate ||
+      prev.statusFilter !== statusFilter ||
+      prev.pageSize !== pageSize ||
+      prev.debouncedSearch !== debouncedSearch;
+
+    if (filterChanged) {
+      prevFiltersRef.current = {
+        selectedDate,
+        statusFilter,
+        pageSize,
+        debouncedSearch,
+      };
+      if (currentPage !== 1) {
+        setCurrentPage(1);
+        return;
+      }
+    }
+
+    fetchDashboard();
+  }, [selectedDate, statusFilter, pageSize, currentPage, debouncedSearch, fetchDashboard]);
+
+  const handleExportReport = async () => {
+    try {
+      setIsExporting(true);
+      await salesService.exportReport(selectedDate);
+    } catch (err) {
+      console.error("Export report failed:", err);
+      alert("Gagal mengunduh laporan sales. Silakan coba lagi.");
+    } finally {
+      setIsExporting(false);
+    }
   };
-
-  useEffect(() => {
-    setCurrentPage(1);
-    fetchDashboard();
-  }, [selectedDate, statusFilter, pageSize]);
-
-  useEffect(() => {
-    fetchDashboard();
-  }, [currentPage]);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCurrentPage(1);
-      fetchDashboard();
-    }, 200);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
 
   const toggleExpand = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -252,18 +289,18 @@ export const SalesDashboardView: React.FC = () => {
             </button>
 
             {/* Export Report Link (CSV) - Warna Teal persis Admin */}
-            <a
-              href={salesService.getExportReportUrl(selectedDate)}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 transition-colors cursor-pointer shadow-2xs"
+            <button
+              type="button"
+              onClick={handleExportReport}
+              disabled={isExporting}
+              className="bg-teal-500 hover:bg-teal-600 disabled:opacity-60 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 transition-colors cursor-pointer shadow-2xs"
               title="Unduh laporan kinerja format CSV"
             >
-              <span>Export report</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <span>{isExporting ? 'Mengunduh...' : 'Export report'}</span>
+              <svg className={`w-4 h-4 ${isExporting ? 'animate-bounce' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
-            </a>
+            </button>
           </div>
         </div>
 

@@ -386,7 +386,7 @@ function SupervisorInboxContent() {
     setSendingReply(true);
 
     try {
-      const res = await adminService.sendTicketMessage(ticketIdentifier, currentText, solveTicket ? 'SOLVED' : undefined).catch(() => null);
+      const res = await adminService.sendTicketMessage(ticketIdentifier, currentText, solveTicket ? 'SOLVED' : undefined);
       const newMsg: TicketMessage = res || {
         id: String(Date.now()),
         sender: 'AGENT',
@@ -403,8 +403,10 @@ function SupervisorInboxContent() {
         setSelectedTicket((prev: any) => prev ? { ...prev, status: 'IN_PROGRESS' } : prev);
         setTickets((prev) => prev.map((t) => t.id === selectedTicket.id ? { ...t, status: 'IN_PROGRESS' } : t));
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Gagal kirim pesan", err);
+      setReplyText(currentText);
+      alert(err?.message || "Pesan gagal dikirim ke server. Silakan coba lagi.");
     } finally {
       setSendingReply(false);
     }
@@ -983,7 +985,7 @@ function SupervisorInboxContent() {
 
 export default function SupervisorInboxPage() {
   return (
-    <RoleGuard allowedRoles={['ADMIN_SPV', 'SUPERVISOR_ADMIN', 'ADMIN']}>
+    <RoleGuard allowedRoles={['ADMIN_SPV', 'SUPERVISOR_ADMIN', 'C_LEVEL', 'CMO']}>
       <Suspense fallback={<div className="p-8 text-center text-xs text-gray-400">Memuat Inbox...</div>}>
         <SupervisorInboxContent />
       </Suspense>

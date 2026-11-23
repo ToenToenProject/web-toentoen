@@ -65,7 +65,14 @@ export const CmoAdminTabView: React.FC = () => {
     setDateLabel(formattedLabel);
   };
 
-  const handleExportReport = () => {
+  const handleExportReport = async () => {
+    try {
+      await cmoService.exportSupportReport(selectedDate);
+      return;
+    } catch {
+      // Fallback to client-side CSV construction if upstream export endpoint is unreachable
+    }
+
     const csvHeaders = [
       "Division",
       "Role",

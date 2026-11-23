@@ -899,7 +899,7 @@ function SupervisorDashboardContent() {
 
 export default function SupervisorDashboardPage() {
   return (
-    <RoleGuard allowedRoles={['ADMIN_SPV', 'SUPERVISOR_ADMIN', 'ADMIN']}>
+    <RoleGuard allowedRoles={['ADMIN_SPV', 'SUPERVISOR_ADMIN', 'C_LEVEL', 'CMO']}>
       <SupervisorDashboardContent />
     </RoleGuard>
   );

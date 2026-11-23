@@ -297,4 +297,36 @@ export const salesService = {
     const proxyBase = typeof window !== "undefined" ? window.location.origin : "";
     return `${proxyBase}/api/proxy/sales/export-report?format=csv&date=${formattedDate}`;
   },
+
+  /**
+   * Downloads sales performance CSV report with authorization headers.
+   */
+  exportReport: async (date?: string): Promise<void> => {
+    const formattedDate = date || new Date().toISOString().split("T")[0];
+    const url = `/sales/export-report?format=csv&date=${formattedDate}`;
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const targetUrl = url.startsWith("http") ? url : `${BASE_URL}${url}`;
+
+    const response = await fetch(targetUrl, {
+      method: "GET",
+      headers: {
+        ...(token && token.startsWith("ey") ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Export failed with status: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = `sales_report_${formattedDate}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  },
 };

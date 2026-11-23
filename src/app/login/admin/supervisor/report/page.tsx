@@ -783,7 +783,7 @@ function SupervisorReportContent() {
 
 export default function SupervisorReportPage() {
   return (
-    <RoleGuard allowedRoles={['ADMIN_SPV', 'SUPERVISOR_ADMIN', 'ADMIN']}>
+    <RoleGuard allowedRoles={['ADMIN_SPV', 'SUPERVISOR_ADMIN', 'C_LEVEL', 'CMO']}>
       <Suspense fallback={<div className="p-8 text-center text-sm text-gray-500">Memuat papan laporan investigasi...</div>}>
         <SupervisorReportContent />
       </Suspense>
