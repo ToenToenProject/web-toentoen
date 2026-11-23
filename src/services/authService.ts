@@ -9,8 +9,7 @@ import {
 } from "@/constants/api/admin/login";
 
 /**
- * Autentikasi Login (HTTP-Only Cookie Based)
- * Browser otomatis menyimpan cookie auth_token & token dari server backend.
+ * Authenticates user credentials via HTTP-only cookie session.
  */
 export const loginUser = async (payload: LoginPayload): Promise<LoginResponse> => {
   const targetUrl = typeof window !== 'undefined' ? '/api/v1/auth/login' : LOGIN_ENDPOINT;
@@ -19,7 +18,6 @@ export const loginUser = async (payload: LoginPayload): Promise<LoginResponse> =
     headers: {
       "Content-Type": "application/json",
     },
-    // WAJIB: agar browser otomatis menerima dan menyimpan cookie HTTP-only dari backend
     credentials: "include",
     body: JSON.stringify(payload),
   });
@@ -35,8 +33,7 @@ export const loginUser = async (payload: LoginPayload): Promise<LoginResponse> =
 };
 
 /**
- * Memeriksa Sesi Aktif Pengguna (GET /api/v1/auth/me)
- * Mengirimkan cookie auth_token secara otomatis untuk memvalidasi sesi tanpa localStorage.
+ * Verifies active session against /api/v1/auth/me using HTTP-only cookies.
  */
 export const checkSession = async (): Promise<UserData | null> => {
   try {
@@ -49,7 +46,6 @@ export const checkSession = async (): Promise<UserData | null> => {
     const response = await fetch(ME_ENDPOINT, {
       method: "GET",
       headers,
-      // WAJIB: cookie terkirim otomatis ke backend
       credentials: "include",
     });
 
@@ -62,8 +58,7 @@ export const checkSession = async (): Promise<UserData | null> => {
 };
 
 /**
- * Logout Pengguna (POST /api/v1/auth/logout)
- * Backend otomatis membersihkan seluruh cookie autentikasi (auth_token, token, refreshToken).
+ * Terminates user session and clears authentication cookies.
  */
 export const logoutUser = async (): Promise<void> => {
   try {
@@ -72,7 +67,7 @@ export const logoutUser = async (): Promise<void> => {
       credentials: "include",
     });
   } catch {
-    // Abaikan error jaringan saat logout
+    // Suppress network errors during logout
   } finally {
     if (typeof window !== "undefined") {
       localStorage.removeItem("user");

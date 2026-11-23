@@ -1,11 +1,9 @@
-// src/constants/api/admin/report.ts
-
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api/proxy';
 
 export const getToken = () => {
   if (typeof window !== 'undefined') {
     const t = localStorage.getItem('token') || '';
-    // Hanya gunakan jika token merupakan format JWT valid (berawalan 'ey')
+    // Validate token conforms to standard JWT structure (starts with 'ey')
     return t.startsWith('ey') ? t : '';
   }
   return '';
@@ -88,7 +86,7 @@ export const adminApi = {
         const json = await res.json();
         return json.data || json.staff || [];
       }
-      // Fallback ke alias endpoint /workers
+      // Fallback to /workers endpoint alias
       const workerRes = await fetch(`${BASE_URL}/workers?${qs}`, {
         headers: getHeaders(),
         credentials: "include",

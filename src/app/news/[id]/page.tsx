@@ -1,18 +1,14 @@
 import { notFound } from 'next/navigation';
 import { NEWS_DATA } from '@/constants/news';
 
-// 1. Tipe params pakai Promise (Wajib di Next.js 15+)
 interface NewsDetailPageProps {
     params: Promise<{ id: string }>;
 }
 
-// 2. Wajib ada kata 'async' di sini
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
-    // 3. Wajib ada 'await' di sini sebelum dipakai
-    const resolvedParams = await params;
+        const resolvedParams = await params;
     
-    // Sekarang baru boleh dipanggil: resolvedParams.id
-    const article = NEWS_DATA.find((news) => news.id === resolvedParams.id);
+        const article = NEWS_DATA.find((news) => news.id === resolvedParams.id);
 
     if (!article) {
         notFound();

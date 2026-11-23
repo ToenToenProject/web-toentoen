@@ -7,7 +7,7 @@ import { MainChatArea } from '@/components/admin/inbox/MainChatArea';
 import { adminService } from '@/services/adminService';
 import { RoleGuard } from '@/components/auth/RoleGuard';
 
-// Helper Mapping Status dari API ke UI
+// Map API status to UI labels and styling
 const mapStatusToUI = (apiStatus: string): ChatStatus => {
   const status = apiStatus?.toLowerCase() || '';
   if (status.includes('queue') || status.includes('open') || status.includes('unsolved')) return 'Unsolved';
@@ -25,11 +25,9 @@ function InboxPageContent() {
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  // Mobile: tampilkan daftar ATAU chat (pola master-detail)
-  const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
+    const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
 
-  // 1. FETCH TICKETS LIST
-  const fetchTickets = useCallback(async () => {
+    const fetchTickets = useCallback(async () => {
     try {
       setIsLoadingList(true);
       const res = await adminService.getTickets().catch(() => null);
@@ -78,7 +76,7 @@ function InboxPageContent() {
     fetchTickets();
   }, [fetchTickets]);
 
-  // 2. FETCH TICKET DETAIL & CUSTOMER PROFILE (Parallel Non-Blocking)
+  // Parallel retrieval of ticket details and customer profile
   useEffect(() => {
     const fetchTicketDetail = async () => {
       if (!selectedChatId) return;
@@ -86,8 +84,7 @@ function InboxPageContent() {
         setIsLoadingDetail(true);
         const baseChatItem = chatList.find(c => c.id === selectedChatId);
 
-        // Fetch pesan dan profil secara paralel
-        const [messagesRes, customerRes] = await Promise.allSettled([
+                const [messagesRes, customerRes] = await Promise.allSettled([
           adminService.getTicketMessages(selectedChatId),
           baseChatItem?.email ? adminService.getCustomerProfile(selectedChatId).catch(() => null) : Promise.resolve(null),
         ]);
@@ -109,8 +106,7 @@ function InboxPageContent() {
             };
           });
         } else {
-          // Fallback pesan pembuka
-          mappedMessages = [
+                    mappedMessages = [
             {
               sender: 'user',
               text: baseChatItem?.ticketTitle || "Halo, saya membutuhkan bantuan terkait pesanan.",
@@ -163,8 +159,7 @@ function InboxPageContent() {
     fetchTicketDetail();
   }, [selectedChatId]);
 
-  // 3. PATCH UPDATE TICKET STATUS
-  const handleUpdateStatus = async () => {
+    const handleUpdateStatus = async () => {
     if (!activeChat || isUpdatingStatus) return;
     const nextStatusAPI = activeChat.status === 'Done' ? 'QUEUE' : (activeChat.status === 'Process' ? 'SOLVED' : 'IN_PROGRESS');
     
@@ -228,8 +223,7 @@ function InboxPageContent() {
           onBack={() => setMobileView('list')}
         />
       ) : isLoadingDetail ? (
-        /* Skeleton awal saat belum ada chat sama sekali */
-        <section className="flex-1 flex flex-col bg-gray-50/50">
+                <section className="flex-1 flex flex-col bg-gray-50/50">
           <div className="m-4 h-16 bg-gray-200 rounded-xl animate-pulse" />
           <div className="flex-1 px-6 py-4 space-y-4">
             {[...Array(4)].map((_, i) => (

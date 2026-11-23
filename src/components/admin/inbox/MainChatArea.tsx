@@ -8,8 +8,7 @@ interface MainChatAreaProps {
   isUpdatingStatus: boolean;
   onUpdateStatus: () => void;
   onSendMessage: (text: string) => Promise<void>;
-  /** Mobile: kembali ke daftar chat */
-  onBack?: () => void;
+    onBack?: () => void;
 }
 
 export const MainChatArea: React.FC<MainChatAreaProps> = ({ 
@@ -22,8 +21,6 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
 }) => {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
-
-  // Handler untuk mengirim pesan
   const handleSend = async () => {
     if (!message.trim()) return;
     
@@ -37,8 +34,6 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
       setIsSending(false);
     }
   };
-
-  // Handler agar user bisa menekan Enter untuk mengirim (Shift+Enter untuk baris baru)
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -86,7 +81,7 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
         {/* Chat Messages — skeleton saat loading, pesan saat sudah ada data */}
         <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-4 sm:space-y-6">
           {isLoadingDetail ? (
-            /* Skeleton ringan — tidak unmount, hanya shimmer di area messages */
+            /* Lightweight shimmer placeholder in messages container */
             <>
               {[...Array(3)].map((_, i) => (
                 <div key={i} className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'} gap-2`}>

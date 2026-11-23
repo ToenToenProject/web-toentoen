@@ -1,12 +1,12 @@
-// src/app/api/proxy/[...path]/route.ts
-// Universal Backend Reverse Proxy untuk Next.js
-// Memecahkan kendala CORS dan SSL Certificate Subject Mismatch (SEC_E_WRONG_PRINCIPAL)
-// pada browser client development yang mengakses backend DEV (dev-api-ops.toentoen.com).
+/**
+ * Reverse proxy route handler for upstream backend communication.
+ * Mitigates CORS constraints and development TLS certificate validation issues.
+ */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getBackendBaseUrl, isStrictTlsRequired, resolveCurrentStage } from '@/config/apiConfig';
 
-// Konfigurasi validasi TLS berdasarkan stage
+// Configure TLS verification based on deployment stage
 if (!isStrictTlsRequired()) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 } else {
@@ -18,22 +18,18 @@ async function handleProxy(req: NextRequest, { params }: { params: Promise<{ pat
     const { path } = await params;
     const pathString = Array.isArray(path) ? path.join('/') : path;
     const url = new URL(req.url);
-    const search = url.search; // termasuk ?query=...
+    const search = url.search;
 
     const backendBaseUrl = getBackendBaseUrl();
     const targetUrl = `${backendBaseUrl}/${pathString}${search}`;
-
-    // Ekstrak headers dari client request
     const headers: Record<string, string> = {};
     req.headers.forEach((value, key) => {
       const lower = key.toLowerCase();
-      // Jangan teruskan host/origin client ke target backend
+      // Strip hop-by-hop headers before proxying upstream
       if (lower !== 'host' && lower !== 'connection' && lower !== 'content-length') {
         headers[key] = value;
       }
     });
-
-    // Handle body jika ada untuk POST/PUT/PATCH/DELETE
     let body: BodyInit | undefined = undefined;
     if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
       const contentType = req.headers.get('content-type') || '';
@@ -77,7 +73,7 @@ async function handleProxy(req: NextRequest, { params }: { params: Promise<{ pat
           },
         });
 
-    // Teruskan Set-Cookie jika ada (misal sesi auth)
+    // Forward upstream Set-Cookie headers to client response
     const setCookieHeader = backendRes.headers.getSetCookie?.() || [];
     for (const cookie of setCookieHeader) {
       nextResponse.headers.append('Set-Cookie', cookie);

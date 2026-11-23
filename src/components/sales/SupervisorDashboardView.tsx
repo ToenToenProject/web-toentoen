@@ -1,4 +1,3 @@
-// src/components/sales/SupervisorDashboardView.tsx
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
@@ -78,8 +77,6 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
   const [salesOptions, setSalesOptions] = useState<SalesFilterOption[]>([]);
   const [selectedSalesIds, setSelectedSalesIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Filters & State
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'OPEN' | 'CLOSED'>('ALL');
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
@@ -97,18 +94,12 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [serverPagination, setServerPagination] = useState<SalesPaginationMeta | null>(null);
-
-  // Modals
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [selectedHistoryMerchant, setSelectedHistoryMerchant] = useState<{ id: string; name: string } | null>(null);
   const [selectedReassignMerchant, setSelectedReassignMerchant] = useState<SalesMerchantItem | null>(null);
-
-  // Tutup dropdown jika klik di luar
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -119,7 +110,7 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Fetch sales checklist filter options
+  // Retrieve sales checklist filter options
   useEffect(() => {
     const fetchOptions = async () => {
       try {
@@ -128,7 +119,7 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
           setSalesOptions(res.salesOptions);
         }
       } catch {
-        // Fallback default options
+        // Baseline filter options fallback
       }
     };
     fetchOptions();
@@ -173,8 +164,6 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
   useEffect(() => {
     fetchDashboard();
   }, [currentPage]);
-
-  // Handle Search Debounce realtime
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentPage(1);
@@ -216,8 +205,6 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
       alert(`Gagal mengubah status toko: ${err.message || 'Error server'}`);
     }
   };
-
-  // Pagination calculation
   const isServerPaginated = Boolean(serverPagination);
   const totalCount = serverPagination?.total ?? (overview.managedMerchants?.value !== undefined && Number.isFinite(Number(overview.managedMerchants.value)) ? Number(overview.managedMerchants.value) : merchants.length);
   const totalPages = serverPagination?.totalPages ?? Math.max(1, Math.ceil(totalCount / pageSize));

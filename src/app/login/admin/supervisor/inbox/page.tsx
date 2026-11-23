@@ -103,7 +103,7 @@ function SupervisorInboxContent() {
   const templatesRef = useRef<HTMLDivElement>(null);
   const templateBtnRef = useRef<HTMLButtonElement>(null);
 
-  // Deteksi Zona Waktu Lokal Admin Browser
+  // Local browser timezone identifier
   useEffect(() => {
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -120,7 +120,7 @@ function SupervisorInboxContent() {
     }
   }, []);
 
-  // Formatter Waktu Chat Presisi (Menyesuaikan UTC server ke Zona Waktu Lokal Admin)
+  // Formats UTC server timestamps to local client timezone with WIB/WITA/WIT notation
   const formatChatTime = (createdAt?: string, fallbackTimestamp?: string) => {
     if (createdAt) {
       const d = new Date(createdAt);
@@ -133,13 +133,9 @@ function SupervisorInboxContent() {
     }
     return '10.00';
   };
-
-  // Auto-scroll ke pesan terbaru
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  // Tutup dropdown template jika klik di luar atau tekan tombol Esc
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (
@@ -162,14 +158,12 @@ function SupervisorInboxContent() {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-
-  // 1. Fetch tickets from backend based on activeTab
   useEffect(() => {
     let isMounted = true;
     const fetchSupervisorTickets = async () => {
       try {
         setLoading(true);
-        // Untuk tab antrean supervisor, muat seluruh tiket aktif (antrean baru QUEUE maupun IN_PROGRESS yang sedang berjalan)
+        // Retrieve all active unassigned and in-progress tickets for supervisor queue
         const statusParam = activeTab === 'queue' ? 'all' : 'SOLVED';
         const res = await adminService.getTickets({
           status: statusParam,
@@ -178,7 +172,6 @@ function SupervisorInboxContent() {
         
         if (isMounted) {
           if (res?.tickets && res.tickets.length > 0) {
-            // Filter: tab antrean memuat tiket aktif yang belum SOLVED
             const rawList = activeTab === 'queue'
               ? res.tickets.filter((t: any) => t.status !== 'SOLVED' && t.status !== 'CLOSED')
               : res.tickets.filter((t: any) => t.status === 'SOLVED');
@@ -234,12 +227,12 @@ function SupervisorInboxContent() {
             });
             setTickets(mapped);
 
-            // Pemilihan tiket otomatis: Utamakan query parameter ticketId jika ada
+            // Automatic ticket selection favoring query parameter if present
             let targetTicket: any = null;
             if (queryTicketId) {
               const cleanQuery = queryTicketId.replace(/^#+/, '').replace(/-+/g, '-').toLowerCase();
               
-              // Ekstrak digit angka terakhir (contoh: 'tkt-2026-0003' -> 3, 'tk-003' -> 3)
+              // Extract trailing numeric identifier for resilient ticket ID matching
               const extractDigits = (val: string) => {
                 const match = val.match(/(\d+)$/);
                 return match ? parseInt(match[1], 10) : null;
@@ -250,14 +243,10 @@ function SupervisorInboxContent() {
                 const cleanId = String(m.id).replace(/^#+/, '').replace(/-+/g, '-').toLowerCase();
                 const cleanTicketId = String(m.ticketId || '').replace(/^#+/, '').replace(/-+/g, '-').toLowerCase();
                 const cleanRawId = String(m.rawId || '').replace(/^#+/, '').replace(/-+/g, '-').toLowerCase();
-                
-                // 1. Cek kecocokan nomor urut tiket
                 if (queryNum !== null) {
                   const mNum = extractDigits(cleanId) ?? extractDigits(cleanTicketId) ?? extractDigits(cleanRawId);
                   if (mNum !== null && mNum === queryNum) return true;
                 }
-
-                // 2. Cek kecocokan string
                 return cleanId === cleanQuery || 
                        cleanTicketId === cleanQuery || 
                        cleanRawId === cleanQuery || 
@@ -288,7 +277,7 @@ function SupervisorInboxContent() {
     return () => { isMounted = false; };
   }, [activeTab, searchQuery]);
 
-  // 2. Fetch ticket messages & customer profile when selectedTicket changes
+  // Retrieve ticket messages and customer profile upon ticket selection
   useEffect(() => {
     if (!selectedTicket) {
       setMessages([]);
@@ -309,8 +298,6 @@ function SupervisorInboxContent() {
         ]);
 
         if (!isMounted) return;
-
-        // 1. Pesan Tiket
         if (msgRes.status === 'fulfilled' && msgRes.value?.messages && msgRes.value.messages.length > 0) {
           setMessages(msgRes.value.messages);
         } else {
@@ -324,8 +311,6 @@ function SupervisorInboxContent() {
             }
           ]);
         }
-
-        // 2. Profil Pelanggan Riil dari Backend
         const rawProfile: any = (profileRes.status === 'fulfilled' && profileRes.value) ? profileRes.value : null;
         
         const isVip = rawProfile?.is_vip ?? selectedTicket.customer?.is_vip ?? false;
@@ -371,7 +356,7 @@ function SupervisorInboxContent() {
     return () => { isMounted = false; };
   }, [selectedTicket]);
 
-  // Handle Update Status Tiket (PATCH /tickets/:id/status)
+  // Mutate ticket status (PATCH /tickets/:id/status)
   const handleUpdateStatus = async (targetStatus?: string) => {
     if (!selectedTicket || isUpdatingStatus) return;
     const ticketIdentifier = selectedTicket.ticketId || selectedTicket.rawId || selectedTicket.id;
@@ -390,7 +375,7 @@ function SupervisorInboxContent() {
     }
   };
 
-  // Handle Send Message & Opsional Send and Solve (POST /tickets/:id/messages)
+  // Send message with optional status update (POST /tickets/:id/messages)
   const handleSendMessage = async (e?: React.FormEvent, solveTicket = false) => {
     if (e) e.preventDefault();
     if (!replyText.trim() || !selectedTicket || sendingReply) return;
@@ -424,8 +409,6 @@ function SupervisorInboxContent() {
       setSendingReply(false);
     }
   };
-
-  // Helper Copy Clipboard
   const handleCopy = (text: string, fieldName: string) => {
     if (!text || text === '-') return;
     navigator.clipboard.writeText(text);

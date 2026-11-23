@@ -1,4 +1,3 @@
-// src/hooks/usePermission.ts
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
@@ -19,7 +18,7 @@ export function usePermission() {
 
   const hasPermission = (requiredPermission: string): boolean => {
     if (!user) return false;
-    // Hak Akses Universal (Wildcard) untuk C_LEVEL / CMO / Super Admin
+    // Wildcard permissions for executive and administrative roles
     if (isCLevel()) return true;
     if (!user.permissions) return false;
     return user.permissions.includes(requiredPermission);
@@ -27,7 +26,7 @@ export function usePermission() {
 
   const hasRole = (allowedRoles: string[]): boolean => {
     if (!user) return false;
-    // Hak Akses Universal untuk C_LEVEL / CMO / Super Admin
+    // Wildcard access for executive and administrative roles
     if (isCLevel()) return true;
     const userRole = (user.role || "").toUpperCase();
     return allowedRoles.some((r) => r.toUpperCase() === userRole);

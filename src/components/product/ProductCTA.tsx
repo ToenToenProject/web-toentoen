@@ -2,8 +2,6 @@
 
 import { PLATFORM_POWER } from '@/constants/product';
 import { useEarlyAccess } from '@/context/EarlyAccessContext';
-
-// Komponen Checklist Centang Hijau
 const CheckItem = ({ text }: { text: string }) => (
     <li className="flex items-start gap-3 text-sm text-gray-700">
         <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#00c2a8]">

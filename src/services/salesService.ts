@@ -1,6 +1,3 @@
-// src/services/salesService.ts
-// Modul Integrasi API Resmi untuk Sales Lapangan & Supervisor Sales ToenToen
-
 import { BASE_URL } from "@/constants/api/admin/login";
 
 export interface SalesIncentiveSummary {
@@ -172,7 +169,7 @@ export interface MerchantHistoryResponse {
   history: MerchantHistoryDay[];
 }
 
-// Helper untuk fetch dengan HTTP-Only Cookie otomatis
+// API client helper supporting automatic HTTP-only session cookie transmission
 async function fetchSalesApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = endpoint.startsWith("http") ? endpoint : `${BASE_URL}${endpoint}`;
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -185,7 +182,7 @@ async function fetchSalesApi<T>(endpoint: string, options: RequestInit = {}): Pr
   const response = await fetch(url, {
     ...options,
     headers,
-    credentials: "include", // WAJIB: Teruskan cookie sesi HTTP-Only
+    credentials: "include",
   });
 
   const json = await response.json().catch(() => null);
@@ -200,8 +197,8 @@ async function fetchSalesApi<T>(endpoint: string, options: RequestInit = {}): Pr
 
 export const salesService = {
   /**
-   * 1. GET /sales/dashboard
-   * Mengambil data 5 KPI Overview Cards, filter options, dan daftar merchant
+   * Fetch sales dashboard metrics, filter options, and merchant directory.
+   * GET /sales/dashboard
    */
   getSalesDashboard: async (params: {
     date?: string;
@@ -232,16 +229,16 @@ export const salesService = {
   },
 
   /**
-   * 2. GET /sales/filter-options
-   * Checklist tim sales untuk Supervisor
+   * Fetch sales team filter options for supervisors.
+   * GET /sales/filter-options
    */
   getFilterOptions: async (): Promise<{ salesOptions: SalesFilterOption[] }> => {
     return fetchSalesApi<{ salesOptions: SalesFilterOption[] }>("/sales/filter-options");
   },
 
   /**
-   * 3. GET /sales/merchants/check-duplicate
-   * Pre-check duplikasi toko / no HP
+   * Validate store name or phone number uniqueness prior to registration.
+   * GET /sales/merchants/check-duplicate
    */
   checkDuplicate: async (params: { phone?: string; storeName?: string }): Promise<CheckDuplicateResult> => {
     const query = new URLSearchParams();
@@ -252,8 +249,8 @@ export const salesService = {
   },
 
   /**
-   * 4. POST /sales/merchants
-   * Registrasi toko / merchant baru
+   * Register a new merchant store.
+   * POST /sales/merchants
    */
   registerMerchant: async (payload: RegisterMerchantPayload): Promise<any> => {
     return fetchSalesApi<any>("/sales/merchants", {
@@ -263,8 +260,8 @@ export const salesService = {
   },
 
   /**
-   * 5. PATCH /sales/merchants/:id/status
-   * Toggle status buka / tutup toko
+   * Toggle merchant operational status (OPEN / CLOSED).
+   * PATCH /sales/merchants/:id/status
    */
   updateStoreStatus: async (merchantId: string, status: 'OPEN' | 'CLOSED'): Promise<any> => {
     return fetchSalesApi<any>(`/sales/merchants/${merchantId}/status`, {
@@ -274,8 +271,8 @@ export const salesService = {
   },
 
   /**
-   * 6. PATCH /sales/merchants/:id/reassign
-   * Reassign binaan toko ke sales lain (Khusus Supervisor)
+   * Reassign merchant ownership to another sales representative.
+   * PATCH /sales/merchants/:id/reassign
    */
   reassignMerchant: async (merchantId: string, payload: { salesId?: string; workerId?: string }): Promise<any> => {
     return fetchSalesApi<any>(`/sales/merchants/${merchantId}/reassign`, {
@@ -285,15 +282,15 @@ export const salesService = {
   },
 
   /**
-   * 7. GET /sales/merchants/:id/history?days=30
-   * Riwayat kepatuhan 30 hari merchant
+   * Retrieve merchant 30-day compliance history.
+   * GET /sales/merchants/:id/history
    */
   getMerchantHistory: async (merchantId: string, days = 30): Promise<MerchantHistoryResponse> => {
     return fetchSalesApi<MerchantHistoryResponse>(`/sales/merchants/${merchantId}/history?days=${days}`);
   },
 
   /**
-   * 8. Mendapatkan URL direct download laporan CSV
+   * Generates direct download URL for sales report CSV.
    */
   getExportReportUrl: (date?: string): string => {
     const formattedDate = date || new Date().toISOString().split("T")[0];

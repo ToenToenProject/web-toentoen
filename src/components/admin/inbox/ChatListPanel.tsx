@@ -14,22 +14,14 @@ interface ChatListPanelProps {
 export const ChatListPanel: React.FC<ChatListPanelProps> = ({
   chatList, isLoadingList, searchQuery, setSearchQuery, selectedChatId, setSelectedChatId
 }) => {
-  // State untuk melacak filter yang sedang aktif
   const [statusFilter, setStatusFilter] = useState<'Queue' | 'Solved'>('Queue');
   const [priorityFilter, setPriorityFilter] = useState<'All' | 'VIP' | 'Standard'>('All');
-
-  // Logika penyaringan tiket
   const filteredChatList = chatList.filter(chat => {
-    // 1. Filter Pencarian
     const matchSearch = chat.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                         chat.ticketTitle.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    // 2. Filter Status
     const matchStatus = statusFilter === 'Queue' 
       ? (chat.status === 'Unsolved' || chat.status === 'Process') 
       : chat.status === 'Done';
-
-    // 3. Filter Prioritas
     const matchPriority = priorityFilter === 'All' 
       ? true 
       : priorityFilter === 'VIP' 

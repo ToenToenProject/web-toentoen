@@ -1,5 +1,6 @@
-// src/constants/api/admin/kyc.ts
-// API KYC (verifikasi identitas: KTP, dll) untuk Supervisor Admin
+/**
+ * KYC verification API endpoints and response normalization helpers for administrators.
+ */
 
 import { getToken } from './report';
 
@@ -18,7 +19,7 @@ export interface KycListParams {
   cursor?: string;
 }
 
-// Struktur response backend belum pasti, jadi dibuat longgar.
+// Dynamic record typing for variable backend payload structures
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyRecord = Record<string, any>;
 
@@ -58,7 +59,7 @@ async function handle(res: Response, label: string) {
   return body;
 }
 
-/** Cari array data di dalam response dengan berbagai kemungkinan bentuk. */
+/** Extracts array payload from diverse backend response envelopes. */
 function extractItems(body: AnyRecord | null): AnyRecord[] {
   if (!body) return [];
   if (Array.isArray(body)) return body;
@@ -88,7 +89,7 @@ function extractPagination(body: AnyRecord | null) {
 }
 
 export const kycApi = {
-  /** 1. Lihat semua request KYC */
+  /** Fetch paginated list of KYC verification submissions. */
   getSubmissions: async (params: KycListParams = {}): Promise<KycListResult> => {
     const page = params.page ?? 1;
     const limit = params.limit ?? 10;
@@ -110,7 +111,7 @@ export const kycApi = {
     return { items: extractItems(body), page, limit, total, totalPages, hasMore, nextCursor, raw: body };
   },
 
-  /** 2. Lihat detail request KYC */
+  /** Retrieve detailed KYC submission payload for a specific account. */
   getSubmissionDetail: async (accountId: string, role?: KycReviewRole): Promise<AnyRecord> => {
     if (!accountId) throw new Error('Account ID is required');
     const qs = role ? `?role=${encodeURIComponent(role)}` : '';
@@ -122,7 +123,7 @@ export const kycApi = {
     return (body && typeof body.data === 'object' && body.data !== null ? body.data : body) || {};
   },
 
-  /** 3a. Setujui KYC */
+  /** Approve KYC submission. */
   approve: async (accountId: string, role?: KycReviewRole, notes?: string) => {
     if (!accountId) throw new Error('Account ID is required');
     const noteText = notes || 'Dokumen KYC telah disetujui.';
@@ -135,7 +136,7 @@ export const kycApi = {
     return handle(res, 'KYC Approve');
   },
 
-  /** 3b. Tolak KYC (alasan minimal 5 kata) */
+  /** Reject KYC submission with minimum word count validation. */
   reject: async (accountId: string, role: KycReviewRole | undefined, rejectionReason: string) => {
     if (!accountId) throw new Error('Account ID is required');
     const wordCount = rejectionReason.trim().split(/\s+/).filter(Boolean).length;
@@ -156,7 +157,7 @@ export const kycApi = {
   },
 };
 
-/** Ambil nilai pertama yang ada dari beberapa kemungkinan key (mendukung nested "a.b"). */
+/** Resolves first truthy key path from object (supports dot notation). */
 export function pick(obj: AnyRecord | null | undefined, keys: string[]): unknown {
   if (!obj) return undefined;
   for (const k of keys) {

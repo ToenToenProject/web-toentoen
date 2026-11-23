@@ -1,4 +1,3 @@
-// src/constants/salesSupervisorData.ts
 import { SalesProfile, SalesMetric } from './salesData';
 
 export const SUPERVISOR_PROFILE: SalesProfile = {
@@ -80,7 +79,6 @@ export interface SupervisorTeamCapacityRow {
 }
 
 export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
-  // Farel Dimas (membawahi 4 toko)
   {
     id: '1',
     salesMember: SUPERVISOR_TEAM_MEMBERS[0],
@@ -132,7 +130,6 @@ export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
     dailyGoals: { minOpenHours: false, postsToday: true, signalReply: true },
   },
 
-  // Lyana
   {
     id: '5',
     salesMember: SUPERVISOR_TEAM_MEMBERS[4],
@@ -148,7 +145,6 @@ export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
     dailyGoals: { minOpenHours: false, postsToday: false, signalReply: false },
   },
 
-  // Fitri
   {
     id: '6',
     salesMember: SUPERVISOR_TEAM_MEMBERS[1],
@@ -164,7 +160,6 @@ export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
     dailyGoals: { minOpenHours: false, postsToday: true, signalReply: true },
   },
 
-  // Masya
   {
     id: '7',
     salesMember: SUPERVISOR_TEAM_MEMBERS[3],
@@ -180,7 +175,6 @@ export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
     dailyGoals: { minOpenHours: false, postsToday: true, signalReply: true },
   },
 
-  // Lexy
   {
     id: '8',
     salesMember: SUPERVISOR_TEAM_MEMBERS[2],
@@ -197,7 +191,7 @@ export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
   },
 ];
 
-// Detail Merchant Invited oleh Staff (Tampilan Gambar 1)
+// Invited merchants directory
 export interface StaffMerchantInvitedItem {
   id: string;
   merchantName: string;

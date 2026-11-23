@@ -38,27 +38,19 @@ function SupervisorReportContent() {
   const [staffList, setStaffList] = useState<any[]>([]);
   const [sidebarMenus, setSidebarMenus] = useState(fallbackSidebarMenus);
   const [loading, setLoading] = useState(true);
-
-  // Filter Header State (Report vs Support Ticket)
   const [headerTab, setHeaderTab] = useState<'REPORT' | 'TICKET'>('REPORT');
-
-  // Filter Staff State
   const [selectedStaff, setSelectedStaff] = useState<any | null>(null); // null = All Staff Admin
   const [staffSearchQuery, setStaffSearchQuery] = useState("");
   const [showStaffDropdown, setShowStaffDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Sidebar Kategori State
   const [expandedMenu, setExpandedMenu] = useState<string>("Merchant / Business");
   const [activeCategory, setActiveCategory] = useState<string>("ALL"); // 'ALL' = Semua Laporan
-
-  // Chat Panel State
   const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
   const [chatInput, setChatInput] = useState("");
   const [showFlagMenu, setShowFlagMenu] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Live fetch Kanban, Categories, dan Supervisor Evaluations
+  // Retrieve Kanban tickets, category taxonomies, and supervisor evaluations
   useEffect(() => {
     let isMounted = true;
 
@@ -74,7 +66,7 @@ function SupervisorReportContent() {
 
         if (!isMounted) return;
 
-        // 1. Staff List dari Endpoint Resmi GET /admin/staff atau fallback
+        // Retrieve administrative staff directory
         if (staffRes.status === 'fulfilled' && Array.isArray(staffRes.value) && staffRes.value.length > 0) {
           const mapped = staffRes.value.map((s: any, idx: number) => ({
             id: s.id || s.worker_id || `ADM-${101 + idx}`,
@@ -98,7 +90,7 @@ function SupervisorReportContent() {
           ]);
         }
 
-        // 2. Categories dari API
+        // Retrieve report category taxonomy
         if (catRes.status === 'fulfilled' && Array.isArray(catRes.value?.data)) {
           const cats = catRes.value.data.filter((c: any) => c.key !== 'all');
           if (cats.length > 0) {
@@ -113,7 +105,7 @@ function SupervisorReportContent() {
           }
         }
 
-        // 3. Kanban Tickets dari API (Mendukung spesifikasi lengkap Section 10)
+        // Retrieve Kanban ticket records
         const defaultCategories = [
           { cat: "Merchant / Business", sub: "Fraud / Scam", type: "report" },
           { cat: "Merchant / Business", sub: "Fake Business", type: "report" },
@@ -132,7 +124,7 @@ function SupervisorReportContent() {
             items.forEach((item: any, idx: number) => {
               const def = defaultCategories[(idx + (group === 'pending' ? 1 : group === 'solved' ? 2 : 0)) % defaultCategories.length];
               
-              // Dukung skema objek `assigned_staff` atau flat fields
+              // Support nested assigned_staff object or flat fields
               const assignedId = item.assigned_staff?.id || item.assignedTo || item.assigned_to || (idx % 2 === 0 ? 'ADM-101' : 'ADM-102');
               const assignedName = item.assigned_staff?.name || item.assignedStaffName || item.assigned_staff_name || (idx % 2 === 0 ? 'Budi Santoso' : 'Citra Amelia');
               const reporterName = item.reporter?.name || item.customerName || item.reporterName || item.customer?.name || 'Pelanggan';
@@ -187,7 +179,7 @@ function SupervisorReportContent() {
             }
           }
         } else {
-          // Fallback: data awal realistis
+          // Baseline ticket records fallback
           const fallbackList = [
             { id: 'UN-100', status: 'QUEUE', subject: 'Laporan Pengguna: Penipuan Toko Hutan Kopdes', cat: 'Merchant / Business', sub: 'Fraud / Scam', type: 'report', staffId: 'ADM-101', staffName: 'Budi Santoso', targetName: 'Toko Ayam Kopdes' },
             { id: 'PE-100', status: 'IN_PROGRESS', subject: 'Laporan Pengguna: Toko Fiktif Belum Kirim Barang', cat: 'Merchant / Business', sub: 'Fake Business', type: 'report', staffId: 'ADM-101', staffName: 'Budi Santoso', targetName: 'Berkah Elektronik' },
@@ -229,8 +221,6 @@ function SupervisorReportContent() {
     loadData();
     return () => { isMounted = false; };
   }, []);
-
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -241,7 +231,7 @@ function SupervisorReportContent() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Daftar Staf Terintegrasi (Evaluasi + Penugasan di Tiket)
+  // Consolidated staff directory with performance evaluations
   const combinedStaffList = useMemo(() => {
     const map = new Map<string, any>();
     staffList.forEach(s => map.set(s.id, s));
@@ -257,27 +247,19 @@ function SupervisorReportContent() {
     });
     return Array.from(map.values());
   }, [staffList, tickets]);
-
-  // Filter tiket sesuai Tab (Report vs Support Ticket), Staff Admin, dan Kategori Laporan
   const filteredTickets = useMemo(() => {
     let result = tickets;
-
-    // 1. Filter Header: Report vs Support Ticket
     if (headerTab === 'REPORT') {
       result = result.filter(t => t.type === 'report');
     } else if (headerTab === 'TICKET') {
       result = result.filter(t => t.type === 'ticket');
     }
-
-    // 2. Filter Staff Admin
     if (selectedStaff) {
       result = result.filter(t => 
         t.assignedTo === selectedStaff.id || 
         (t.assignedStaffName && selectedStaff.name && t.assignedStaffName.toLowerCase().includes(selectedStaff.name.toLowerCase()))
       );
     }
-
-    // 3. Filter Kategori Laporan
     if (activeCategory && activeCategory !== 'ALL' && activeCategory !== 'All Reports') {
       result = result.filter(t => {
         const cat = (t.category || '').toLowerCase();
@@ -290,13 +272,9 @@ function SupervisorReportContent() {
 
     return result;
   }, [tickets, headerTab, selectedStaff, activeCategory]);
-
-  // Pisahkan ke dalam 3 kolom Kanban
   const unsolvedTickets = useMemo(() => filteredTickets.filter(t => t.statusGroup === 'unsolved'), [filteredTickets]);
   const pendingTickets = useMemo(() => filteredTickets.filter(t => t.statusGroup === 'pending'), [filteredTickets]);
   const solvedTickets = useMemo(() => filteredTickets.filter(t => t.statusGroup === 'solved'), [filteredTickets]);
-
-  // Reset selected ticket jika tidak ada di list filter saat ini
   useEffect(() => {
     if (selectedTicket) {
       const isStillVisible = filteredTickets.some(t => t.id === selectedTicket.id);
@@ -305,8 +283,6 @@ function SupervisorReportContent() {
       }
     }
   }, [selectedStaff, activeCategory, headerTab, filteredTickets, selectedTicket]);
-
-  // Auto-scroll chat
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -342,7 +318,6 @@ function SupervisorReportContent() {
     try {
       await adminApi.postAdjudication(cleanId, actionName.toLowerCase()).catch(() => null);
     } catch (e) {
-      // ignore
     }
     alert(`Aksi [${actionName}] dipilih. Tiket ${selectedTicket.id} ditindaklanjuti.`);
     setTickets(prev => prev.filter(t => t.id !== selectedTicket.id));
@@ -353,8 +328,6 @@ function SupervisorReportContent() {
     alert(`Prioritas tiket ${selectedTicket?.id} diubah ke Prioritas ${level}`);
     setShowFlagMenu(false);
   };
-
-  // Render Kartu Kanban dengan Ukuran Seragam & Konsisten
   const renderKanbanCard = (ticket: any, group: string, idx: number) => {
     const isSelected = selectedTicket?.id === ticket.id;
     return (

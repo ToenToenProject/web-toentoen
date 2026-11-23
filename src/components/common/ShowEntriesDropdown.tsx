@@ -1,4 +1,3 @@
-// src/components/common/ShowEntriesDropdown.tsx
 "use client";
 
 import React from 'react';

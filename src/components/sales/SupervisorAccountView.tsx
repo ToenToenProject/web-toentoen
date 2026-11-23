@@ -1,4 +1,3 @@
-// src/components/sales/SupervisorAccountView.tsx
 "use client";
 
 import React, { useState, useMemo } from 'react';

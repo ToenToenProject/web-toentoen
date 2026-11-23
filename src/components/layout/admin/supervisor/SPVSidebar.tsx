@@ -5,8 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { usePermission } from '@/hooks/usePermission';
-
-// Mobile: navigasi bawah (bottom bar). md ke atas: sidebar ikon di kiri.
 const ITEMS = [
   {
     href: '/login/admin/supervisor',

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 
-// Import komponen yang sudah kita buat
 import { LayoutChrome } from "@/components/layout/LayoutChrome";
 
 const poppins = Poppins({

@@ -1,4 +1,3 @@
-// src/components/sales/SalesAuthGuard.tsx
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -27,7 +26,7 @@ export const SalesAuthGuard: React.FC<SalesAuthGuardProps> = ({ allowedRoles, ch
     let isMounted = true;
 
     const verifyAccess = async () => {
-      // 1. Cek User dari Context atau LocalStorage terlebih dahulu (fast path)
+      // Fast-path session evaluation from cached storage
       let activeUser: UserSession | null = contextUser;
 
       if (!activeUser && typeof window !== 'undefined') {
@@ -37,11 +36,10 @@ export const SalesAuthGuard: React.FC<SalesAuthGuardProps> = ({ allowedRoles, ch
             activeUser = JSON.parse(cached);
           }
         } catch {
-          // ignore error
         }
       }
 
-      // 2. Jika belum ada atau butuh verifikasi sesi nyata ke backend via /api/v1/auth/me
+      // Revalidate session via backend /api/v1/auth/me
       if (!activeUser) {
         try {
           const sessionUser = await checkSession();
@@ -60,13 +58,12 @@ export const SalesAuthGuard: React.FC<SalesAuthGuardProps> = ({ allowedRoles, ch
             };
           }
         } catch {
-          // Gagal verifikasi sesi
         }
       }
 
       if (!isMounted) return;
 
-      // 3. Jika pengguna TIDAK login (tidak ada sesi), lempar ke halaman login
+      // Redirect unauthenticated requests to login
       if (!activeUser) {
         setIsAuthorized(false);
         setIsVerifying(false);
@@ -76,7 +73,7 @@ export const SalesAuthGuard: React.FC<SalesAuthGuardProps> = ({ allowedRoles, ch
 
       setCurrentUser(activeUser);
 
-      // 4. Periksa Otorisasi Role Pengguna
+      // Enforce role requirements for sales access
       const userRole = (activeUser.role || '').toUpperCase();
       const isSupervisor = userRole.includes('SUPERVISOR') || userRole.includes('SPV') || userRole === 'SALES_MARKETING_SPV';
       const isSalesStaff = userRole === 'SALES' || userRole.includes('SALES');
@@ -86,23 +83,20 @@ export const SalesAuthGuard: React.FC<SalesAuthGuardProps> = ({ allowedRoles, ch
         userRole === 'CMO' ||
         userRole === 'ADMIN' ||
         Boolean(activeUser.permissions?.includes('*'));
-
-      // Jika role tertentu diwajibkan (misal supervisor)
       if (allowedRoles && allowedRoles.length > 0) {
         const hasMatchingRole = allowedRoles.some((r) => r.toUpperCase() === userRole) || isSuperAdmin;
         
         if (!hasMatchingRole) {
-          // Jika sales lapangan mencoba mengakses halaman supervisor, lempar ke dashboard staff
+          // Redirect field sales staff attempting to access supervisor dashboard
           if (isSalesStaff && !isSupervisor) {
             router.replace('/login/sales/staff');
             return;
           }
-          // Jika role lain di luar sales, lempar ke /login
+          // Redirect non-sales roles to login
           router.replace('/login');
           return;
         }
       } else {
-        // Cek umum: pastikan pengguna memiliki peran yang berkaitan dengan Sales
         if (!isSalesStaff && !isSupervisor && !isSuperAdmin) {
           router.replace('/login');
           return;
@@ -119,8 +113,6 @@ export const SalesAuthGuard: React.FC<SalesAuthGuardProps> = ({ allowedRoles, ch
       isMounted = false;
     };
   }, [contextUser, contextLoading, allowedRoles, router]);
-
-  // Tampilkan layar loading saat memverifikasi autentikasi
   if (isVerifying || !isAuthorized) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-[#F9FAFB]">

@@ -26,8 +26,6 @@ export function DatePickerModal({
   const [viewDate, setViewDate] = useState<Date>(new Date(selectedDate || today));
   const [tempDate, setTempDate] = useState<Date>(new Date(selectedDate || today));
   const [selectedPreset, setSelectedPreset] = useState<string>("today");
-
-  // Sinkronisasi saat modal dibuka
   useEffect(() => {
     if (isOpen) {
       const initial = new Date(selectedDate || today);
@@ -35,8 +33,6 @@ export function DatePickerModal({
       setTempDate(new Date(initial));
     }
   }, [isOpen, selectedDate]);
-
-  // Tutup dengan tombol Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -51,12 +47,8 @@ export function DatePickerModal({
 
   const currentYear = viewDate.getFullYear();
   const currentMonth = viewDate.getMonth();
-
-  // Hari pertama dalam bulan ini
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-  // Total hari dalam bulan ini
   const daysInCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  // Total hari bulan sebelumnya
   const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
 
   const handlePrevMonth = () => {
@@ -115,8 +107,6 @@ export function DatePickerModal({
     onApply(tempDate, formattedLabel, isoDate, selectedPreset);
     onClose();
   };
-
-  // Generate opsi tahun (+/- 5 tahun dari tahun saat ini)
   const baseYear = today.getFullYear();
   const yearOptions = Array.from({ length: 11 }, (_, i) => baseYear - 5 + i);
 

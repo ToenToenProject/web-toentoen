@@ -1,5 +1,4 @@
 import React from 'react';
-// Pastikan path import AdminSidebar ini sesuai dengan lokasi file Anda
 import AdminSidebar from '@/components/layout/admin/AdminSidebar'; 
 
 export default function AdminLayout({
@@ -8,8 +7,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    // Pembungkus background putih/abu-abu dan layout flex kita pindahkan ke sini
-    <div className="flex h-[100dvh] bg-gray-50 font-sans overflow-hidden">
+        <div className="flex h-[100dvh] bg-gray-50 font-sans overflow-hidden">
       
       {/* Mobile: navigasi bawah. md ke atas: sidebar kiri */}
       <AdminSidebar />

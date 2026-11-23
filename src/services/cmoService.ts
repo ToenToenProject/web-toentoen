@@ -1,7 +1,3 @@
-// src/services/cmoService.ts
-// Modul API Khusus Chief Marketing Officer (CMO) ToenToen
-// Sesuai Panduan Integrasi API & Hak Akses Universal CMO
-
 import { CMO_DIVISIONS_DATA, DivisionData, INITIAL_CMO_PROFILE } from "@/constants/cmoData";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/api/proxy";
@@ -34,8 +30,8 @@ export interface CmoSocialOverviewResponse {
 
 export const cmoService = {
   /**
-   * 1. Ambil Ringkasan Performa Support Operations Per Divisi
-   * GET /api/v1/cmo/support-overview?date=YYYY-MM-DD
+   * Fetch division-level support operations performance overview.
+   * GET /api/v1/cmo/support-overview
    */
   getSupportOverview: async (date?: string): Promise<CmoSupportOverviewResponse> => {
     try {
@@ -54,7 +50,7 @@ export const cmoService = {
           return json.data;
         }
       }
-      // Fallback data terstruktur
+      // Structured fallback data when upstream API is unreachable
       return {
         date: date || new Date().toISOString().split("T")[0],
         divisions: CMO_DIVISIONS_DATA,
@@ -68,7 +64,7 @@ export const cmoService = {
   },
 
   /**
-   * 2. URL Export Laporan Support Operations (CSV)
+   * Generates CSV export URL for support operations.
    * GET /api/v1/cmo/support-overview/export
    */
   getSupportExportUrl: (date?: string): string => {
@@ -78,8 +74,8 @@ export const cmoService = {
   },
 
   /**
-   * 3. Ambil Ringkasan Operasi Sosial Media & Kalender
-   * GET /api/v1/cmo/social-overview?view=weekly|monthly&date=YYYY-MM-DD
+   * Fetch social media operations and publication schedule summary.
+   * GET /api/v1/cmo/social-overview
    */
   getSocialOverview: async (view = "weekly", date?: string): Promise<any> => {
     try {
@@ -96,7 +92,7 @@ export const cmoService = {
         return json.data || json;
       }
 
-      // Coba fallback ke alias endpoint /smm/overview
+      // Fallback to /smm/overview alias endpoint
       const smmRes = await fetch(`${BASE_URL}/smm/overview?${query.toString()}`, {
         headers: getHeaders(),
         credentials: "include",
@@ -112,7 +108,7 @@ export const cmoService = {
   },
 
   /**
-   * 4. Periksa Status Koneksi Kanal Media Sosial
+   * Query status of connected social media channels.
    * GET /api/v1/smm/channels
    */
   getChannels: async (): Promise<any[]> => {
@@ -132,7 +128,7 @@ export const cmoService = {
   },
 
   /**
-   * 5. URL Export Laporan Sosial Media (CSV)
+   * Generates CSV export URL for social media metrics.
    * GET /api/v1/smm/export-report
    */
   getSocialExportUrl: (): string => {

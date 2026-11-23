@@ -1,5 +1,6 @@
-// src/components/ui/Skeleton.tsx
-// Kumpulan Skeleton Loader Components untuk ToenToen Operations
+/**
+ * Reusable skeleton loading placeholders for ToenToen operational workflows.
+ */
 
 import React from 'react';
 
@@ -11,8 +12,6 @@ export function Skeleton({ className = '', ...props }: React.HTMLAttributes<HTML
     />
   );
 }
-
-// 1. Skeleton Card Metric (Dashboard Overview)
 export function MetricCardSkeleton() {
   return (
     <div className="border border-gray-200 rounded-xl p-4 flex flex-col justify-between h-[130px] animate-pulse bg-white">
@@ -28,8 +27,6 @@ export function MetricCardSkeleton() {
     </div>
   );
 }
-
-// 2. Skeleton Urgent Alert Card
 export function AlertCardSkeleton() {
   return (
     <div className="border border-gray-200 rounded-xl p-4 space-y-3 animate-pulse bg-white">
@@ -42,8 +39,6 @@ export function AlertCardSkeleton() {
     </div>
   );
 }
-
-// 3. Skeleton Category Bar
 export function CategoryBarSkeleton() {
   return (
     <div className="space-y-1.5 animate-pulse">
@@ -55,8 +50,6 @@ export function CategoryBarSkeleton() {
     </div>
   );
 }
-
-// 4. Skeleton Table Row (Team Capacity)
 export function TableRowSkeleton() {
   return (
     <tr className="animate-pulse">
@@ -79,8 +72,6 @@ export function TableRowSkeleton() {
     </tr>
   );
 }
-
-// 5. Skeleton Kanban Card (Report & Support Ticket)
 export function KanbanCardSkeleton() {
   return (
     <div className="p-4 rounded-xl border border-gray-200 bg-white shadow-2xs space-y-3 animate-pulse">
@@ -101,8 +92,6 @@ export function KanbanCardSkeleton() {
     </div>
   );
 }
-
-// 6. Skeleton Inbox Ticket List Card
 export function InboxTicketCardSkeleton() {
   return (
     <div className="p-3.5 rounded-xl border border-gray-200 bg-white shadow-2xs space-y-2.5 animate-pulse">
@@ -120,8 +109,6 @@ export function InboxTicketCardSkeleton() {
     </div>
   );
 }
-
-// 7. Skeleton Chat Messages
 export function ChatBubbleSkeleton() {
   return (
     <div className="space-y-4 p-4 animate-pulse">
@@ -151,8 +138,6 @@ export function ChatBubbleSkeleton() {
     </div>
   );
 }
-
-// 8. Skeleton Customer Profile Sidebar
 export function CustomerProfileSkeleton() {
   return (
     <div className="p-4 space-y-5 animate-pulse">
@@ -173,8 +158,6 @@ export function CustomerProfileSkeleton() {
     </div>
   );
 }
-
-// 9. Skeleton Table Rows untuk Verifikasi KYC
 export function KycTableRowSkeleton({ count = 5 }: { count?: number }) {
   return (
     <>
@@ -204,8 +187,6 @@ export function KycTableRowSkeleton({ count = 5 }: { count?: number }) {
     </>
   );
 }
-
-// 10. Skeleton Table Rows untuk Sales (Team Capacity / Merchant List)
 export function SalesTableRowSkeleton({ count = 5, cols = 7 }: { count?: number; cols?: number }) {
   return (
     <>
@@ -242,8 +223,6 @@ export function SalesTableRowSkeleton({ count = 5, cols = 7 }: { count?: number;
     </>
   );
 }
-
-// 11. Skeleton Detail KYC ([accountId])
 export function KycDetailSkeleton() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 animate-pulse">
@@ -281,8 +260,6 @@ export function KycDetailSkeleton() {
     </div>
   );
 }
-
-// 12. Skeleton CMO Overview Accordion
 export function CmoDivisionSkeleton({ count = 3 }: { count?: number }) {
   return (
     <div className="space-y-6 animate-pulse">

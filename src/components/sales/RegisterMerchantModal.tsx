@@ -1,4 +1,3 @@
-// src/components/sales/RegisterMerchantModal.tsx
 "use client";
 
 import React, { useState } from 'react';
@@ -44,7 +43,7 @@ export const RegisterMerchantModal: React.FC<RegisterMerchantModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Pre-check duplikasi toko / no HP
+  // Pre-check store name and phone number uniqueness
   const handleCheckDuplicate = async () => {
     if (!formData.ownerPhone.trim() && !formData.storeName.trim()) return;
 
@@ -62,7 +61,6 @@ export const RegisterMerchantModal: React.FC<RegisterMerchantModalProps> = ({
         setDuplicateWarning(null);
       }
     } catch {
-      // Abaikan jika endpoint precheck tidak merespon
     } finally {
       setCheckingDuplicate(false);
     }

@@ -1,7 +1,6 @@
-// src/middleware.ts
 import { NextResponse, type NextRequest } from 'next/server';
 
-// Daftar path terproteksi internal operations ToenToen
+// Protected internal operational route prefixes
 const PROTECTED_PREFIXES = [
   '/login/admin',
   '/login/sales',
@@ -20,7 +19,7 @@ export function middleware(req: NextRequest) {
 
   const isProtected = PROTECTED_PREFIXES.some((prefix) => path.startsWith(prefix));
 
-  // Jika tidak ada token dan mencoba mengakses halaman terproteksi, lempar ke login
+  // Redirect unauthenticated requests attempting to access protected routes
   if (!token && isProtected) {
     const loginUrl = new URL('/login', req.url);
     loginUrl.searchParams.set('redirect', path);

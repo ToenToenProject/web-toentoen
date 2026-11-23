@@ -2,8 +2,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FOOTER_SECTIONS } from "@/constants/navigation";
 import { Logo } from "@/components/ui/Logo";
-
-// Komponen kecil khusus untuk Icon Social Media agar kode lebih bersih (DRY)
 const SocialLink = ({
     href,
     children,

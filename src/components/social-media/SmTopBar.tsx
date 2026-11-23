@@ -1,4 +1,3 @@
-// src/components/social-media/SmTopBar.tsx
 "use client";
 
 import React from 'react';

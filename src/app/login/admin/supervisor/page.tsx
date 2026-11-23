@@ -114,7 +114,7 @@ function SupervisorDashboardContent() {
           url = `/login/admin/supervisor/inbox?id=${encodeURIComponent(alert.ticket_id || alert.id)}`;
         }
       }
-      // Normalisasi jika backend mengembalikan path /supervisor/...
+      // Normalize route path if backend returns /supervisor prefix
       if (url.startsWith('/supervisor/')) {
         url = url.replace('/supervisor/', '/login/admin/supervisor/');
       } else if (!url.startsWith('/login/admin/supervisor/')) {
@@ -141,7 +141,7 @@ function SupervisorDashboardContent() {
           let liveReportCats: any[] = [];
           let liveTeam: any[] = [];
 
-          // 1. Tangani Data dari GET /dashboard/admin (atau fallback /dashboard/cs)
+          // Populate dashboard metrics from official dashboard endpoint
           if (dashRes.status === 'fulfilled' && dashRes.value) {
             const data: any = dashRes.value;
 
@@ -252,8 +252,6 @@ function SupervisorDashboardContent() {
                 }
               ]);
             }
-
-            // Urgent alerts dari data dashboard resmi
             const rawAlerts = data.urgent_alerts || data.urgentTickets;
             if (Array.isArray(rawAlerts) && rawAlerts.length > 0) {
               liveAlerts = rawAlerts.map((a: any) => {
@@ -271,8 +269,6 @@ function SupervisorDashboardContent() {
                 };
               });
             }
-
-            // Top ticket categories (Helpdesk / Bantuan CS)
             const rawTicketCats = data.top_ticket_categories || data.topCategories;
             if (Array.isArray(rawTicketCats) && rawTicketCats.length > 0) {
               const total = rawTicketCats.reduce((acc: number, c: any) => acc + (Number(c.count || c.value) || 0), 0) || 1;
@@ -285,8 +281,6 @@ function SupervisorDashboardContent() {
                 };
               });
             }
-
-            // Top report categories (Papan Moderasi Pelanggaran)
             const rawReportCats = data.top_report_categories;
             if (Array.isArray(rawReportCats) && rawReportCats.length > 0) {
               const total = rawReportCats.reduce((acc: number, c: any) => acc + (Number(c.count || c.value) || 0), 0) || 1;
@@ -299,8 +293,6 @@ function SupervisorDashboardContent() {
                 };
               });
             }
-
-            // Team capacity dari dashboard resmi
             const rawTeam = data.team_capacity;
             if (Array.isArray(rawTeam) && rawTeam.length > 0) {
               liveTeam = rawTeam.map((m: any, idx: number) => {
@@ -320,15 +312,13 @@ function SupervisorDashboardContent() {
             }
           }
 
-          // 2. Fallback / Sinkronisasi Real-Time dari Kanban Board (/reports/board)
+          // Compute metrics from Kanban board if primary dashboard metrics are unpopulated
           if (kanbanRes.status === 'fulfilled' && kanbanRes.value?.data?.columns) {
             const cols = kanbanRes.value.data.columns;
             const unsolved = Array.isArray(cols.unsolved) ? cols.unsolved : [];
             const pending = Array.isArray(cols.pending) ? cols.pending : [];
             const solved = Array.isArray(cols.solved) ? cols.solved : [];
             const allActive = [...unsolved, ...pending];
-
-            // Jika metrics belum ada dari /dashboard/cs, hitung dari kanban board nyata
             if (!hasLiveMetrics) {
               const totalActive = allActive.length;
               const unassignedCount = allActive.filter((t: any) => !t.assigned_to || t.assigned_to === 'unassigned').length;
@@ -373,8 +363,6 @@ function SupervisorDashboardContent() {
                 }
               ]);
             }
-
-            // Jika alerts kosong, buat alerts dari tiket unresolved / pending yang nyata
             if (liveAlerts.length === 0 && allActive.length > 0) {
               liveAlerts = allActive.slice(0, 5).map((item: any) => {
                 const tId = item.ticket_id || item.report_id || item.id || "TCK-OPS";
@@ -391,8 +379,6 @@ function SupervisorDashboardContent() {
                 };
               });
             }
-
-            // Jika ticket categories kosong, kelompokkan dari data aktif nyata
             if (liveTicketCats.length === 0 && allActive.length > 0) {
               const catCounts: Record<string, number> = {};
               allActive.forEach((item: any) => {
@@ -407,8 +393,6 @@ function SupervisorDashboardContent() {
               }));
             }
           }
-
-          // 3. Evaluasi Tim / Daftar Staf Nyata
           if (liveTeam.length === 0) {
             if (evalData.status === 'fulfilled' && evalData.value?.evaluations?.length) {
               const evals = evalData.value.evaluations;
@@ -438,8 +422,6 @@ function SupervisorDashboardContent() {
               });
             }
           }
-
-          // Perbarui state dengan data live
           setAlerts(liveAlerts);
           setTicketCategories(liveTicketCats);
           setReportCategories(liveReportCats.length > 0 ? liveReportCats : [
@@ -476,7 +458,7 @@ function SupervisorDashboardContent() {
       try {
         const isoDate = selectedDateObj.toISOString().split('T')[0];
         
-        // Buat baris laporan CSV lengkap dan terstruktur
+        // Generate formatted CSV export rows
         const rows: (string | number)[][] = [
           ['LAPORAN OPERASIONAL ADMIN & SUPERVISOR TOENTOEN'],
           ['Tanggal Periode', currentDate, isoDate],

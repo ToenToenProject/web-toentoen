@@ -1,6 +1,3 @@
-// src/types/auth.ts
-// Standar Otorisasi & Hak Akses (RBAC) ToenToen Front-End
-
 export type UserRole =
   | 'ADMIN'
   | 'ADMIN_SPV'
@@ -24,13 +21,12 @@ export interface UserSession {
   address?: string | null;
 }
 
-// Permissions Resmi Backend ToenToen
 export const PERMISSIONS = {
-  // CS / Admin Staff
+  // Customer Service staff permissions
   TICKETS_MANAGE: 'tickets:manage',
   CHAT_HANDLE: 'chat:handle',
 
-  // CS / Admin Supervisor
+  // Customer Service supervisor permissions
   TICKETS_VIEW_ALL: 'tickets:view_all',
   CHAT_VIEW_ALL: 'chat:view_all',
   CHAT_MANAGE: 'chat:manage',
@@ -40,16 +36,16 @@ export const PERMISSIONS = {
   KYC_VIEW_DETAIL: 'kyc:view_detail',
   KYC_REVIEW: 'kyc:review',
 
-  // Sales Staff
+  // Sales staff permissions
   SALES_OWN_DASHBOARD: 'sales:own_dashboard',
   SALES_MERCHANTS: 'sales:merchants',
 
-  // Sales Supervisor
+  // Sales supervisor permissions
   SALES_VIEW_ALL: 'sales:view_all',
   SALES_MANAGE: 'sales:manage',
   REPORTS_SALES_MATRIX: 'reports:sales_matrix',
 
-  // SMM
+  // Social media management permissions
   SMM_ACCESS: 'smm:access',
 } as const;
 

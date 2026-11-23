@@ -1,4 +1,3 @@
-// src/components/auth/Can.tsx
 "use client";
 
 import React from "react";

@@ -1,5 +1,3 @@
-// src/constants/salesData.ts
-
 export interface SalesProfile {
   name: string;
   role: string;

@@ -1,4 +1,3 @@
-// src/components/sales/SalesDashboardView.tsx
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -84,13 +83,9 @@ export const SalesDashboardView: React.FC = () => {
   });
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [serverPagination, setServerPagination] = useState<SalesPaginationMeta | null>(null);
-
-  // Modals
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [selectedHistoryMerchant, setSelectedHistoryMerchant] = useState<{ id: string; name: string } | null>(null);
 
@@ -129,8 +124,6 @@ export const SalesDashboardView: React.FC = () => {
   useEffect(() => {
     fetchDashboard();
   }, [currentPage]);
-
-  // Handle Search Debounce realtime
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentPage(1);
@@ -158,8 +151,6 @@ export const SalesDashboardView: React.FC = () => {
       alert(`Gagal mengubah status toko: ${err.message || 'Error server'}`);
     }
   };
-
-  // Pagination calculation
   const isServerPaginated = Boolean(serverPagination);
   const totalCount = serverPagination?.total ?? (overview.managedMerchants?.value !== undefined && Number.isFinite(Number(overview.managedMerchants.value)) ? Number(overview.managedMerchants.value) : merchants.length);
   const totalPages = serverPagination?.totalPages ?? Math.max(1, Math.ceil(totalCount / pageSize));

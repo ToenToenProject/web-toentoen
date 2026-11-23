@@ -1,4 +1,3 @@
-// src/components/auth/RoleGuard.tsx
 "use client";
 
 import React, { useEffect } from "react";
@@ -24,7 +23,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
   const effectiveRoles = allowedRoles || roles;
 
   useEffect(() => {
-    // Jika tidak ada user (tamu / belum login), otomatis lempar ke halaman login
+    // Redirect unauthenticated users to login
     if (!isLoading && !user) {
       const cached = typeof window !== "undefined" ? localStorage.getItem("user") : null;
       if (!cached) {

@@ -1,6 +1,5 @@
 import React from 'react';
 
-// 1. Definisikan tipe data props (parameter) yang akan diterima komponen ini
 interface HeaderProps {
   onLogout: () => void;
   userName: string;
@@ -8,7 +7,6 @@ interface HeaderProps {
   avatarUrl: string;
 }
 
-// 2. Pasang tipe HeaderProps tersebut menggunakan React.FC<HeaderProps>
 export const Header: React.FC<HeaderProps> = ({ onLogout, userName, userRole, avatarUrl }) => (
   <header className="bg-white border-b border-gray-200 px-3 sm:px-6 py-2.5 sm:py-3 flex justify-between items-center m-2 sm:m-4 rounded-xl shadow-sm gap-2">
     <div className="flex items-center space-x-3 min-w-0">

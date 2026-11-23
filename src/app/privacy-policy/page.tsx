@@ -1,4 +1,3 @@
-// src/app/privacy-policy/page.tsx
 
 import type { Metadata } from 'next';
 import { PrivacyPolicyContent } from '@/components/privacy-policy/PrivacyPolicyContent';

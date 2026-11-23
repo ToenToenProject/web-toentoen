@@ -1,4 +1,3 @@
-// src/components/cmo/CmoAdminTabView.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -17,8 +16,6 @@ const getSafeAvatar = (url?: string) => {
 export const CmoAdminTabView: React.FC = () => {
   const [divisions, setDivisions] = useState<DivisionData[]>(CMO_DIVISIONS_DATA);
   const [loading, setLoading] = useState<boolean>(true);
-  
-  // Date State & Modal
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [selectedDateObj, setSelectedDateObj] = useState<Date>(() => new Date());
   const [dateLabel, setDateLabel] = useState<string>(() => {
@@ -31,8 +28,6 @@ export const CmoAdminTabView: React.FC = () => {
     return `Hari Ini, ${day} ${months[now.getMonth()]} ${now.getFullYear()}`;
   });
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-
-  // Accordion state
   const [expandedDivisions, setExpandedDivisions] = useState<Record<string, boolean>>({
     'div-a': true,
     'div-b': false,

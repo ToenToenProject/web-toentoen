@@ -10,7 +10,7 @@ export type NewsArticle = {
 };
 
 export const NEWS_DATA: NewsArticle[] = [
-    // --- RECENT NEWS (4 Berita Utama) ---
+    // Primary featured articles
     {
         id: 'news-1',
         type: 'UPDATE',
@@ -68,7 +68,7 @@ export const NEWS_DATA: NewsArticle[] = [
         ],
     },
 
-    // --- ALL NEWS (Artikel Edukasi Tambahan) ---
+    // Supplementary education articles
     {
         id: 'news-5',
         type: 'EDUKASI',

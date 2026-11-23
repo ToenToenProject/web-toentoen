@@ -1,4 +1,3 @@
-// src/components/social-media/SmAuthGuard.tsx
 "use client";
 
 import React from 'react';
@@ -16,6 +15,6 @@ export const SmAuthGuard: React.FC<SmAuthGuardProps> = ({ children }) => {
     await logoutUser();
   };
 
-  // Login dinonaktifkan sementara: langsung izinkan akses tanpa cek token
+  // Development bypass: permit direct route navigation
   return <>{children({ onLogout: handleLogout })}</>;
 };

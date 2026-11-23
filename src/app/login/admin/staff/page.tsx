@@ -14,8 +14,7 @@ function AdminStaffDashboardContent() {
   const router = useRouter();
   const { user, logout } = useAuth();
   
-  // State Data Component
-  const [metricsData, setMetricsData] = useState<any[]>([]);
+    const [metricsData, setMetricsData] = useState<any[]>([]);
   const [alertsData, setAlertsData] = useState<any[]>([]);
   const [profile, setProfile] = useState({ name: "", role: "", avatarUrl: "" });
   const [currentDate, setCurrentDate] = useState("");
@@ -100,8 +99,7 @@ function AdminStaffDashboardContent() {
           return;
         }
 
-        // Format Baru: data.summary & data.urgentTickets
-        if (apiData.summary) {
+                if (apiData.summary) {
           const s = apiData.summary;
           const mappedMetrics = [
             {
@@ -149,8 +147,7 @@ function AdminStaffDashboardContent() {
             setAlertsData(DEFAULT_ALERTS);
           }
         } else if (apiData.performance_overview) {
-          // Format Legacy / Mock Server
-          const perf = apiData.performance_overview;
+                    const perf = apiData.performance_overview;
           setMetricsData([
             {
               title: "ACTIVE TICKETS",

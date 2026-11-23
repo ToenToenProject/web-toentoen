@@ -1,4 +1,3 @@
-// src/app/login/sales/supervisor/page.tsx
 "use client";
 
 import React, { useState } from 'react';
@@ -17,7 +16,7 @@ import { SalesProfile } from '@/constants/salesData';
 
 export default function SalesSupervisorPage() {
   const [currentView, setCurrentView] = useState<'dashboard' | 'account' | 'staff-detail'>('dashboard');
-  const [selectedStaff, setSelectedStaff] = useState<SupervisorSalesMember>(SUPERVISOR_TEAM_MEMBERS[1]); // default Fitri
+  const [selectedStaff, setSelectedStaff] = useState<SupervisorSalesMember>(SUPERVISOR_TEAM_MEMBERS[1]); 
 
   const handleSelectStaff = (staff: SupervisorSalesMember) => {
     setSelectedStaff(staff);
@@ -41,8 +40,7 @@ export default function SalesSupervisorPage() {
         };
 
         return (
-          // flex h-screen overflow-hidden memastikan sidebar terkunci dan tidak bisa di-scroll
-          <div className="flex h-[100dvh] w-full bg-[#F9FAFB] font-sans text-gray-800 overflow-hidden">
+                    <div className="flex h-[100dvh] w-full bg-[#F9FAFB] font-sans text-gray-800 overflow-hidden">
             {/* Left Minimal Sidebar (Terkunci permanen, tidak bisa ke-scroll) */}
             <SalesSidebar
               currentView={currentView === 'staff-detail' ? 'dashboard' : currentView}

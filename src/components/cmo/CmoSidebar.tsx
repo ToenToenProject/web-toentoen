@@ -1,4 +1,3 @@
-// src/components/cmo/CmoSidebar.tsx
 "use client";
 
 import React from 'react';

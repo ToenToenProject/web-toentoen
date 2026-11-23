@@ -36,7 +36,7 @@ export const FOUNDER_DATA: TeamMember = {
 };
 
 export const TEAM_MEMBERS: TeamMember[] = [
-    // --- BUSINESS TEAM ---
+    // Business team
     {
         id: "bus-1",
         name: "Wahyuda Abdia Putra",
@@ -62,7 +62,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
         linkedinUrl: "https://www.linkedin.com/in/ferdy-gunardi-08b0a571",
     },
 
-    // --- IT TEAM ---
+    // Engineering team
     {
         id: "it-1",
         name: "Wibowo Raditya Trilaksmono",
@@ -124,7 +124,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
         linkedinUrl: "https://www.linkedin.com/in/mohammad-havid-farell-adani/",
     },
 
-    // --- DESIGN TEAM ---
+    // Design team
     {
         id: "des-1",
         name: "Yanuar Rizki",
@@ -150,7 +150,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
         linkedinUrl: "https://www.linkedin.com/in/ramdani-firman-saputra-3649532b9/",
     },
 
-    // --- QA ---
+    // Quality assurance team
     {
         id: "qa-1",
         name: "Yoga Ari Kumoro",

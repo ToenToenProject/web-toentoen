@@ -4,8 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-
-// Mobile: navigasi bawah (bottom bar). md ke atas: sidebar ikon di kiri.
 const GRID_ICON = (
   <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
     <rect x="3" y="3" width="7" height="7" rx="1.5" />

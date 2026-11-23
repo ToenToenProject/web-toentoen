@@ -1,7 +1,4 @@
-/**
- * Dua mockup HP berbentuk SVG inline (chat list + radar map).
- * Pure SVG/CSS — tidak butuh asset gambar.
- */
+/** Inline vector mockups representing chat and geographic radar interfaces. */
 import { Search, Home, MessageSquare, User } from "lucide-react";
 
 const PhoneFrame = ({

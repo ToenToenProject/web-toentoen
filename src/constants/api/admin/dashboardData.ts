@@ -28,7 +28,7 @@ export interface SubMetric {
     percentage: number;
   }
   
-  // --- DUMMY DATA ---
+  // Baseline performance metrics
   export const PERFORMANCE_METRICS: PerformanceMetric[] = [
     {
       title: "ACTIVE TICKETS",

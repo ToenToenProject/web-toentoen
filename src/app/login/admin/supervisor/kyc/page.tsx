@@ -69,8 +69,7 @@ function SupervisorKycContent() {
     };
   }, [load]);
 
-  // Debounce realtime search saat user mengetik
-  useEffect(() => {
+    useEffect(() => {
     const timer = setTimeout(() => {
       setPage(1);
       setSearch(searchInput);
@@ -78,8 +77,7 @@ function SupervisorKycContent() {
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  // Client-side realtime instant feedback
-  const displayedItems = useMemo(() => {
+    const displayedItems = useMemo(() => {
     if (!searchInput.trim()) return items;
     const q = searchInput.toLowerCase().trim();
     const cleanQ = q.replace(/[\s.-]/g, '');

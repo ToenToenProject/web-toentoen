@@ -1,6 +1,3 @@
-// src/services/adminService.ts
-// Modul API Terpadu untuk Customer Service (CS) & Supervisor Admin ToenToen
-
 import { BASE_URL } from "@/constants/api/admin/login";
 
 export interface DashboardUrgentAlert {
@@ -194,7 +191,7 @@ export interface AutoReplySimulateResponse {
   isOnline: boolean;
 }
 
-// Helper untuk fetch dengan credentials HTTP-Only Cookie otomatis
+// API client helper supporting automatic HTTP-only session cookie transmission
 async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = endpoint.startsWith("http") ? endpoint : `${BASE_URL}${endpoint}`;
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -207,7 +204,7 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
   const response = await fetch(url, {
     ...options,
     headers,
-    credentials: "include", // WAJIB: Kirim cookie sesi HTTP-Only
+    credentials: "include",
   });
 
   const json = await response.json().catch(() => null);
@@ -222,7 +219,7 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
 
 export const adminService = {
   /**
-   * 1. Dashboard Admin & Supervisor Resmi
+   * Official admin and supervisor dashboard overview.
    * GET /dashboard/admin
    */
   getAdminDashboard: async (params?: { period?: string; date?: string }): Promise<AdminDashboardData> => {
@@ -238,7 +235,7 @@ export const adminService = {
   },
 
   /**
-   * Dashboard CS Quick Stats & Urgent Tickets (Legacy / Fallback)
+   * Fallback CS dashboard metrics.
    * GET /dashboard/cs
    */
   getCsDashboard: async (): Promise<CsDashboardData> => {
@@ -246,7 +243,7 @@ export const adminService = {
   },
 
   /**
-   * 2. Ambil Daftar Tiket dengan Filter & Pagination
+   * Fetch tickets with query filters and pagination.
    * GET /tickets
    */
   getTickets: async (params: {
@@ -269,7 +266,7 @@ export const adminService = {
   },
 
   /**
-   * 3. Ambil Detail Tiket
+   * Fetch ticket detail by ID.
    * GET /tickets/:id
    */
   getTicketDetail: async (ticketId: string): Promise<TicketItem> => {
@@ -277,7 +274,7 @@ export const adminService = {
   },
 
   /**
-   * 4. Riwayat Pesan dalam Tiket
+   * Fetch conversation history for a specific ticket.
    * GET /tickets/:id/messages
    */
   getTicketMessages: async (ticketId: string): Promise<{ messages: TicketMessage[] }> => {
@@ -305,7 +302,7 @@ export const adminService = {
   },
 
   /**
-   * 5. Kirim Balasan Pesan Tiket (Mendukung parameter status opsional untuk "Send & Solve")
+   * Send a ticket response with optional status transition.
    * POST /tickets/:id/messages
    */
   sendTicketMessage: async (ticketId: string, message: string, status?: string): Promise<TicketMessage> => {
@@ -329,7 +326,7 @@ export const adminService = {
   },
 
   /**
-   * 6. Pembaruan Status Tiket (QUEUE | IN_PROGRESS | SOLVED | CLOSED)
+   * Update ticket operational status.
    * PATCH /tickets/:id/status
    */
   updateTicketStatus: async (
@@ -343,7 +340,7 @@ export const adminService = {
   },
 
   /**
-   * 7. Quick Actions: Ambil / Pending / Tolak Tiket
+   * Ticket lifecycle state mutations.
    */
   acceptTicket: async (ticketId: string) => {
     return fetchApi(`/tickets/${ticketId}/accept`, { method: "POST" });
@@ -356,7 +353,7 @@ export const adminService = {
   },
 
   /**
-   * 8. Live Chat Antrean
+   * Fetch live incoming chat queue.
    * GET /chat/queue
    */
   getChatQueue: async (): Promise<{ queue: any[] }> => {
@@ -364,7 +361,7 @@ export const adminService = {
   },
 
   /**
-   * 9. Konteks Pelanggan 360
+   * Retrieve 360-degree customer profile.
    * GET /customers/:id
    */
   getCustomerProfile: async (customerId: string): Promise<CustomerProfile360> => {
@@ -372,7 +369,7 @@ export const adminService = {
   },
 
   /**
-   * 10. Khusus Supervisor: Evaluasi Kinerja CS
+   * Fetch CS performance evaluations for supervisors.
    * GET /supervisor/chats/evaluations
    */
   getSupervisorEvaluations: async (): Promise<{ evaluations: CsAgentEvaluation[] }> => {
@@ -380,7 +377,7 @@ export const adminService = {
   },
 
   /**
-   * 11. Khusus Supervisor: Laporan Terpadu
+   * Fetch supervisor unified operations report.
    * GET /supervisor/reports/unified
    */
   getSupervisorUnifiedReport: async (): Promise<any> => {
@@ -388,7 +385,7 @@ export const adminService = {
   },
 
   /**
-   * 12. Auto-Reply / Auto-Blast Settings
+   * Retrieve auto-responder configuration.
    * GET /auto-reply/settings
    */
   getAutoReplySettings: async (): Promise<AutoReplySettings> => {
@@ -396,7 +393,7 @@ export const adminService = {
   },
 
   /**
-   * 13. Update Auto-Reply Settings (Khusus Supervisor)
+   * Update auto-responder settings.
    * PUT /auto-reply/settings
    */
   updateAutoReplySettings: async (settings: Partial<AutoReplySettings>): Promise<AutoReplySettings> => {
@@ -407,7 +404,7 @@ export const adminService = {
   },
 
   /**
-   * 14. Simulasi Auto-Reply Preview
+   * Simulate auto-responder template parsing.
    * POST /auto-reply/simulate
    */
   simulateAutoReply: async (payload: AutoReplySimulatePayload): Promise<AutoReplySimulateResponse> => {
@@ -418,8 +415,8 @@ export const adminService = {
   },
 
   /**
-   * 15. Daftar Staf Admin Aktif
-   * GET /admin/staff atau GET /workers?role=STAFF_ADMIN
+   * Fetch active administrative staff directory.
+   * GET /admin/staff
    */
   getAdminStaff: async (param: string | { role?: string; page?: number; limit?: number; cursor?: string } = 'STAFF_ADMIN'): Promise<{ staff: any[]; pagination?: any }> => {
     try {

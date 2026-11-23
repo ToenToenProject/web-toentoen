@@ -9,8 +9,7 @@ import { EarlyAccessModal } from "@/components/common/EarlyAccessModal";
 
 export const LayoutChrome = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
-  // /login menampilkan Header website resmi
-  // Sub-rute internal admin (/login/admin, /login/sales, dll) dan /customer-service tetap menyembunyikan chrome
+  // Root /login displays marketing chrome; operational subroutes (/login/admin, /login/sales, etc.) suppress chrome
   const isInternalAdmin = pathname.startsWith("/login/") && pathname !== "/login";
   const hideChrome = pathname.startsWith("/customer-service") || isInternalAdmin;
 

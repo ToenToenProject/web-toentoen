@@ -1,4 +1,3 @@
-// src/components/cmo/CmoAuthGuard.tsx
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -28,7 +27,7 @@ export const CmoAuthGuard: React.FC<CmoAuthGuardProps> = ({ children }) => {
     const verifyAccess = async () => {
       let activeUser: UserSession | null = contextUser;
 
-      // 1. Cek LocalStorage (Fast Path)
+      // Fast-path session evaluation from cached storage
       if (!activeUser && typeof window !== 'undefined') {
         try {
           const cached = localStorage.getItem('user');
@@ -36,11 +35,10 @@ export const CmoAuthGuard: React.FC<CmoAuthGuardProps> = ({ children }) => {
             activeUser = JSON.parse(cached);
           }
         } catch {
-          // Abaikan parsing error
         }
       }
 
-      // 2. Verifikasi Sesi via /api/v1/auth/me
+      // Revalidate session via backend /api/v1/auth/me
       if (!activeUser) {
         try {
           const sessionUser = await checkSession();
@@ -59,13 +57,12 @@ export const CmoAuthGuard: React.FC<CmoAuthGuardProps> = ({ children }) => {
             };
           }
         } catch {
-          // Sesi tidak ditemukan
         }
       }
 
       if (!isMounted) return;
 
-      // 3. Jika tidak login, redirect ke /login
+      // Redirect unauthenticated requests to login
       if (!activeUser) {
         setIsAuthorized(false);
         setIsVerifying(false);
@@ -73,7 +70,7 @@ export const CmoAuthGuard: React.FC<CmoAuthGuardProps> = ({ children }) => {
         return;
       }
 
-      // 4. Verifikasi Role: C_LEVEL, CMO, MARKETING, atau MANAGERIAL
+      // Enforce role requirements for CMO and managerial access
       const roleUpper = (activeUser.role || '').toUpperCase();
       const hasCmoAccess =
         roleUpper === 'C_LEVEL' ||

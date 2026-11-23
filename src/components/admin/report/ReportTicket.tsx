@@ -1,11 +1,8 @@
-// src/components/admin/report/ReportTicket.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { adminApi } from '@/constants/api/admin/report';
 import { Flag } from 'lucide-react';
-
-// --- TIPE DATA ---
 type TicketStatus = 'Unsolved' | 'Pending' | 'Solved';
 type Priority = 1 | 2 | 3 | null;
 
@@ -34,8 +31,6 @@ export default function ReportTicketComponent() {
   
   const [chatInput, setChatInput] = useState("");
   const [showFlagDropdown, setShowFlagDropdown] = useState(false);
-
-  // --- FETCH AWAL ---
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -43,11 +38,7 @@ export default function ReportTicketComponent() {
           adminApi.getReportCategories(),
           adminApi.getKanbanBoard()
         ]);
-        
-        // 1. Mapping Categories
         if (catData?.data) setCategories(catData.data);
-        
-        // 2. Mapping Kanban Board ke format `Ticket`
         if (boardData?.data?.columns) {
           const { unsolved, pending, solved } = boardData.data.columns;
           
@@ -89,14 +80,11 @@ export default function ReportTicketComponent() {
     };
     fetchInitialData();
   }, []);
-
-  // --- FETCH LOG SAAT TIKET DIPILIH ---
   useEffect(() => {
     if (!selectedTicketId) return;
     const fetchLogs = async () => {
       try {
         const logData = await adminApi.getLogDetail(selectedTicketId);
-        // TODO: Simpan logData ke dalam state setLogs jika JSON response logs sudah tersedia
       } catch (error) {
         console.error("Gagal memuat log:", error);
       }
@@ -108,8 +96,6 @@ export default function ReportTicketComponent() {
   const unsolvedTickets = tickets.filter(t => t.status === 'Unsolved');
   const pendingTickets = tickets.filter(t => t.status === 'Pending');
   const solvedTickets = tickets.filter(t => t.status === 'Solved');
-
-  // --- ACTIONS ---
   const handleActionClick = async (action: string) => {
     if (!selectedTicketId) return alert("Pilih tiket terlebih dahulu");
     try {
@@ -124,12 +110,12 @@ export default function ReportTicketComponent() {
   const handleSendMessage = async () => {
     if (!selectedTicketId || !chatInput.trim()) return;
     const textToSend = chatInput;
-    setChatInput(""); // Reset langsung sebelum kirim (ala WhatsApp)
+    setChatInput("");
     try {
       await adminApi.postMessage(selectedTicketId, textToSend);
     } catch (error) {
       console.error("Send message failed:", error);
-      setChatInput(textToSend); // Kembalikan teks jika gagal
+      setChatInput(textToSend);
     }
   };
 
@@ -265,8 +251,6 @@ export default function ReportTicketComponent() {
     </div>
   );
 }
-
-// --- SUB-KOMPONEN KARTU KANBAN ---
 function TicketCard({ ticket, isActive, onClick }: { ticket: Ticket, isActive: boolean, onClick: () => void }) {
   const flagColor =
     ticket.priority === 1 ? 'bg-green-500 text-white' :

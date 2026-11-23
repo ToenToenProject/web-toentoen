@@ -1,4 +1,3 @@
-// src/app/login/admin/staff/report/page.tsx
 
 import React from 'react';
 import ReportTicketComponent from '@/components/admin/report/ReportTicket';

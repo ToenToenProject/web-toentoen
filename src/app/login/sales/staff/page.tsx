@@ -1,4 +1,3 @@
-// src/app/login/sales/staff/page.tsx
 "use client";
 
 import React, { useState } from 'react';
@@ -24,8 +23,7 @@ export default function SalesStaffPage() {
         };
 
         return (
-          // flex h-screen overflow-hidden memastikan sidebar terkunci dan tidak bisa di-scroll
-          <div className="flex h-[100dvh] w-full bg-[#F9FAFB] font-sans text-gray-800 overflow-hidden">
+                    <div className="flex h-[100dvh] w-full bg-[#F9FAFB] font-sans text-gray-800 overflow-hidden">
             {/* Left Minimal Sidebar (Terkunci permanen, tidak bisa ke-scroll) */}
             <SalesSidebar
               currentView={currentView}

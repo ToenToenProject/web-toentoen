@@ -1,4 +1,3 @@
-// src/components/social-media/SmChatView.tsx
 "use client";
 
 import React, { useState } from 'react';

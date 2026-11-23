@@ -1,5 +1,3 @@
-// src/constants/cmoData.ts
-
 export interface CmoProfile {
   name: string;
   role: string;
@@ -12,7 +10,7 @@ export const INITIAL_CMO_PROFILE: CmoProfile = {
   avatar: '/assets/avatars/starter-photo-profile.jpg',
 };
 
-// --- DATA TAB ADMIN (GAMBAR 1) ---
+// Admin Operations Dataset
 export interface TicketMetrics {
   activeTickets: {
     total: number;
@@ -191,7 +189,7 @@ export const CMO_DIVISIONS_DATA: DivisionData[] = [
   },
 ];
 
-// --- DATA TAB SOCIAL MEDIA (GAMBAR 2) ---
+// Social Media Operations Dataset
 export interface SocialMetric {
   title: string;
   value: string;
@@ -404,7 +402,7 @@ export const CMO_DIVISION_CHANNELS: DivisionChannelRow[] = [
   },
 ];
 
-// --- DATA MENU POST (GAMBAR 3) ---
+// Post Management Dataset
 export interface CmoPostCard {
   id: string;
   channel: 'Tiktok' | 'Facebook' | 'Instagram' | 'Linkedin';

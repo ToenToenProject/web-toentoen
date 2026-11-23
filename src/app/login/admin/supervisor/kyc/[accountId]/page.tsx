@@ -51,7 +51,7 @@ function humanize(key: string) {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-/** Ratakan object nested menjadi daftar [key, value]. */
+/** Flattens nested object properties into key-value tuples. */
 function flatten(obj: AnyRecord, prefix = ''): [string, unknown][] {
   const out: [string, unknown][] = [];
   for (const [k, v] of Object.entries(obj ?? {})) {
@@ -133,7 +133,7 @@ function KycDetailContent() {
     try {
       await kycApi.approve(accountId, reviewRole);
       setActionMsg({ type: 'ok', text: 'KYC berhasil disetujui. Mengalihkan...' });
-      // Setelah aksi setujui, langsung lempar kembali ke halaman list KYC
+      // Redirect to KYC submission queue following approval
       router.push('/login/admin/supervisor/kyc');
     } catch (e) {
       setActionMsg({ type: 'err', text: e instanceof Error ? e.message : 'Gagal menyetujui KYC' });
@@ -153,7 +153,7 @@ function KycDetailContent() {
       setActionMsg({ type: 'ok', text: 'KYC berhasil ditolak. Mengalihkan...' });
       setShowReject(false);
       setReason('');
-      // Setelah aksi tolak, langsung lempar kembali ke halaman list KYC
+      // Redirect to KYC submission queue following rejection
       router.push('/login/admin/supervisor/kyc');
     } catch (e) {
       setActionMsg({ type: 'err', text: e instanceof Error ? e.message : 'Gagal menolak KYC' });
@@ -237,8 +237,7 @@ function KycDetailContent() {
             <h3 className="font-semibold text-sm text-gray-900">Tindakan</h3>
 
             {isApproved ? (
-              /* Sudah Disetujui: Tombol ditutup */
-              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-center space-y-2">
+                            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-center space-y-2">
                 <div className="w-9 h-9 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -252,8 +251,7 @@ function KycDetailContent() {
                 </div>
               </div>
             ) : isRejected ? (
-              /* Sudah Ditolak: Tombol ditutup */
-              <div className="bg-rose-50 border border-rose-200 rounded-lg p-4 text-center space-y-2">
+                            <div className="bg-rose-50 border border-rose-200 rounded-lg p-4 text-center space-y-2">
                 <div className="w-9 h-9 mx-auto rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
@@ -267,8 +265,7 @@ function KycDetailContent() {
                 </div>
               </div>
             ) : (
-              /* Status Masih Pending: Tombol aksi aktif */
-              <>
+                            <>
                 <label className="block text-xs text-gray-600">
                   Role yang direview
                   <select

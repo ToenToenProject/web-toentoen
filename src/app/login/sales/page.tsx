@@ -1,4 +1,3 @@
-// src/app/login/sales/page.tsx
 "use client";
 
 import { useEffect } from 'react';
@@ -8,8 +7,7 @@ export default function SalesRedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Cek role user dari localStorage jika tersedia
-    try {
+        try {
       const userStr = localStorage.getItem('user');
       if (userStr) {
         const user = JSON.parse(userStr);
@@ -20,11 +18,9 @@ export default function SalesRedirectPage() {
         }
       }
     } catch {
-      // ignore JSON parse error
-    }
+          }
 
-    // Default ke sales staff
-    router.replace('/login/sales/staff');
+        router.replace('/login/sales/staff');
   }, [router]);
 
   return (

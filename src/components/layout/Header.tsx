@@ -42,15 +42,11 @@ export const Header = () => {
   const isHiddenPage =
     pathname.startsWith("/dashboard") ||
     (pathname.startsWith("/login/") && pathname !== "/login");
-
-  // Tutup drawer saat pindah halaman
   const [lastPath, setLastPath] = useState(pathname);
   if (lastPath !== pathname) {
     setLastPath(pathname);
     setIsOpen(false);
   }
-
-  // Lock body scroll saat drawer terbuka + tutup pakai ESC
   useEffect(() => {
     if (!isOpen) return;
     const prevOverflow = document.body.style.overflow;

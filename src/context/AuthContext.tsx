@@ -24,12 +24,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<UserSession | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Inisialisasi: Baca cache user dari localStorage lalu validasi via cookie /auth/me
+  // Initialize session from cached storage, then revalidate against /auth/me
   useEffect(() => {
     let isMounted = true;
 
     const initAuth = async () => {
-      // 1. Coba baca data cepat dari localStorage jika ada
       if (typeof window !== "undefined") {
         try {
           const cached = localStorage.getItem("user");
@@ -37,11 +36,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUser(JSON.parse(cached));
           }
         } catch {
-          // Abaikan error parse
+          // Ignore storage parse failure
         }
       }
 
-      // 2. Verifikasi sesi cookie nyata ke backend via /api/v1/auth/me
+      // Verify active session with backend authentication endpoint
       try {
         const activeUser = await checkSession();
         if (isMounted) {
@@ -65,8 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               document.cookie = `token=true; path=/; max-age=86400; SameSite=Lax`;
             }
           } else {
-            // Jika /auth/me gagal (misal cross-origin cookie tidak terkirim dari localhost),
-            // periksa apakah localStorage masih memiliki session yang sah
+            // Retain cached session if cross-origin cookies are restricted during local development
             const hasLocalCache = typeof window !== "undefined" && !!localStorage.getItem("user");
             if (!hasLocalCache) {
               setUser(null);
@@ -79,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         }
       } catch {
-        // Abaikan error jaringan
+        // Suppress transient network revalidation error
       } finally {
         if (isMounted) {
           setIsLoading(false);

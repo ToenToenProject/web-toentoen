@@ -1,4 +1,3 @@
-// src/components/cmo/CmoSocialMediaTabView.tsx
 "use client";
 
 import React, { useState } from 'react';
@@ -23,8 +22,6 @@ const getSafeAvatar = (url?: string) => {
 export const CmoSocialMediaTabView: React.FC = () => {
   const [calendarView, setCalendarView] = useState<'weekly' | 'monthly'>('weekly');
   const [isDivisionAExpanded, setIsDivisionAExpanded] = useState<boolean>(true);
-
-  // Date State & Modal
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [selectedDateObj, setSelectedDateObj] = useState<Date>(() => new Date());
   const [dateLabel, setDateLabel] = useState<string>(() => {

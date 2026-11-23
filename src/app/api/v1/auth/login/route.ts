@@ -1,10 +1,10 @@
-// src/app/api/v1/auth/login/route.ts
-// Proxy Login Route Handler untuk Next.js
-// Memecahkan masalah cross-origin SameSite=Lax cookie pada browser development (localhost)
+/**
+ * Authentication proxy handler resolving cross-origin cookie constraints in development.
+ */
 
 import { NextRequest, NextResponse } from 'next/server';
 
-// Abaikan validasi TLS pada dev backend jika sertifikat belum mencakup subdomain multi-level
+// Suppress TLS validation in development when backend certificate does not match multi-level domain
 if (process.env.NODE_ENV !== 'production' || process.env.ALLOW_INSECURE_DEV_TLS === 'true') {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 }
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Ekstrak JWT auth_token dari header Set-Cookie backend
+    // Extract JWT token from upstream Set-Cookie header
     const setCookieHeader = backendRes.headers.getSetCookie?.() || [];
     let jwtToken = '';
 
@@ -62,14 +62,14 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Sisipkan token JWT ke JSON response agar client dapat menggunakannya untuk Authorization: Bearer
+    // Attach JWT to payload body for client authorization headers
     if (jwtToken && data.data) {
       data.data.token = jwtToken;
     }
 
     const res = NextResponse.json(data);
 
-    // Teruskan cookie ke browser untuk domain localhost / same-origin
+    // Set same-origin authentication cookies for local session continuity
     if (jwtToken) {
       res.cookies.set('auth_token', jwtToken, {
         path: '/',

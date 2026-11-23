@@ -1,4 +1,3 @@
-// src/components/social-media/SmCredentialsView.tsx
 "use client";
 
 import React, { useState, useMemo } from 'react';

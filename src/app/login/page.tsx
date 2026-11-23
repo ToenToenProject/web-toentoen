@@ -19,10 +19,9 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Login via endpoint HTTP-Only Cookie
-      const response = await loginUser(payload);
+            const response = await loginUser(payload);
 
-      // Simpan data profil user ke context & localStorage untuk akses cepat di sisi client
+      // Cache user profile for rapid client-side access
       if (response.data?.user) {
         const u = response.data.user;
         const mappedUser: UserSession = {
@@ -42,18 +41,16 @@ export default function LoginPage() {
         if (response.data?.token) {
           localStorage.setItem("token", response.data.token);
         }
-        // Set cookie session agar langsung terdeteksi oleh Next.js middleware
+        // Establish session cookies for Next.js middleware detection
         document.cookie = `toentoen_session=${u.role}; path=/; max-age=86400; SameSite=Lax`;
         document.cookie = `token=true; path=/; max-age=86400; SameSite=Lax`;
       }
 
-      // Ambil nilai role dari response API
-      const userRole = response.data?.user?.role;
+            const userRole = response.data?.user?.role;
       const roleUpper = userRole ? userRole.toUpperCase() : "";
 
-      // Pemetaan Role Login sesuai peran di backend
-      // 1. Sales & Sales Supervisor (Diprioritaskan sebelum pengecekan MARKETING generik)
-      if (
+      // Role-based redirection mapping
+            if (
         roleUpper === "SALES_MARKETING_SPV" ||
         roleUpper.includes("SALES_SUPERVISOR") ||
         (roleUpper.includes("SALES") && (roleUpper.includes("SPV") || roleUpper.includes("SUPERVISOR")))
@@ -62,8 +59,7 @@ export default function LoginPage() {
       } else if (roleUpper === "SALES" || roleUpper.includes("SALES")) {
         router.push("/login/sales/staff");
       } 
-      // 2. Social Media & Content Creator
-      else if (
+            else if (
         roleUpper.includes("CONTENT_CREATOR") ||
         roleUpper.includes("SOCIAL") ||
         roleUpper.includes("SMM") ||
@@ -71,24 +67,21 @@ export default function LoginPage() {
       ) {
         router.push("/login/social-media");
       } 
-      // 3. CMO & C-Level (Executive Marketing)
-      else if (
+            else if (
         roleUpper.includes("CMO") ||
         (roleUpper.includes("MARKETING") && !roleUpper.includes("SALES")) ||
         roleUpper.includes("C_LEVEL")
       ) {
         router.push("/login/cmo");
       } 
-      // 4. Admin Supervisor Customer Service
-      else if (
+            else if (
         roleUpper === "ADMIN_SPV" ||
         roleUpper === "SUPERVISOR_ADMIN" ||
         (roleUpper.includes("ADMIN") && (roleUpper.includes("SPV") || roleUpper.includes("SUPERVISOR")))
       ) {
         router.push("/login/admin/supervisor");
       } 
-      // 5. Staff Admin Customer Service
-      else if (
+            else if (
         roleUpper === "ADMIN" ||
         roleUpper === "STAFF_ADMIN" ||
         roleUpper === "STAFF" ||
@@ -97,8 +90,7 @@ export default function LoginPage() {
       ) {
         router.push("/login/admin/staff");
       } else {
-        // Fallback default
-        router.push("/login/sales/staff");
+                router.push("/login/sales/staff");
       }
     } catch (err) {
       if (err instanceof Error) {

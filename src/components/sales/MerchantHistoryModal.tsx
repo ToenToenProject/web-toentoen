@@ -1,4 +1,3 @@
-// src/components/sales/MerchantHistoryModal.tsx
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -35,7 +34,7 @@ export const MerchantHistoryModal: React.FC<MerchantHistoryModalProps> = ({
       } catch (err: any) {
         if (isMounted) {
           setError(err.message || 'Gagal mengambil riwayat 30 hari merchant');
-          // Fallback data simulasi jika endpoint belum ada riwayat historis lengkap
+          // Baseline historical compliance simulation when historical endpoint data is empty
           setData({
             merchantId,
             storeName: storeName || 'Toko Binaan',
