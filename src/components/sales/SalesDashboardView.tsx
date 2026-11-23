@@ -10,6 +10,8 @@ import {
 import { RegisterMerchantModal } from './RegisterMerchantModal';
 import { MerchantHistoryModal } from './MerchantHistoryModal';
 
+const PAGE_SIZE = 10;
+
 const DEFAULT_OVERVIEW: SalesOverviewCards = {
   managedMerchants: {
     value: 10,
@@ -61,6 +63,9 @@ export const SalesDashboardView: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+
   // Modals
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [selectedHistoryMerchant, setSelectedHistoryMerchant] = useState<{ id: string; name: string } | null>(null);
@@ -86,12 +91,14 @@ export const SalesDashboardView: React.FC = () => {
   };
 
   useEffect(() => {
+    setCurrentPage(1);
     fetchDashboard();
   }, [selectedDate, statusFilter]);
 
   // Handle Search Debounce
   useEffect(() => {
     const timer = setTimeout(() => {
+      setCurrentPage(1);
       fetchDashboard();
     }, 350);
     return () => clearTimeout(timer);
@@ -116,6 +123,13 @@ export const SalesDashboardView: React.FC = () => {
       alert(`Gagal mengubah status toko: ${err.message || 'Error server'}`);
     }
   };
+
+  // Pagination calculation
+  const totalPages = Math.max(1, Math.ceil(merchants.length / PAGE_SIZE));
+  const paginatedMerchants = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return merchants.slice(start, start + PAGE_SIZE);
+  }, [merchants, currentPage]);
 
   const overviewCards = [
     {
@@ -156,7 +170,7 @@ export const SalesDashboardView: React.FC = () => {
       {/* Page Title & Quick Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard Sales Lapangan</h1>
+          <h1 className="text-xl font-bold text-gray-900 tracking-tight">Dashboard Sales Lapangan</h1>
           <p className="text-xs text-gray-500 mt-0.5">
             Manajemen toko binaan, pemenuhan target harian, dan estimasi insentif
           </p>
@@ -265,9 +279,9 @@ export const SalesDashboardView: React.FC = () => {
       </section>
 
       {/* SECTION 2: Team Capacity (Daftar Toko Binaan) */}
-      <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-xs">
-        {/* Section Heading & Filter */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+      <section className="bg-white border border-gray-200 rounded-2xl shadow-xs overflow-hidden">
+        {/* Table Header Controls */}
+        <div className="p-6 border-b border-gray-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-bold text-gray-900">Team Capacity / Toko Binaan</h2>
             <p className="text-xs text-gray-500 mt-0.5">
@@ -308,7 +322,7 @@ export const SalesDashboardView: React.FC = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="relative w-64">
+            <div className="relative w-60">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -326,9 +340,9 @@ export const SalesDashboardView: React.FC = () => {
         </div>
 
         {/* Table Container */}
-        <div className="overflow-x-auto border border-gray-200 rounded-2xl">
+        <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[950px]">
-            <thead className="bg-gray-100 text-gray-700 text-[11px] font-bold uppercase tracking-wider border-b border-gray-200">
+            <thead className="bg-[#f8fafc] text-gray-600 text-[11px] font-bold uppercase tracking-wider border-b border-gray-200">
               <tr>
                 <th className="py-3.5 px-4">Merchant Invited</th>
                 <th className="py-3.5 px-4">Store Name / Category</th>
@@ -342,7 +356,7 @@ export const SalesDashboardView: React.FC = () => {
             <tbody className="divide-y divide-gray-100 text-xs">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-gray-400">
+                  <td colSpan={7} className="py-14 text-center text-gray-400">
                     <div className="flex flex-col items-center justify-center space-y-2">
                       <svg className="w-6 h-6 animate-spin text-teal-600" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
@@ -352,14 +366,14 @@ export const SalesDashboardView: React.FC = () => {
                     </div>
                   </td>
                 </tr>
-              ) : merchants.length === 0 ? (
+              ) : paginatedMerchants.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-10 text-center text-gray-400">
+                  <td colSpan={7} className="py-12 text-center text-gray-400">
                     Belum ada data merchant yang ditemukan.
                   </td>
                 </tr>
               ) : (
-                merchants.map((m) => {
+                paginatedMerchants.map((m) => {
                   const isExpanded = expandedId === m.id;
                   const daily = m.expandableDailySubColumns;
                   const isOnline = m.status === 'Online' || m.status === 'OPEN';
@@ -384,63 +398,101 @@ export const SalesDashboardView: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleToggleStoreStatus(m.id, m.status)}
-                            className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all shadow-2xs ${
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold transition-all shadow-2xs ${
                               isOnline
-                                ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                                : 'bg-gray-400 hover:bg-gray-500 text-white'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                                : 'bg-gray-100 text-gray-500 border border-gray-200 hover:bg-gray-200'
                             }`}
                             title="Klik untuk mengubah status Buka / Tutup toko"
                           >
-                            {isOnline ? '● Online' : '○ Tutup'}
+                            <span className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'}`}></span>
+                            <span>{isOnline ? 'Online' : 'Tutup'}</span>
                           </button>
                         </td>
 
                         {/* Monthly Goals */}
                         <td className="py-3.5 px-4 text-center">
-                          <span className={`font-bold ${m.monthlyGoals === 'Achieved' ? 'text-emerald-600' : 'text-rose-500'}`}>
-                            {m.monthlyGoals === 'Achieved' ? '✓ Achieved' : '✗ Not Achieved'}
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                            m.monthlyGoals === 'Achieved'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-rose-50 text-rose-600 border border-rose-200'
+                          }`}>
+                            {m.monthlyGoals === 'Achieved' ? '✓ Tercapai' : '✕ Belum'}
                           </span>
                         </td>
 
                         {/* Weekly Goals */}
                         <td className="py-3.5 px-4 text-center">
-                          <span className={`font-bold ${m.weeklyGoals === 'Achieved' ? 'text-emerald-600' : 'text-rose-500'}`}>
-                            {m.weeklyGoals === 'Achieved' ? '✓ Achieved' : '✗ Not Achieved'}
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                            m.weeklyGoals === 'Achieved'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-rose-50 text-rose-600 border border-rose-200'
+                          }`}>
+                            {m.weeklyGoals === 'Achieved' ? '✓ Tercapai' : '✕ Belum'}
                           </span>
                         </td>
 
-                        {/* Daily Goals Expand Button */}
+                        {/* Daily Goals (Tampilan Ringkas, Intuitif & Elegan) */}
                         <td className="py-3.5 px-4 text-center">
-                          <button
-                            type="button"
-                            onClick={() => toggleExpand(m.id)}
-                            className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors border ${
-                              isExpanded 
-                                ? 'bg-teal-50 border-teal-300 text-teal-700' 
-                                : 'bg-gray-100 hover:bg-gray-200 border-gray-200 text-gray-700'
-                            }`}
-                          >
-                            {isExpanded ? 'Tutup Detail ▲' : 'Buka Sub-Kolom ▼'}
-                          </button>
+                          <div className="inline-flex items-center gap-1 bg-gray-50 border border-gray-200/90 rounded-xl px-2 py-1 shadow-2xs">
+                            <span
+                              title={`Jam Buka: ${daily?.minimumOpenHours?.value ?? 0} Jam (Target ≥ 6 Jam)`}
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                                daily?.minimumOpenHours?.passed ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200/70 text-gray-600'
+                              }`}
+                            >
+                              ⏱ {daily?.minimumOpenHours?.value ?? 0}j
+                            </span>
+                            <span
+                              title={`Postingan: ${daily?.numberOfPostsToday?.value ?? 0} (Target ≥ 1 Post)`}
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                                daily?.numberOfPostsToday?.passed ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200/70 text-gray-600'
+                              }`}
+                            >
+                              📝 {daily?.numberOfPostsToday?.value ?? 0}p
+                            </span>
+                            <span
+                              title={`Balasan Sinyal: ${daily?.signalPostReplyToday?.value ?? 0} (Target ≥ 1)`}
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                                daily?.signalPostReplyToday?.passed ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200/70 text-gray-600'
+                              }`}
+                            >
+                              💬 {daily?.signalPostReplyToday?.value ?? 0}b
+                            </span>
+
+                            {/* Tombol Rincian Harian yang Halus */}
+                            <button
+                              type="button"
+                              onClick={() => toggleExpand(m.id)}
+                              className={`ml-1 p-1 rounded-md transition-colors ${
+                                isExpanded ? 'bg-teal-600 text-white' : 'text-gray-400 hover:text-teal-600 hover:bg-teal-50'
+                              }`}
+                              title={isExpanded ? 'Tutup rincian harian' : 'Buka rincian harian'}
+                            >
+                              <svg className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </button>
+                          </div>
                         </td>
 
                         {/* Aksi: Follow-up WA & Riwayat 30 Hari */}
-                        <td className="py-3.5 px-4 text-right space-x-2 whitespace-nowrap">
+                        <td className="py-3.5 px-4 text-right space-x-1.5 whitespace-nowrap">
                           {m.whatsappReminderUrl && (
                             <a
                               href={m.whatsappReminderUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="px-3 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg inline-flex items-center space-x-1 shadow-2xs transition-colors"
+                              className="px-2.5 py-1 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg inline-flex items-center space-x-1 shadow-2xs transition-colors"
                               title="Kirim pesan pengingat ke pemilik via WhatsApp"
                             >
-                              <span>Ingatkan WA</span>
+                              <span>WA</span>
                             </a>
                           )}
                           <button
                             type="button"
                             onClick={() => setSelectedHistoryMerchant({ id: m.id, name: m.store?.name || m.merchantInvited?.name })}
-                            className="px-3 py-1.5 text-xs font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors border border-gray-200"
+                            className="px-2.5 py-1 text-xs font-semibold bg-white hover:bg-gray-100 text-gray-700 rounded-lg transition-colors border border-gray-300 shadow-2xs"
                             title="Lihat riwayat kepatuhan 30 hari"
                           >
                             Riwayat 30H
@@ -450,31 +502,43 @@ export const SalesDashboardView: React.FC = () => {
 
                       {/* Sub-Kolom Harian yang Di-expand */}
                       {isExpanded && daily && (
-                        <tr className="bg-teal-50/30">
+                        <tr className="bg-teal-50/20">
                           <td colSpan={7} className="p-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 border border-teal-200/80 rounded-xl p-3.5 bg-white shadow-2xs">
-                              {/* Minimum Open Hours */}
-                              <div className="text-center p-2 rounded-lg bg-gray-50/60">
-                                <p className="text-[11px] text-gray-500 font-medium">Min. Jam Buka (Target ≥ 6 Jam)</p>
-                                <p className={`text-sm font-extrabold mt-0.5 ${daily.minimumOpenHours.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
-                                  {daily.minimumOpenHours.value} Jam [{daily.minimumOpenHours.icon}]
-                                </p>
+                            <div className="border border-teal-200/70 rounded-2xl p-4 bg-white shadow-xs max-w-3xl mx-auto">
+                              <div className="flex items-center justify-between pb-2 mb-3 border-b border-gray-100">
+                                <span className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
+                                  <span>📅</span>
+                                  <span>Rincian Kepatuhan Harian: {m.store?.name}</span>
+                                </span>
+                                <span className="text-[10px] text-gray-400 font-mono">
+                                  {daily.date || selectedDate}
+                                </span>
                               </div>
 
-                              {/* Number of Posts Today */}
-                              <div className="text-center p-2 rounded-lg bg-gray-50/60 sm:border-x sm:border-gray-200">
-                                <p className="text-[11px] text-gray-500 font-medium">Postingan Hari Ini (Target ≥ 1 Post)</p>
-                                <p className={`text-sm font-extrabold mt-0.5 ${daily.numberOfPostsToday.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
-                                  {daily.numberOfPostsToday.value} Post [{daily.numberOfPostsToday.icon}]
-                                </p>
-                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                {/* Minimum Open Hours */}
+                                <div className="text-center p-3 rounded-xl bg-gray-50/80 border border-gray-100">
+                                  <p className="text-[11px] text-gray-500 font-medium">Jam Buka (Target ≥ 6 Jam)</p>
+                                  <p className={`text-sm font-black mt-1 ${daily.minimumOpenHours.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
+                                    {daily.minimumOpenHours.value} Jam [{daily.minimumOpenHours.icon}]
+                                  </p>
+                                </div>
 
-                              {/* Signal Post Reply */}
-                              <div className="text-center p-2 rounded-lg bg-gray-50/60">
-                                <p className="text-[11px] text-gray-500 font-medium">Balasan Sinyal Interaksi (Target ≥ 1)</p>
-                                <p className={`text-sm font-extrabold mt-0.5 ${daily.signalPostReplyToday.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
-                                  {daily.signalPostReplyToday.value} Reply [{daily.signalPostReplyToday.icon}]
-                                </p>
+                                {/* Number of Posts Today */}
+                                <div className="text-center p-3 rounded-xl bg-gray-50/80 border border-gray-100">
+                                  <p className="text-[11px] text-gray-500 font-medium">Postingan (Target ≥ 1 Post)</p>
+                                  <p className={`text-sm font-black mt-1 ${daily.numberOfPostsToday.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
+                                    {daily.numberOfPostsToday.value} Post [{daily.numberOfPostsToday.icon}]
+                                  </p>
+                                </div>
+
+                                {/* Signal Post Reply */}
+                                <div className="text-center p-3 rounded-xl bg-gray-50/80 border border-gray-100">
+                                  <p className="text-[11px] text-gray-500 font-medium">Sinyal Balasan (Target ≥ 1)</p>
+                                  <p className={`text-sm font-black mt-1 ${daily.signalPostReplyToday.passed ? 'text-emerald-600' : 'text-rose-500'}`}>
+                                    {daily.signalPostReplyToday.value} Reply [{daily.signalPostReplyToday.icon}]
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           </td>
@@ -486,6 +550,65 @@ export const SalesDashboardView: React.FC = () => {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Pagination Footer (Maksimal 10 baris per halaman) */}
+        <div className="px-6 py-4 border-t border-gray-200/80 bg-gray-50/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="text-gray-500 font-medium">
+            <span>Menampilkan </span>
+            <span className="font-bold text-gray-900">
+              {merchants.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1}
+            </span>
+            <span> - </span>
+            <span className="font-bold text-gray-900">
+              {Math.min(currentPage * PAGE_SIZE, merchants.length)}
+            </span>
+            <span> dari </span>
+            <span className="font-bold text-gray-900">{merchants.length}</span>
+            <span> merchant</span>
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center space-x-1.5">
+              <button
+                type="button"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white font-semibold text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs transition-colors"
+              >
+                Sebelumnya
+              </button>
+
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: totalPages }).map((_, idx) => {
+                  const pNum = idx + 1;
+                  return (
+                    <button
+                      key={pNum}
+                      type="button"
+                      onClick={() => setCurrentPage(pNum)}
+                      className={`w-8 h-8 rounded-lg font-bold transition-all shadow-2xs text-xs ${
+                        currentPage === pNum
+                          ? 'bg-teal-600 text-white'
+                          : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      {pNum}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white font-semibold text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs transition-colors"
+              >
+                Selanjutnya
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
