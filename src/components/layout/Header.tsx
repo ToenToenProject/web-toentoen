@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { HEADER_LINKS } from "@/constants/navigation";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
+import { useEarlyAccess } from "@/context/EarlyAccessContext";
 
 const MenuIcon = () => (
   <svg
@@ -36,8 +37,11 @@ const CloseIcon = () => (
 export const Header = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { openEarlyAccess } = useEarlyAccess();
 
-  const isHiddenPage = pathname.startsWith("/login") || pathname.startsWith("/dashboard");
+  const isHiddenPage =
+    pathname.startsWith("/dashboard") ||
+    (pathname.startsWith("/login/") && pathname !== "/login");
 
   // Tutup drawer saat pindah halaman
   const [lastPath, setLastPath] = useState(pathname);
@@ -66,21 +70,23 @@ export const Header = () => {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gray-100 bg-white">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <Link href="/" className="flex-shrink-0" aria-label="Toentoen home">
-          <Logo variant="light" />
-        </Link>
+        {/* Sisi Kiri: Logo (Vertikal Tengah) */}
+        <div className="flex items-center flex-1 justify-start">
+          <Link href="/" className="inline-flex items-center flex-shrink-0" aria-label="Toentoen home">
+            <Logo variant="light" showText={false} size={42} />
+          </Link>
+        </div>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:block">
-          <ul className="flex items-center gap-6 lg:gap-9">
+        {/* Sisi Tengah: Desktop nav (Vertikal Tengah) */}
+        <nav className="hidden md:flex items-center justify-center flex-shrink-0">
+          <ul className="flex items-center gap-6 lg:gap-9 m-0 p-0">
             {HEADER_LINKS.map((link) => {
               const isActive = pathname === link.href;
               return (
-                <li key={link.label}>
+                <li key={link.label} className="inline-flex items-center">
                   <Link
                     href={link.href}
-                    className={`text-sm transition-colors hover:text-[#00c2a8] ${
+                    className={`inline-flex items-center py-2 text-sm transition-colors hover:text-[#00c2a8] focus:outline-none ${
                       isActive
                         ? "font-bold text-[#00c2a8]"
                         : "font-medium text-gray-500"
@@ -94,11 +100,15 @@ export const Header = () => {
           </ul>
         </nav>
 
-        {/* Desktop CTA */}
-        <div className="hidden md:flex md:items-center">
-          <Button variant="primary" className="px-5 py-2 text-sm lg:px-6">
-            Download App
-          </Button>
+        {/* Sisi Kanan: Desktop CTA (Vertikal Tengah) */}
+        <div className="hidden md:flex items-center justify-end flex-1">
+          <button
+            type="button"
+            onClick={() => openEarlyAccess("user")}
+            className="inline-flex items-center justify-center rounded-full bg-[#00c2a8] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#00a892] lg:px-6 shadow-sm cursor-pointer leading-none"
+          >
+            Daftar Akses Awal
+          </button>
         </div>
 
         {/* Mobile hamburger */}
@@ -137,7 +147,7 @@ export const Header = () => {
           }`}
         >
           <div className="flex h-16 items-center justify-between border-b border-gray-100 px-5">
-            <Logo variant="light" />
+            <Logo variant="light" showText={false} size={36} />
             <button
               type="button"
               onClick={() => setIsOpen(false)}
@@ -172,13 +182,16 @@ export const Header = () => {
           </nav>
 
           <div className="border-t border-gray-100 p-4">
-            <Button
-              variant="primary"
-              onClick={() => setIsOpen(false)}
-              className="w-full py-3 text-sm"
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                openEarlyAccess("user");
+              }}
+              className="block w-full py-3 text-center text-sm font-bold rounded-full bg-[#00c2a8] text-white transition hover:bg-[#00a892] cursor-pointer"
             >
-              Download App
-            </Button>
+              Daftar Akses Awal
+            </button>
           </div>
         </div>
       </div>

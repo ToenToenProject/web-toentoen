@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
 import { kycApi, pick, type AnyRecord, type KycReviewRole } from '@/constants/api/admin/kyc';
 import KycStatusBadge from '@/components/admin/kyc/KycStatusBadge';
+import { RoleGuard } from '@/components/auth/RoleGuard';
+import { PERMISSIONS } from '@/types/auth';
 
 const IMAGE_EXT = /\.(png|jpe?g|webp|gif|bmp|heic)(\?.*)?$/i;
 const IMAGE_KEY = /(photo|foto|image|img|ktp|selfie|picture|document|file|url)/i;
@@ -267,8 +269,13 @@ function KycDetailContent() {
 
 export default function SupervisorKycDetailPage() {
   return (
-    <Suspense fallback={<main className="p-6 text-sm text-gray-500">Memuat...</main>}>
-      <KycDetailContent />
-    </Suspense>
+    <RoleGuard
+      allowedRoles={['ADMIN_SPV', 'SUPERVISOR_ADMIN']}
+      requiredPermission={PERMISSIONS.KYC_REVIEW}
+    >
+      <Suspense fallback={<main className="p-6 text-sm text-gray-500">Memuat...</main>}>
+        <KycDetailContent />
+      </Suspense>
+    </RoleGuard>
   );
 }

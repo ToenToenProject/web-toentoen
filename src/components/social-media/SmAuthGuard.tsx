@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { logoutUser } from '@/services/authService';
 
 interface SmAuthGuardProps {
   children: (props: { onLogout: () => void }) => React.ReactNode;
@@ -11,12 +12,8 @@ interface SmAuthGuardProps {
 export const SmAuthGuard: React.FC<SmAuthGuardProps> = ({ children }) => {
   const router = useRouter();
 
-  const handleLogout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-    }
-    router.replace('/login');
+  const handleLogout = async () => {
+    await logoutUser();
   };
 
   // Login dinonaktifkan sementara: langsung izinkan akses tanpa cek token

@@ -2,13 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import { adminService } from '@/services/adminService';
 
 import { Header } from '@/components/admin/dashboard/Header';
 import { PerformanceGrid } from '@/components/admin/dashboard/PerformanceGrid';
 import { UrgentAlerts } from '@/components/admin/dashboard/UrgentAlerts';
+import { RoleGuard } from '@/components/auth/RoleGuard';
 
-export default function AdminStaffDashboard() {
+function AdminStaffDashboardContent() {
   const router = useRouter();
+  const { user, logout } = useAuth();
   
   // State Data Component
   const [metricsData, setMetricsData] = useState<any[]>([]);
@@ -77,102 +81,115 @@ export default function AdminStaffDashboard() {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
-        const token = localStorage.getItem("token");
 
-        // Jika tidak ada token, gunakan data dummy agar halaman bisa langsung diakses
-        if (!token) {
-          setProfile({
-            name: "Farel Dimas",
-            role: "Admin Staff",
-            avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop"
-          });
-          setCurrentDate("Today, January 27, 2027");
+        const userAvatar = (user as any)?.avatar_url;
+        setProfile({
+          name: user?.name || "Admin Staff",
+          role: user?.role || "Customer Service",
+          avatarUrl: (userAvatar && !userAvatar.includes('unsplash.com') && !userAvatar.includes('pravatar.cc'))
+            ? userAvatar
+            : "/assets/avatars/starter-photo-profile.jpg"
+        });
+        setCurrentDate(new Date().toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
+
+        const apiData: any = await adminService.getCsDashboard().catch(() => null);
+
+        if (!apiData) {
           setMetricsData(DEFAULT_METRICS);
           setAlertsData(DEFAULT_ALERTS);
           return;
         }
 
-        const res = await fetch("https://api-ops.toentoen.com/api/v1/dashboard/cs", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`, 
+        // Format Baru: data.summary & data.urgentTickets
+        if (apiData.summary) {
+          const s = apiData.summary;
+          const mappedMetrics = [
+            {
+              title: "ACTIVE TICKETS",
+              mainValue: (s.unresolvedTickets ?? 28).toString(),
+              subMetrics: [
+                { label: "Active Chats", value: (s.activeChats ?? 14).toString(), color: "text-gray-600" },
+                { label: "Queue", value: (s.waitingQueue ?? 3).toString(), color: "text-red-500" },
+              ]
+            },
+            {
+              title: "RESPONSE TIME",
+              mainValue: "24s",
+              trend: "↗ 95% faster",
+              trendText: "dalam batas SLA",
+              trendColor: "text-green-500"
+            },
+            {
+              title: "CSAT SCORE",
+              mainValue: `${s.averageCsat ?? 4.8} / 5.0`,
+              trend: "+0.3 pts",
+              trendText: "kepuasan pelanggan",
+              trendColor: "text-green-500"
+            },
+            {
+              title: "SLA COMPLIANCE",
+              mainValue: `${s.slaComplianceRate ?? 96.5}%`,
+              trend: "96.5%",
+              trendText: "target terpenuhi",
+              trendColor: "text-green-500",
+              isBreach: false
+            }
+          ];
+          setMetricsData(mappedMetrics);
+
+          if (apiData.urgentTickets && Array.isArray(apiData.urgentTickets)) {
+            setAlertsData(
+              apiData.urgentTickets.map((t: any) => ({
+                id: t.id || "TKT-URGENT",
+                timeRemaining: t.priority === "VIP" ? "Prioritas VIP" : "Mendesak",
+                issue: t.subject || "Tiket Perlu Penanganan",
+              }))
+            );
+          } else {
+            setAlertsData(DEFAULT_ALERTS);
           }
-        });
-
-        if (!res.ok) throw new Error("Gagal mengambil data dari server.");
-
-        const json = await res.json();
-        const apiData = json.data; // Mengambil objek 'data' dari struktur JSON lu
-
-        // 1. SET DATA PROFIL & TANGGAL
-        setProfile({
-          name: apiData.user.name,
-          role: apiData.user.role,
-          avatarUrl: apiData.user.avatar_url
-        });
-        setCurrentDate(apiData.filters.current_date_selection);
-
-        // 2. MAPPING DATA PERFORMANCE
-        const perf = apiData.performance_overview;
-        const mappedMetrics = [
-          {
-            title: "ACTIVE TICKETS",
-            mainValue: perf.active_tickets.total.toString(),
-            subMetrics: [
-              { label: "Open", value: perf.active_tickets.breakdown.open.toString(), color: "text-gray-600" },
-              { label: "Pending", value: perf.active_tickets.breakdown.pending.toString(), color: "text-gray-600" },
-              { label: "Unassigned", value: perf.active_tickets.breakdown.unassigned.toString(), color: "text-red-500" },
-            ]
-          },
-          {
-            title: "RESPONSE TIME",
-            mainValue: perf.response_time.value,
-            trend: `↗ ${perf.response_time.trend.percentage}% ${perf.response_time.trend.direction}`,
-            trendText: perf.response_time.trend.description,
-            trendColor: "text-green-500"
-          },
-          {
-            title: "AVG RESOLUTION TIME",
-            mainValue: perf.avg_resolution_time.value,
-            trend: `↗ ${perf.avg_resolution_time.trend.percentage}% ${perf.avg_resolution_time.trend.direction}`,
-            trendText: perf.avg_resolution_time.trend.description,
-            trendColor: "text-green-500"
-          },
-          {
-            title: "CSAT SCORE",
-            mainValue: `${perf.csat_score.percentage}%`,
-            trend: `+${perf.csat_score.trend.points_changed} pts`,
-            trendText: perf.csat_score.trend.description,
-            trendColor: "text-green-500"
-          },
-          {
-            title: "SLA COMPLIANCE",
-            mainValue: `${perf.sla_compliance.percentage}%`,
-            trend: perf.sla_compliance.breaches_count.toString(),
-            trendText: perf.sla_compliance.description,
-            trendColor: "text-red-500", // SLA breaches pakai warna merah/abu-abu
-            isBreach: true
-          }
-        ];
-        setMetricsData(mappedMetrics);
-
-        // 3. MAPPING DATA URGENT ALERTS
-        const mappedAlerts = apiData.urgent_alerts.map((alert: any) => ({
-          id: alert.ticket_id,
-          timeRemaining: alert.time_remaining,
-          issue: alert.issue_type
-        }));
-        setAlertsData(mappedAlerts);
+        } else if (apiData.performance_overview) {
+          // Format Legacy / Mock Server
+          const perf = apiData.performance_overview;
+          setMetricsData([
+            {
+              title: "ACTIVE TICKETS",
+              mainValue: perf.active_tickets?.total?.toString() || "0",
+              subMetrics: [
+                { label: "Open", value: perf.active_tickets?.breakdown?.open?.toString() || "0", color: "text-gray-600" },
+                { label: "Pending", value: perf.active_tickets?.breakdown?.pending?.toString() || "0", color: "text-gray-600" },
+                { label: "Unassigned", value: perf.active_tickets?.breakdown?.unassigned?.toString() || "0", color: "text-red-500" },
+              ]
+            },
+            {
+              title: "RESPONSE TIME",
+              mainValue: perf.response_time?.value || "-",
+              trend: `↗ ${perf.response_time?.trend?.percentage || 0}%`,
+              trendText: perf.response_time?.trend?.description || "",
+              trendColor: "text-green-500"
+            },
+            {
+              title: "CSAT SCORE",
+              mainValue: `${perf.csat_score?.percentage || 0}%`,
+              trend: `+${perf.csat_score?.trend?.points_changed || 0} pts`,
+              trendText: perf.csat_score?.trend?.description || "",
+              trendColor: "text-green-500"
+            },
+            {
+              title: "SLA COMPLIANCE",
+              mainValue: `${perf.sla_compliance?.percentage || 0}%`,
+              trend: perf.sla_compliance?.breaches_count?.toString() || "0",
+              trendText: perf.sla_compliance?.description || "",
+              trendColor: "text-red-500",
+              isBreach: true
+            }
+          ]);
+        } else {
+          setMetricsData(DEFAULT_METRICS);
+          setAlertsData(DEFAULT_ALERTS);
+        }
 
       } catch (err: any) {
-        // Fallback jika API gagal / offline
-        setProfile({
-          name: "Farel Dimas",
-          role: "Admin Staff",
-          avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop"
-        });
-        setCurrentDate("Today, January 27, 2027");
         setMetricsData(DEFAULT_METRICS);
         setAlertsData(DEFAULT_ALERTS);
       } finally {
@@ -183,8 +200,8 @@ export default function AdminStaffDashboard() {
     fetchDashboardData();
   }, [router]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
+  const handleLogout = async () => {
+    await logout();
     router.push('/login');
   };
 
@@ -215,5 +232,13 @@ export default function AdminStaffDashboard() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function AdminStaffDashboard() {
+  return (
+    <RoleGuard allowedRoles={['ADMIN', 'ADMIN_SPV', 'SUPERVISOR_ADMIN', 'STAFF']}>
+      <AdminStaffDashboardContent />
+    </RoleGuard>
   );
 }

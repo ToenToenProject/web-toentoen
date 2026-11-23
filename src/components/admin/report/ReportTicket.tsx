@@ -1,4 +1,4 @@
-﻿// src/components/admin/report/ReportTicket.tsx
+// src/components/admin/report/ReportTicket.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -67,7 +67,9 @@ export default function ReportTicketComponent() {
               priority: priorityMapped,
               isApproved: item.status === 'RESOLVED',
               message: item.description,
-              avatar: item.reporter?.avatar_url || 'https://i.pravatar.cc/150'
+              avatar: (item.reporter?.avatar_url && !item.reporter.avatar_url.includes('pravatar.cc') && !item.reporter.avatar_url.includes('unsplash.com'))
+                ? item.reporter.avatar_url
+                : '/assets/avatars/starter-photo-profile.jpg'
             };
           };
 
@@ -214,7 +216,12 @@ export default function ReportTicketComponent() {
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
                 </button>
-                <img src={activeTicket.avatar} alt={activeTicket.name} className="w-12 h-12 rounded-full object-cover" />
+                <img 
+                  src={activeTicket.avatar || '/assets/avatars/starter-photo-profile.jpg'} 
+                  alt={activeTicket.name} 
+                  onError={(e) => { e.currentTarget.src = '/assets/avatars/starter-photo-profile.jpg'; }}
+                  className="w-12 h-12 rounded-full object-cover" 
+                />
                 <div>
                   <div className="flex items-center space-x-2">
                     <span className="font-bold text-gray-900 text-base">{activeTicket.name}</span>
@@ -268,7 +275,12 @@ function TicketCard({ ticket, isActive, onClick }: { ticket: Ticket, isActive: b
   return (
     <div onClick={onClick} className={`bg-white p-4 rounded-xl border cursor-pointer transition-all relative ${isActive ? 'border-teal-500 shadow-md ring-1 ring-teal-500' : 'border-gray-200 shadow-sm'}`}>
       <div className="flex items-start space-x-3 pr-4">
-        <img src={ticket.avatar} alt={ticket.name} className="w-10 h-10 rounded-full object-cover" />
+        <img 
+          src={ticket.avatar || '/assets/avatars/starter-photo-profile.jpg'} 
+          alt={ticket.name} 
+          onError={(e) => { e.currentTarget.src = '/assets/avatars/starter-photo-profile.jpg'; }}
+          className="w-10 h-10 rounded-full object-cover" 
+        />
         <div className="flex-1">
           <div className="flex items-center space-x-1 flex-wrap">
             <span className="font-bold text-gray-900 text-sm">{ticket.name}</span>

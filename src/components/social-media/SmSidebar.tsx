@@ -2,6 +2,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 
 export type SmViewType = 'dashboard' | 'schedule' | 'post' | 'chat' | 'account';
 
@@ -13,13 +14,18 @@ interface SmSidebarProps {
 export const SmSidebar: React.FC<SmSidebarProps> = ({ currentView, onNavigate }) => {
   return (
     <aside className="fixed inset-x-0 bottom-0 z-40 flex h-16 w-full shrink-0 select-none items-center border-t border-gray-200 bg-white pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:z-20 md:h-screen md:w-16 md:flex-col md:gap-6 md:overflow-hidden md:border-r md:border-t-0 md:py-4">
-      {/* Brand Icon TO+EN */}
+      {/* Brand Icon */}
       <div 
         onClick={() => onNavigate('dashboard')}
-        className="w-10 h-10 bg-[#00c2a8] rounded-xl text-white hidden md:flex flex-col items-center justify-center font-extrabold text-[11px] leading-tight cursor-pointer shadow-xs hover:opacity-90 transition-opacity"
+        className="w-10 h-10 hidden md:flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
       >
-        <span>TO</span>
-        <span>+EN</span>
+        <Image
+          src="/assets/logo/toentoen-logo.png"
+          alt="ToenToen Logo"
+          width={40}
+          height={40}
+          className="w-10 h-10 rounded-xl object-contain shadow-xs"
+        />
       </div>
 
       {/* Navigation Icons */}

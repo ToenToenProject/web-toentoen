@@ -4,6 +4,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { kycApi, pick, type AnyRecord, type KycRole, type KycStatus } from '@/constants/api/admin/kyc';
 import KycStatusBadge from '@/components/admin/kyc/KycStatusBadge';
+import { RoleGuard } from '@/components/auth/RoleGuard';
+import { PERMISSIONS } from '@/types/auth';
 
 const STATUS_OPTIONS: { value: KycStatus; label: string }[] = [
   { value: 'all', label: 'Semua status' },
@@ -25,7 +27,7 @@ function formatDate(v: unknown) {
   return isNaN(d.getTime()) ? String(v) : d.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
 }
 
-export default function SupervisorKycPage() {
+function SupervisorKycContent() {
   const [status, setStatus] = useState<KycStatus>('all');
   const [role, setRole] = useState<KycRole>('all');
   const [searchInput, setSearchInput] = useState('');
@@ -190,5 +192,16 @@ export default function SupervisorKycPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function SupervisorKycPage() {
+  return (
+    <RoleGuard
+      allowedRoles={['ADMIN_SPV', 'SUPERVISOR_ADMIN']}
+      requiredPermission={PERMISSIONS.KYC_VIEW_ALL}
+    >
+      <SupervisorKycContent />
+    </RoleGuard>
   );
 }

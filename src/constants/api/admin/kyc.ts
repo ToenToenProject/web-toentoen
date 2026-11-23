@@ -3,7 +3,7 @@
 
 import { getToken } from './report';
 
-const BASE_URL = 'https://api-ops.toentoen.com/api/v1';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api/proxy';
 
 export type KycStatus = 'pending' | 'verified' | 'rejected' | 'unverified' | 'all';
 export type KycRole = 'owner' | 'business_admin' | 'all';
@@ -30,10 +30,16 @@ export interface KycListResult {
   raw: unknown;
 }
 
-const getHeaders = () => ({
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${getToken()}`,
-});
+const getHeaders = () => {
+  const token = getToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+};
 
 async function handle(res: Response, label: string) {
   let body: AnyRecord | null = null;
@@ -89,7 +95,10 @@ export const kycApi = {
     });
     if (params.search && params.search.trim()) qs.set('search', params.search.trim());
 
-    const res = await fetch(`${BASE_URL}/kyc/submissions?${qs.toString()}`, { headers: getHeaders() });
+    const res = await fetch(`${BASE_URL}/kyc/submissions?${qs.toString()}`, {
+      headers: getHeaders(),
+      credentials: "include",
+    });
     const body = await handle(res, 'KYC List');
     const { total, totalPages } = extractPagination(body);
     return { items: extractItems(body), page, limit, total, totalPages, raw: body };
@@ -101,31 +110,41 @@ export const kycApi = {
     const qs = role ? `?role=${encodeURIComponent(role)}` : '';
     const res = await fetch(`${BASE_URL}/kyc/submissions/${encodeURIComponent(accountId)}${qs}`, {
       headers: getHeaders(),
+      credentials: "include",
     });
     const body = await handle(res, 'KYC Detail');
     return (body && typeof body.data === 'object' && body.data !== null ? body.data : body) || {};
   },
 
   /** 3a. Setujui KYC */
-  approve: async (accountId: string, role: KycReviewRole) => {
+  approve: async (accountId: string, role?: KycReviewRole, notes?: string) => {
     if (!accountId) throw new Error('Account ID is required');
+    const noteText = notes || 'Dokumen KYC telah disetujui.';
     const res = await fetch(`${BASE_URL}/kyc/review/${encodeURIComponent(accountId)}`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ role, action: 'APPROVE' }),
+      credentials: "include",
+      body: JSON.stringify({ role, action: 'APPROVE', notes: noteText }),
     });
     return handle(res, 'KYC Approve');
   },
 
   /** 3b. Tolak KYC (alasan minimal 5 kata) */
-  reject: async (accountId: string, role: KycReviewRole, rejectionReason: string) => {
+  reject: async (accountId: string, role: KycReviewRole | undefined, rejectionReason: string) => {
     if (!accountId) throw new Error('Account ID is required');
     const wordCount = rejectionReason.trim().split(/\s+/).filter(Boolean).length;
     if (wordCount < 5) throw new Error('Alasan penolakan minimal 5 kata.');
+    const noteText = rejectionReason.trim();
     const res = await fetch(`${BASE_URL}/kyc/review/${encodeURIComponent(accountId)}`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ role, action: 'REJECT', rejectionReason: rejectionReason.trim() }),
+      credentials: "include",
+      body: JSON.stringify({
+        role,
+        action: 'REJECT',
+        notes: noteText,
+        rejectionReason: noteText,
+      }),
     });
     return handle(res, 'KYC Reject');
   },

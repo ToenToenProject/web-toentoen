@@ -1,29 +1,40 @@
-export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/api/proxy";
 
-export const LOGIN_ENDPOINT = `https://api-ops.toentoen.com/api/v1/auth/login`;
+export const LOGIN_ENDPOINT = `${BASE_URL}/auth/login`;
+export const ME_ENDPOINT = `${BASE_URL}/auth/me`;
+export const LOGOUT_ENDPOINT = `${BASE_URL}/auth/logout`;
 
 export interface LoginPayload {
-  workerId: string;
+  identifier?: string;
+  email?: string;
+  workerId?: string;
   password: string;
 }
 
 export interface UserData {
   id: string;
+  workerId?: string;
   email: string;
   name?: string;
-  role: "staf" | "admin" | string;
+  role: string;
+  permissions?: string[];
+  passwordChangeCount?: number;
+  ktpUploaded?: boolean;
+  phone?: string | null;
+  address?: string | null;
 }
 
 export interface LoginResponse {
-  status: boolean;
+  success: boolean;
   message: string;
   data?: {
-    token: string;
     user: UserData;
+    token?: string;
   };
 }
 
 export interface ApiErrorResponse {
+  success?: boolean;
   message?: string;
   errors?: Record<string, string[]>;
 }

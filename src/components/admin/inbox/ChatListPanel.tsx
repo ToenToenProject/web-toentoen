@@ -124,7 +124,12 @@ export const ChatListPanel: React.FC<ChatListPanelProps> = ({
             >
               <div className="flex justify-between items-start gap-2 mb-1">
                 <div className="flex items-center space-x-2 min-w-0">
-                  <img src={chat.avatar} alt={chat.name} className="w-10 h-10 shrink-0 rounded-full bg-gray-200 object-cover" />
+                  <img 
+                    src={chat.avatar || "/assets/avatars/starter-photo-profile.jpg"} 
+                    alt={chat.name} 
+                    onError={(e) => { e.currentTarget.src = "/assets/avatars/starter-photo-profile.jpg"; }}
+                    className="w-10 h-10 shrink-0 rounded-full bg-gray-200 object-cover" 
+                  />
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-x-2">
                       <span className="font-bold text-gray-900 text-sm">{chat.name}</span>

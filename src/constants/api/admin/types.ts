@@ -1,9 +1,10 @@
 export type ChatStatus = 'Unsolved' | 'Process' | 'Done';
 
 export interface Message {
-    sender: 'user' | 'admin';
+    sender: 'user' | 'admin' | 'system';
     text: string;
     time: string;
+    senderName?: string;
 }
 
 export interface ChatSession {

@@ -32,7 +32,7 @@ const PlatformItem = ({ card }: { card: PlatformCard }) => {
           <span className="text-xs font-bold text-white">{card.tag}</span>
           {!isUser && (
             <span className="text-[10px] font-semibold text-white/60">
-              Analytics
+              Analytics & Leads
             </span>
           )}
         </div>
@@ -61,7 +61,7 @@ const PlatformItem = ({ card }: { card: PlatformCard }) => {
 
 export const PlatformSection = () => {
   return (
-    <section className="w-full bg-white py-10 lg:py-12">
+    <section id="platform-section" className="w-full bg-white py-10 lg:py-12">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {PLATFORM_CARDS.map((card) => (
