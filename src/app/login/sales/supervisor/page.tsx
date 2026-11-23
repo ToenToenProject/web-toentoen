@@ -13,6 +13,7 @@ import {
   SUPERVISOR_TEAM_MEMBERS,
   SupervisorSalesMember,
 } from '@/constants/salesSupervisorData';
+import { SalesProfile } from '@/constants/salesData';
 
 export default function SalesSupervisorPage() {
   const [currentView, setCurrentView] = useState<'dashboard' | 'account' | 'staff-detail'>('dashboard');
@@ -24,48 +25,57 @@ export default function SalesSupervisorPage() {
   };
 
   return (
-    <SalesAuthGuard>
-      {({ onLogout }) => (
-        // flex h-screen overflow-hidden memastikan sidebar terkunci dan tidak bisa di-scroll
-        <div className="flex h-[100dvh] w-full bg-[#F9FAFB] font-sans text-gray-800 overflow-hidden">
-          {/* Left Minimal Sidebar (Terkunci permanen, tidak bisa ke-scroll) */}
-          <SalesSidebar
-            currentView={currentView === 'staff-detail' ? 'dashboard' : currentView}
-            onNavigate={(view) => setCurrentView(view)}
-          />
+    <SalesAuthGuard allowedRoles={['SALES_MARKETING_SPV', 'SUPER_ADMIN', 'C_LEVEL']}>
+      {({ onLogout, user }) => {
+        const dynamicProfile: SalesProfile = {
+          ...SUPERVISOR_PROFILE,
+          name: user?.name || SUPERVISOR_PROFILE.name,
+          role: 'Supervisor Sales',
+          registeredEmail: user?.email || SUPERVISOR_PROFILE.registeredEmail,
+        };
 
-          {/* Main Scrollable Area (Hanya area ini yang bisa di-scroll) */}
-          <div className="flex-1 h-[100dvh] overflow-y-auto overflow-x-hidden min-w-0">
-            <main className="p-3 sm:p-5 md:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-16">
-              {/* Top Bar with user pill & logout */}
-              <SalesTopBar
-                profile={SUPERVISOR_PROFILE}
-                referralCode="SS01"
-                onOpenAccount={() => setCurrentView('account')}
-                onLogout={onLogout}
-              />
+        return (
+          // flex h-screen overflow-hidden memastikan sidebar terkunci dan tidak bisa di-scroll
+          <div className="flex h-[100dvh] w-full bg-[#F9FAFB] font-sans text-gray-800 overflow-hidden">
+            {/* Left Minimal Sidebar (Terkunci permanen, tidak bisa ke-scroll) */}
+            <SalesSidebar
+              currentView={currentView === 'staff-detail' ? 'dashboard' : currentView}
+              onNavigate={(view) => setCurrentView(view)}
+            />
 
-              {/* View Switcher */}
-              {currentView === 'dashboard' && (
-                <SupervisorDashboardView onSelectStaff={handleSelectStaff} />
-              )}
-
-              {currentView === 'account' && (
-                <SupervisorAccountView
-                  onBackToDashboard={() => setCurrentView('dashboard')}
+            {/* Main Scrollable Area (Hanya area ini yang bisa di-scroll) */}
+            <div className="flex-1 h-[100dvh] overflow-y-auto overflow-x-hidden min-w-0">
+              <main className="p-3 sm:p-5 md:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-16">
+                {/* Top Bar with user pill & logout */}
+                <SalesTopBar
+                  profile={dynamicProfile}
+                  referralCode="SS01"
+                  onOpenAccount={() => setCurrentView('account')}
+                  onLogout={onLogout}
                 />
-              )}
 
-              {currentView === 'staff-detail' && (
-                <SupervisorStaffDetailView
-                  staff={selectedStaff}
-                  onBack={() => setCurrentView('dashboard')}
-                />
-              )}
-            </main>
+                {/* View Switcher */}
+                {currentView === 'dashboard' && (
+                  <SupervisorDashboardView onSelectStaff={handleSelectStaff} />
+                )}
+
+                {currentView === 'account' && (
+                  <SupervisorAccountView
+                    onBackToDashboard={() => setCurrentView('dashboard')}
+                  />
+                )}
+
+                {currentView === 'staff-detail' && (
+                  <SupervisorStaffDetailView
+                    staff={selectedStaff}
+                    onBack={() => setCurrentView('dashboard')}
+                  />
+                )}
+              </main>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      }}
     </SalesAuthGuard>
   );
 }

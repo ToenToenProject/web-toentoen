@@ -59,7 +59,11 @@ export default function LoginPage() {
         roleUpper.includes("SOSMED")
       ) {
         router.push("/login/social-media");
-      } else if (roleUpper.includes("CMO") || roleUpper.includes("MARKETING")) {
+      } else if (
+        roleUpper.includes("CMO") ||
+        roleUpper.includes("MARKETING") ||
+        roleUpper.includes("C_LEVEL")
+      ) {
         router.push("/login/cmo");
       } else if (
         roleUpper.includes("SALES_SUPERVISOR") ||
