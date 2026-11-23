@@ -472,6 +472,53 @@ function SupervisorDashboardContent() {
       loadSupervisorData(period || 'custom', isoDate);
     }; 
 
+    const handleExportReport = () => {
+      try {
+        const isoDate = selectedDateObj.toISOString().split('T')[0];
+        
+        // Buat baris laporan CSV lengkap dan terstruktur
+        const rows: (string | number)[][] = [
+          ['LAPORAN OPERASIONAL ADMIN & SUPERVISOR TOENTOEN'],
+          ['Tanggal Periode', currentDate, isoDate],
+          ['Diekspor Oleh', profile.name, profile.role],
+          ['Waktu Ekspor', new Date().toLocaleString('id-ID')],
+          [''],
+          ['RINGKASAN PERFORMA OPERASIONAL (KPI)'],
+          ['Metrik', 'Nilai', 'Keterangan'],
+          ...metrics.map((m) => [m.title, m.mainValue, m.trendText || '']),
+          [''],
+          ['TOP KATEGORI TIKET'],
+          ['Kategori', 'Jumlah Tiket', 'Persentase'],
+          ...ticketCategories.map((c) => [c.label, c.value, `${c.percentage}%`]),
+          [''],
+          ['TOP KATEGORI LAPORAN PELANGGARAN'],
+          ['Kategori', 'Jumlah Laporan', 'Persentase'],
+          ...reportCategories.map((c) => [c.label, c.value, `${c.percentage}%`]),
+          [''],
+          ['KAPASITAS TIM & STAF ADMIN'],
+          ['Nama Staf', 'Status', 'Beban Kerja (Load)', 'Skor Resolusi'],
+          ...team.map((t) => [t.name || t.agent_name || 'Staff Admin', t.status || 'Offline', `${t.load ?? 0} Tiket`, `${t.resolution_score ?? 100}%`]),
+        ];
+
+        const csvContent = rows
+          .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+          .join('\r\n');
+
+        const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `Laporan_Operasional_Admin_${isoDate}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('Gagal mengekspor laporan admin:', err);
+        alert('Gagal mengekspor laporan admin.');
+      }
+    }; 
+
     return (
         <main className="w-full bg-white min-h-screen pb-8">
             {/* HEADER */}
@@ -527,7 +574,12 @@ function SupervisorDashboardContent() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
-                        <button className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 transition-colors cursor-pointer">
+                        <button 
+                            type="button"
+                            onClick={handleExportReport}
+                            className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 transition-colors cursor-pointer shadow-2xs"
+                            title="Unduh laporan operasional admin format CSV"
+                        >
                             <span>Export report</span>
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         </button>

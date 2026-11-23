@@ -14,6 +14,7 @@ import { RegisterMerchantModal } from './RegisterMerchantModal';
 import { MerchantHistoryModal } from './MerchantHistoryModal';
 import { ReassignMerchantModal } from './ReassignMerchantModal';
 import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
+import { DatePickerModal } from '@/components/ui/DatePickerModal';
 import {
   Check,
   X,
@@ -81,6 +82,17 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'OPEN' | 'CLOSED'>('ALL');
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [selectedDateObj, setSelectedDateObj] = useState<Date>(() => new Date());
+  const [dateLabel, setDateLabel] = useState<string>(() => {
+    const now = new Date();
+    const day = now.getDate();
+    const months = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+    return `Hari Ini, ${day} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  });
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -275,13 +287,23 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
           <h3 className="font-semibold text-gray-800 text-sm">Support Operations Overview</h3>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-            {/* Filter Tanggal */}
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3.5 py-2 text-xs sm:text-sm bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-800 font-semibold cursor-pointer shadow-2xs"
-            />
+            {/* Filter Tanggal Interaktif (Modal Popup seperti di Admin) */}
+            <button
+              type="button"
+              onClick={() => setIsDatePickerOpen(true)}
+              className="w-full sm:w-auto border border-gray-300 rounded-lg px-3.5 py-2 text-xs sm:text-sm bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-800 font-semibold flex items-center justify-between sm:justify-start gap-2.5 transition-all shadow-2xs cursor-pointer group"
+              title="Klik untuk memilih tanggal"
+            >
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-teal-600 group-hover:scale-110 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>{dateLabel}</span>
+              </div>
+              <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
 
             {/* Export Report (Warna Teal persis Admin) */}
             <a
@@ -811,6 +833,19 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
         salesOptions={salesOptions}
         onClose={() => setSelectedReassignMerchant(null)}
         onSuccess={fetchDashboard}
+      />
+
+      {/* Modal Popup Kalender (DatePickerModal) */}
+      <DatePickerModal
+        isOpen={isDatePickerOpen}
+        onClose={() => setIsDatePickerOpen(false)}
+        selectedDate={selectedDateObj}
+        onApply={(date, formattedLabel, isoDate) => {
+          setSelectedDateObj(date);
+          setDateLabel(formattedLabel);
+          setSelectedDate(isoDate);
+          setIsDatePickerOpen(false);
+        }}
       />
     </div>
   );
