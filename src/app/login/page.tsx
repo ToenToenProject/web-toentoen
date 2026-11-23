@@ -52,43 +52,53 @@ export default function LoginPage() {
       const roleUpper = userRole ? userRole.toUpperCase() : "";
 
       // Pemetaan Role Login sesuai peran di backend
+      // 1. Sales & Sales Supervisor (Diprioritaskan sebelum pengecekan MARKETING generik)
       if (
+        roleUpper === "SALES_MARKETING_SPV" ||
+        roleUpper.includes("SALES_SUPERVISOR") ||
+        (roleUpper.includes("SALES") && (roleUpper.includes("SPV") || roleUpper.includes("SUPERVISOR")))
+      ) {
+        router.push("/login/sales/supervisor");
+      } else if (roleUpper === "SALES" || roleUpper.includes("SALES")) {
+        router.push("/login/sales/staff");
+      } 
+      // 2. Social Media & Content Creator
+      else if (
         roleUpper.includes("CONTENT_CREATOR") ||
         roleUpper.includes("SOCIAL") ||
         roleUpper.includes("SMM") ||
         roleUpper.includes("SOSMED")
       ) {
         router.push("/login/social-media");
-      } else if (
+      } 
+      // 3. CMO & C-Level (Executive Marketing)
+      else if (
         roleUpper.includes("CMO") ||
-        roleUpper.includes("MARKETING") ||
+        (roleUpper.includes("MARKETING") && !roleUpper.includes("SALES")) ||
         roleUpper.includes("C_LEVEL")
       ) {
         router.push("/login/cmo");
-      } else if (
-        roleUpper.includes("SALES_SUPERVISOR") ||
-        (roleUpper.includes("SUPERVISOR") && roleUpper.includes("SALES")) ||
-        roleUpper === "SALES_MARKETING_SPV"
-      ) {
-        router.push("/login/sales/supervisor");
-      } else if (roleUpper.includes("SALES")) {
-        router.push("/login/sales/staff");
-      } else if (
+      } 
+      // 4. Admin Supervisor Customer Service
+      else if (
         roleUpper === "ADMIN_SPV" ||
         roleUpper === "SUPERVISOR_ADMIN" ||
-        roleUpper.includes("SPV") ||
-        roleUpper.includes("SUPERVISOR")
+        (roleUpper.includes("ADMIN") && (roleUpper.includes("SPV") || roleUpper.includes("SUPERVISOR")))
       ) {
         router.push("/login/admin/supervisor");
-      } else if (
+      } 
+      // 5. Staff Admin Customer Service
+      else if (
         roleUpper === "ADMIN" ||
+        roleUpper === "STAFF_ADMIN" ||
         roleUpper === "STAFF" ||
         roleUpper.includes("CS") ||
         roleUpper.includes("SUPPORT")
       ) {
         router.push("/login/admin/staff");
       } else {
-        router.push("/login/admin/staff");
+        // Fallback default
+        router.push("/login/sales/staff");
       }
     } catch (err) {
       if (err instanceof Error) {
