@@ -269,13 +269,13 @@ export const SalesDashboardView: React.FC = () => {
         </div>
       </div>
 
-      {/* SECTION 2: Team Capacity (Daftar Toko Binaan) */}
+      {/* SECTION 2: Team Capacity */}
       <section className="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden">
         {/* Table Header Controls */}
         <div className="p-4 sm:p-5 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h3 className="font-bold text-gray-900 text-sm">Team Capacity / Toko Binaan</h3>
-            <p className="text-xs text-gray-500 mt-1">
+            <h3 className="font-bold text-gray-900 text-base">Team Capacity</h3>
+            <p className="text-xs text-gray-500 mt-0.5">
               Status operasional langsung, target mingguan/bulanan, dan pemenuhan tugas harian
             </p>
           </div>
