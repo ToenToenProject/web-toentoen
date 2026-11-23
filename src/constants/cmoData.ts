@@ -9,7 +9,7 @@ export interface CmoProfile {
 export const INITIAL_CMO_PROFILE: CmoProfile = {
   name: 'Silvi',
   role: 'CMO',
-  avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&q=80&fit=crop',
+  avatar: '/assets/avatars/starter-photo-profile.jpg',
 };
 
 // --- DATA TAB ADMIN (GAMBAR 1) ---

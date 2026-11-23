@@ -80,7 +80,12 @@ export const SalesAuthGuard: React.FC<SalesAuthGuardProps> = ({ allowedRoles, ch
       const userRole = (activeUser.role || '').toUpperCase();
       const isSupervisor = userRole.includes('SUPERVISOR') || userRole.includes('SPV') || userRole === 'SALES_MARKETING_SPV';
       const isSalesStaff = userRole === 'SALES' || userRole.includes('SALES');
-      const isSuperAdmin = userRole === 'SUPER_ADMIN' || userRole === 'C_LEVEL' || userRole === 'ADMIN';
+      const isSuperAdmin =
+        userRole === 'SUPER_ADMIN' ||
+        userRole === 'C_LEVEL' ||
+        userRole === 'CMO' ||
+        userRole === 'ADMIN' ||
+        Boolean(activeUser.permissions?.includes('*'));
 
       // Jika role tertentu diwajibkan (misal supervisor)
       if (allowedRoles && allowedRoles.length > 0) {

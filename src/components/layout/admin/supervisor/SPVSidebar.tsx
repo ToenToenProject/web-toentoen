@@ -35,7 +35,7 @@ const ITEMS = [
 
 export default function AdminSidebar() {
   const pathname = usePathname() ?? '';
-  const { hasPermission } = usePermission();
+  const { hasPermission, isCLevel } = usePermission();
 
   const visibleItems = ITEMS.filter(
     (item) => !item.requiredPermission || hasPermission(item.requiredPermission)
@@ -56,6 +56,19 @@ export default function AdminSidebar() {
         />
       </Link>
       <nav className="flex w-full flex-row items-center justify-around text-gray-400 md:w-auto md:flex-col md:justify-start md:gap-6">
+        {/* Tombol kembali ke CMO Hub jika akun adalah CMO / C_LEVEL */}
+        {isCLevel() && (
+          <Link
+            href="/login/cmo"
+            title="Kembali ke CMO Hub"
+            className="flex flex-col items-center gap-0.5 rounded-lg p-2 text-teal-600 hover:bg-teal-50 transition-colors"
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+            </svg>
+            <span className="text-[9px] font-bold">CMO</span>
+          </Link>
+        )}
         {visibleItems.map((item) => {
           const active = isActive(item.href, item.exact);
           return (
