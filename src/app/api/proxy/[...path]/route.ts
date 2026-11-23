@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getBackendBaseUrl, isStrictTlsRequired, resolveCurrentStage } from '@/config/apiConfig';
 
 // Configure TLS verification based on deployment stage
-if (!isStrictTlsRequired()) {
+if (!isStrictTlsRequired() || process.env.ALLOW_INSECURE_DEV_TLS === 'true') {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 } else {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1';

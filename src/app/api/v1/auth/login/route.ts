@@ -3,18 +3,17 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { getBackendBaseUrl, isStrictTlsRequired } from '@/config/apiConfig';
 
-// Suppress TLS validation in development when backend certificate does not match multi-level domain
-if (process.env.NODE_ENV !== 'production' || process.env.ALLOW_INSECURE_DEV_TLS === 'true') {
+// Configure TLS verification based on deployment stage or explicit settings
+if (!isStrictTlsRequired() || process.env.ALLOW_INSECURE_DEV_TLS === 'true') {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 }
 
-const BACKEND_LOGIN_URL = process.env.INTERNAL_API_BASE_URL 
-  ? `${process.env.INTERNAL_API_BASE_URL}/auth/login` 
-  : 'https://dev-api-ops.toentoen.com/api/v1/auth/login';
-
 export async function POST(req: NextRequest) {
   try {
+    const backendBaseUrl = getBackendBaseUrl();
+    const BACKEND_LOGIN_URL = `${backendBaseUrl}/auth/login`;
     const body = await req.json();
 
     const identifier = body.identifier || body.email || body.workerId || '';
