@@ -38,11 +38,43 @@ interface CustomerProfileDetail {
   recent_activity?: RecentActivityItem[];
 }
 
-const CANNED_RESPONSES = [
-  "Halo Kak, terima kasih atas laporannya. Tim kami sedang meninjau kendala ini.",
-  "Mohon ditunggu sebentar ya Kak, kami sedang memeriksa sistem pembayaran terkait.",
-  "Laporan transaksi telah berhasil kami selesaikan. Silakan cek saldo akun Kakak kembali ya.",
-  "Apakah ada hal lain yang bisa kami bantu sebelum tiket ini kami selesaikan?"
+interface CannedResponse {
+  id: string;
+  title: string;
+  category: string;
+  badgeColor: string;
+  text: string;
+}
+
+const CANNED_RESPONSES: CannedResponse[] = [
+  {
+    id: 'greeting',
+    title: 'Konfirmasi Penerimaan',
+    category: 'Salam',
+    badgeColor: 'bg-teal-50 text-teal-700 border-teal-200',
+    text: 'Halo Kak, terima kasih atas laporannya. Tim kami sedang meninjau kendala ini.'
+  },
+  {
+    id: 'investigation',
+    title: 'Investigasi Sistem',
+    category: 'Pengecekan',
+    badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+    text: 'Mohon ditunggu sebentar ya Kak, kami sedang memeriksa sistem pembayaran terkait.'
+  },
+  {
+    id: 'resolved',
+    title: 'Penyelesaian Transaksi',
+    category: 'Solusi',
+    badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    text: 'Laporan transaksi telah berhasil kami selesaikan. Silakan cek saldo akun Kakak kembali ya.'
+  },
+  {
+    id: 'closing',
+    title: 'Konfirmasi Penutup',
+    category: 'Follow-up',
+    badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
+    text: 'Apakah ada hal lain yang bisa kami bantu sebelum tiket ini kami selesaikan?'
+  }
 ];
 
 function SupervisorInboxContent() {
@@ -67,6 +99,7 @@ function SupervisorInboxContent() {
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const templatesRef = useRef<HTMLDivElement>(null);
+  const templateBtnRef = useRef<HTMLButtonElement>(null);
 
   // Deteksi Zona Waktu Lokal Admin Browser
   useEffect(() => {
@@ -104,15 +137,28 @@ function SupervisorInboxContent() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Tutup dropdown template jika klik di luar
+  // Tutup dropdown template jika klik di luar atau tekan tombol Esc
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (templatesRef.current && !templatesRef.current.contains(e.target as Node)) {
+      if (
+        templatesRef.current && 
+        !templatesRef.current.contains(e.target as Node) &&
+        !templateBtnRef.current?.contains(e.target as Node)
+      ) {
+        setShowTemplates(false);
+      }
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
         setShowTemplates(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   // 1. Fetch tickets from backend based on activeTab
@@ -608,21 +654,62 @@ function SupervisorInboxContent() {
             {showTemplates && (
               <div 
                 ref={templatesRef}
-                className="absolute bottom-full left-4 mb-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 p-2 z-30 space-y-1"
+                className="absolute bottom-full left-3 mb-3 w-[92vw] max-w-[420px] bg-white rounded-2xl shadow-2xl border border-gray-200 z-40 overflow-hidden"
               >
-                <div className="px-2 py-1 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                  Template Balasan Cepat
-                </div>
-                {CANNED_RESPONSES.map((tmpl, tIdx) => (
-                  <button
-                    key={tIdx}
+                {/* Header Popup */}
+                <div className="px-4 py-3 bg-gradient-to-r from-gray-50 via-teal-50/40 to-white border-b border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="w-6 h-6 rounded-lg bg-teal-500/10 text-teal-600 flex items-center justify-center shrink-0">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </span>
+                    <div>
+                      <h4 className="text-xs font-bold text-gray-900 leading-tight">Template Balasan Cepat</h4>
+                      <p className="text-[10px] text-gray-400">Pilih pesan instan untuk mengisi balasan</p>
+                    </div>
+                  </div>
+                  <button 
                     type="button"
-                    onClick={() => { setReplyText(tmpl); setShowTemplates(false); }}
-                    className="w-full text-left text-xs p-2 rounded-lg hover:bg-teal-50 text-gray-700 transition-colors leading-relaxed line-clamp-2"
+                    onClick={() => setShowTemplates(false)} 
+                    className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                    title="Tutup (Esc)"
                   >
-                    "{tmpl}"
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                   </button>
-                ))}
+                </div>
+
+                {/* List Template Items */}
+                <div className="p-2.5 max-h-[320px] overflow-y-auto space-y-2 custom-scrollbar">
+                  {CANNED_RESPONSES.map((tmpl) => (
+                    <button
+                      key={tmpl.id}
+                      type="button"
+                      onClick={() => { setReplyText(tmpl.text); setShowTemplates(false); }}
+                      className="w-full text-left p-3 rounded-xl border border-gray-100/90 bg-gray-50/30 hover:bg-teal-50/60 hover:border-teal-300 hover:shadow-xs transition-all duration-150 group flex flex-col gap-1.5"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-semibold text-xs text-gray-900 group-hover:text-teal-800 transition-colors">
+                          {tmpl.title}
+                        </span>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${tmpl.badgeColor}`}>
+                          {tmpl.category}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 group-hover:text-gray-900 leading-relaxed font-normal break-words">
+                        "{tmpl.text}"
+                      </p>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Footer Petunjuk */}
+                <div className="px-4 py-2 bg-gray-50/80 border-t border-gray-100 text-[10px] text-gray-500 flex items-center justify-between">
+                  <span>💡 Klik salah satu untuk mengisi ke kotak input</span>
+                  <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded text-[9px] font-mono text-gray-400 shadow-2xs">ESC</kbd>
+                </div>
               </div>
             )}
 
@@ -630,9 +717,14 @@ function SupervisorInboxContent() {
               
               {/* Shortcut Tombol Template Cepat */}
               <button
+                ref={templateBtnRef}
                 type="button"
                 onClick={() => setShowTemplates(!showTemplates)}
-                className="p-2 text-gray-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors shrink-0"
+                className={`p-2 rounded-lg transition-all shrink-0 ${
+                  showTemplates 
+                    ? 'text-teal-600 bg-teal-50 ring-2 ring-teal-500/30 shadow-2xs' 
+                    : 'text-gray-500 hover:text-teal-600 hover:bg-teal-50'
+                }`}
                 title="Pilih balasan template cepat"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
