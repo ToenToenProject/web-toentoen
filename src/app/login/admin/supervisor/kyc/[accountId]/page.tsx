@@ -7,6 +7,7 @@ import { kycApi, pick, type AnyRecord, type KycReviewRole } from '@/constants/ap
 import KycStatusBadge from '@/components/admin/kyc/KycStatusBadge';
 import { RoleGuard } from '@/components/auth/RoleGuard';
 import { PERMISSIONS } from '@/types/auth';
+import { KycDetailSkeleton } from '@/components/ui/Skeleton';
 
 const IMAGE_EXT = /\.(png|jpe?g|webp|gif|bmp|heic)(\?.*)?$/i;
 const IMAGE_KEY = /(photo|foto|image|img|ktp|selfie|picture|document|file|url)/i;
@@ -198,7 +199,7 @@ function KycDetailContent() {
       )}
 
       {loading ? (
-        <p className="text-sm text-gray-500">Memuat detail...</p>
+        <KycDetailSkeleton />
       ) : detail ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* DATA */}

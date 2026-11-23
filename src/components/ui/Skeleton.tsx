@@ -173,3 +173,142 @@ export function CustomerProfileSkeleton() {
     </div>
   );
 }
+
+// 9. Skeleton Table Rows untuk Verifikasi KYC
+export function KycTableRowSkeleton({ count = 5 }: { count?: number }) {
+  return (
+    <>
+      {Array.from({ length: count }).map((_, idx) => (
+        <tr key={idx} className="animate-pulse border-b border-gray-100 hover:bg-gray-50/40">
+          <td className="px-4 py-3.5">
+            <Skeleton className="h-4 w-32 rounded mb-1" />
+            <Skeleton className="h-2.5 w-20 rounded" />
+          </td>
+          <td className="px-4 py-3.5">
+            <Skeleton className="h-3.5 w-36 rounded" />
+          </td>
+          <td className="px-4 py-3.5">
+            <Skeleton className="h-3.5 w-20 rounded" />
+          </td>
+          <td className="px-4 py-3.5">
+            <Skeleton className="h-5 w-16 rounded-full" />
+          </td>
+          <td className="px-4 py-3.5">
+            <Skeleton className="h-3.5 w-24 rounded" />
+          </td>
+          <td className="px-4 py-3.5 text-right">
+            <Skeleton className="h-7 w-20 rounded-lg ml-auto" />
+          </td>
+        </tr>
+      ))}
+    </>
+  );
+}
+
+// 10. Skeleton Table Rows untuk Sales (Team Capacity / Merchant List)
+export function SalesTableRowSkeleton({ count = 5, cols = 7 }: { count?: number; cols?: number }) {
+  return (
+    <>
+      {Array.from({ length: count }).map((_, idx) => (
+        <tr key={idx} className="animate-pulse border-b border-gray-100">
+          <td className="py-3.5 px-4">
+            <Skeleton className="h-4 w-28 rounded mb-1" />
+            <Skeleton className="h-2.5 w-16 rounded" />
+          </td>
+          <td className="py-3.5 px-4">
+            <Skeleton className="h-4 w-32 rounded mb-1" />
+            <Skeleton className="h-2.5 w-20 rounded" />
+          </td>
+          <td className="py-3.5 px-4 text-center">
+            <Skeleton className="h-5 w-16 mx-auto rounded-full" />
+          </td>
+          <td className="py-3.5 px-4 text-center">
+            <Skeleton className="h-5 w-20 mx-auto rounded-full" />
+          </td>
+          <td className="py-3.5 px-4 text-center">
+            <Skeleton className="h-5 w-20 mx-auto rounded-full" />
+          </td>
+          <td className="py-3.5 px-4 text-center">
+            <Skeleton className="h-6 w-24 mx-auto rounded-lg" />
+          </td>
+          <td className="py-3.5 px-4 text-right">
+            <div className="flex items-center justify-end space-x-2">
+              <Skeleton className="h-7 w-18 rounded-lg" />
+              <Skeleton className="h-7 w-20 rounded-lg" />
+            </div>
+          </td>
+        </tr>
+      ))}
+    </>
+  );
+}
+
+// 11. Skeleton Detail KYC ([accountId])
+export function KycDetailSkeleton() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 animate-pulse">
+      <div className="lg:col-span-2 space-y-4">
+        {/* Dokumen Card */}
+        <div className="border border-gray-200 rounded-xl p-4 bg-white space-y-3">
+          <Skeleton className="h-4 w-24 rounded" />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <Skeleton className="h-36 w-full rounded-lg" />
+            <Skeleton className="h-36 w-full rounded-lg" />
+          </div>
+        </div>
+
+        {/* Data Pengajuan Card */}
+        <div className="border border-gray-200 rounded-xl p-4 bg-white space-y-4">
+          <Skeleton className="h-4 w-32 rounded" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="border-b border-gray-50 pb-2 space-y-1">
+                <Skeleton className="h-2.5 w-20 rounded" />
+                <Skeleton className="h-4 w-40 rounded" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Tindakan Box */}
+      <div className="border border-gray-200 rounded-xl p-4 bg-white h-fit space-y-4">
+        <Skeleton className="h-4 w-20 rounded" />
+        <Skeleton className="h-9 w-full rounded-lg" />
+        <Skeleton className="h-9 w-full rounded-lg" />
+        <Skeleton className="h-9 w-full rounded-lg" />
+      </div>
+    </div>
+  );
+}
+
+// 12. Skeleton CMO Overview Accordion
+export function CmoDivisionSkeleton({ count = 3 }: { count?: number }) {
+  return (
+    <div className="space-y-6 animate-pulse">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="border-b border-gray-100 last:border-b-0 pb-6 space-y-3">
+          <Skeleton className="h-3.5 w-24 rounded" />
+          <div className="p-3 bg-gray-50/60 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center space-x-3 w-full md:w-1/4">
+              <Skeleton className="w-8 h-8 rounded-full shrink-0" />
+              <div className="space-y-1 flex-1">
+                <Skeleton className="h-3.5 w-28 rounded" />
+                <Skeleton className="h-2.5 w-16 rounded" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 flex-1 w-full">
+              {Array.from({ length: 5 }).map((_, j) => (
+                <div key={j} className="space-y-1">
+                  <Skeleton className="h-2.5 w-16 rounded" />
+                  <Skeleton className="h-4 w-12 rounded" />
+                  <Skeleton className="h-2 w-20 rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

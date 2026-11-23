@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { CMO_DIVISIONS_DATA, DivisionData } from '@/constants/cmoData';
 import { cmoService } from '@/services/cmoService';
 import { DatePickerModal } from '@/components/ui/DatePickerModal';
+import { CmoDivisionSkeleton } from '@/components/ui/Skeleton';
 
 const getSafeAvatar = (url?: string) => {
   if (!url || url.includes('unsplash.com') || url.includes('pravatar.cc') || url.includes('dummy')) {
@@ -195,8 +196,11 @@ export const CmoAdminTabView: React.FC = () => {
 
         <h3 className="text-sm font-bold text-gray-900 mb-5">Performance overview</h3>
 
-        <div className="space-y-6">
-          {divisions.map((division: DivisionData) => {
+        {loading && divisions.length === 0 ? (
+          <CmoDivisionSkeleton count={3} />
+        ) : (
+          <div className="space-y-6">
+            {divisions.map((division: DivisionData) => {
             const isExpanded = !!expandedDivisions[division.id];
             const supervisorAvatar = getSafeAvatar(division.supervisor?.avatar);
 
@@ -415,6 +419,7 @@ export const CmoAdminTabView: React.FC = () => {
             );
           })}
         </div>
+        )}
       </div>
 
       {/* Modal Popup Date Picker */}

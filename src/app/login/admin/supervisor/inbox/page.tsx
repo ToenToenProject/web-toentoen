@@ -88,6 +88,7 @@ function SupervisorInboxContent() {
   const [customerDetail, setCustomerDetail] = useState<CustomerProfileDetail | null>(null);
   const [activeTab, setActiveTab] = useState<'queue' | 'solved'>('queue');
   const [filterType, setFilterType] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
@@ -449,9 +450,22 @@ function SupervisorInboxContent() {
             </svg>
             <input 
               type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari tiket atau pelanggan..." 
-              className="w-full pl-9 pr-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-teal-500 bg-gray-50/50"
+              className="w-full pl-9 pr-7 py-1.5 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-teal-500 bg-gray-50/50"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2 top-2 text-gray-400 hover:text-gray-600 cursor-pointer"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
 
           {/* Queue / Solved Toggle */}
@@ -508,7 +522,18 @@ function SupervisorInboxContent() {
             </div>
           )}
           {!loading && tickets
-            .filter((t) => filterType === 'All' || t.type === filterType)
+            .filter((t) => {
+              if (filterType !== 'All' && t.type !== filterType) return false;
+              if (searchQuery.trim()) {
+                const q = searchQuery.toLowerCase().trim();
+                const matchId = String(t.ticketId || t.rawId || t.id || '').toLowerCase().includes(q);
+                const matchName = String(t.customer?.name || t.name || t.customerName || '').toLowerCase().includes(q);
+                const matchMsg = String(t.message || t.lastMessage || '').toLowerCase().includes(q);
+                const matchCat = String(t.category || t.issueType || '').toLowerCase().includes(q);
+                return matchId || matchName || matchMsg || matchCat;
+              }
+              return true;
+            })
             .map((ticket, idx) => {
             const isSelected = selectedTicket?.id === ticket.id;
             return (

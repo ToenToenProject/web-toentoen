@@ -15,6 +15,7 @@ import { MerchantHistoryModal } from './MerchantHistoryModal';
 import { ReassignMerchantModal } from './ReassignMerchantModal';
 import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
 import { DatePickerModal } from '@/components/ui/DatePickerModal';
+import { SalesTableRowSkeleton } from '@/components/ui/Skeleton';
 import {
   Check,
   X,
@@ -173,12 +174,12 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
     fetchDashboard();
   }, [currentPage]);
 
-  // Handle Search Debounce
+  // Handle Search Debounce realtime
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentPage(1);
       fetchDashboard();
-    }, 350);
+    }, 200);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
@@ -222,12 +223,25 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
   const totalPages = serverPagination?.totalPages ?? Math.max(1, Math.ceil(totalCount / pageSize));
 
   const displayedMerchants = useMemo(() => {
+    let list = merchants;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter((m) => {
+        const item = m as any;
+        const name = (item.merchantInvited?.name || item.merchantName || item.name || '').toLowerCase();
+        const store = (item.store?.name || item.storeName || item.storeInfo?.name || '').toLowerCase();
+        const cat = (item.store?.category || item.storeCategory || item.storeInfo?.category || '').toLowerCase();
+        const sales = (item.assignedSales?.name || item.assignedSalesRep?.name || item.salesRepName || item.sales?.name || '').toLowerCase();
+        const id = (item.merchantInvited?.id || item.merchantId || item.id || '').toLowerCase();
+        return name.includes(q) || store.includes(q) || cat.includes(q) || sales.includes(q) || id.includes(q);
+      });
+    }
     if (isServerPaginated) {
-      return merchants;
+      return list;
     }
     const start = (currentPage - 1) * pageSize;
-    return merchants.slice(start, start + pageSize);
-  }, [merchants, isServerPaginated, currentPage, pageSize]);
+    return list.slice(start, start + pageSize);
+  }, [merchants, isServerPaginated, currentPage, pageSize, searchQuery]);
   const paginatedMerchants = displayedMerchants;
 
   const overviewCards = [
@@ -488,17 +502,7 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
             </thead>
             <tbody className="divide-y divide-gray-100 text-xs">
               {loading ? (
-                <tr>
-                  <td colSpan={7} className="py-14 text-center text-gray-400">
-                    <div className="flex flex-col items-center justify-center space-y-2">
-                      <svg className="w-6 h-6 animate-spin text-teal-600" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                      </svg>
-                      <span>Memuat data merchant seluruh tim...</span>
-                    </div>
-                  </td>
-                </tr>
+                <SalesTableRowSkeleton count={Math.min(pageSize, 8)} />
               ) : displayedMerchants.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-gray-400">
