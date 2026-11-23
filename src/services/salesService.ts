@@ -119,12 +119,22 @@ export interface SalesMerchantItem {
   referralCode?: string;
 }
 
+export interface SalesPaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasMore: boolean;
+  nextCursor?: string | null;
+}
+
 export interface SalesDashboardData {
   date: string;
   overview: SalesOverviewCards;
   filterSalesOptions?: SalesFilterOption[];
   totalMerchants: number;
   merchants: SalesMerchantItem[];
+  pagination?: SalesPaginationMeta;
 }
 
 export interface RegisterMerchantPayload {
@@ -201,6 +211,7 @@ export const salesService = {
     search?: string;
     limit?: number;
     page?: number;
+    cursor?: string;
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   } = {}): Promise<SalesDashboardData> => {
@@ -212,6 +223,7 @@ export const salesService = {
     if (params.search) query.set("search", params.search);
     if (params.limit) query.set("limit", String(params.limit));
     if (params.page) query.set("page", String(params.page));
+    if (params.cursor) query.set("cursor", params.cursor);
     if (params.sortBy) query.set("sortBy", params.sortBy);
     if (params.sortOrder) query.set("sortOrder", params.sortOrder);
 

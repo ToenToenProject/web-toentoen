@@ -70,9 +70,17 @@ export const adminApi = {
     }
   },
 
-  getAdminStaff: async (role = 'STAFF_ADMIN') => {
+  getAdminStaff: async (param: string | { role?: string; page?: number; limit?: number; cursor?: string } = 'STAFF_ADMIN') => {
     try {
-      const res = await fetch(`${BASE_URL}/admin/staff?role=${role}`, {
+      const role = typeof param === 'string' ? param : (param.role || 'STAFF_ADMIN');
+      const query = new URLSearchParams({ role });
+      if (typeof param === 'object') {
+        if (param.page) query.set('page', String(param.page));
+        if (param.limit) query.set('limit', String(param.limit));
+        if (param.cursor) query.set('cursor', param.cursor);
+      }
+      const qs = query.toString();
+      const res = await fetch(`${BASE_URL}/admin/staff?${qs}`, {
         headers: getHeaders(),
         credentials: "include",
       });
@@ -80,8 +88,8 @@ export const adminApi = {
         const json = await res.json();
         return json.data || json.staff || [];
       }
-      // Fallback ke alias endpoint /workers?role=STAFF_ADMIN
-      const workerRes = await fetch(`${BASE_URL}/workers?role=${role}`, {
+      // Fallback ke alias endpoint /workers
+      const workerRes = await fetch(`${BASE_URL}/workers?${qs}`, {
         headers: getHeaders(),
         credentials: "include",
       });

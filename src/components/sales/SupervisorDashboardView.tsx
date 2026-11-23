@@ -7,6 +7,7 @@ import {
   SalesOverviewCards,
   SalesMerchantItem,
   SalesFilterOption,
+  SalesPaginationMeta,
 } from '@/services/salesService';
 import { SupervisorSalesMember } from '@/constants/salesSupervisorData';
 import { RegisterMerchantModal } from './RegisterMerchantModal';
@@ -88,6 +89,7 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [serverPagination, setServerPagination] = useState<SalesPaginationMeta | null>(null);
 
   // Modals
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
@@ -135,6 +137,11 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
       if (res) {
         if (res.overview) setOverview(res.overview);
         if (Array.isArray(res.merchants)) setMerchants(res.merchants);
+        if (res.pagination) {
+          setServerPagination(res.pagination);
+        } else {
+          setServerPagination(null);
+        }
         if (Array.isArray(res.filterSalesOptions) && res.filterSalesOptions.length > 0 && salesOptions.length === 0) {
           setSalesOptions(res.filterSalesOptions);
         }
@@ -199,11 +206,17 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
   };
 
   // Pagination calculation
-  const totalPages = Math.max(1, Math.ceil(merchants.length / pageSize));
-  const paginatedMerchants = useMemo(() => {
+  const isServerPaginated = Boolean(serverPagination);
+  const totalCount = serverPagination?.total ?? (overview.managedMerchants?.value !== undefined && Number.isFinite(Number(overview.managedMerchants.value)) ? Number(overview.managedMerchants.value) : merchants.length);
+  const totalPages = serverPagination?.totalPages ?? Math.max(1, Math.ceil(totalCount / pageSize));
+
+  const displayedMerchants = useMemo(() => {
+    if (isServerPaginated) {
+      return merchants;
+    }
     const start = (currentPage - 1) * pageSize;
     return merchants.slice(start, start + pageSize);
-  }, [merchants, currentPage, pageSize]);
+  }, [merchants, isServerPaginated, currentPage, pageSize]);
 
   const overviewCards = [
     {
@@ -490,14 +503,14 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
                     </div>
                   </td>
                 </tr>
-              ) : paginatedMerchants.length === 0 ? (
+              ) : displayedMerchants.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-gray-400">
                     Tidak ada data merchant yang sesuai dengan filter.
                   </td>
                 </tr>
               ) : (
-                paginatedMerchants.map((m) => {
+                displayedMerchants.map((m) => {
                   const isExpanded = expandedId === m.id;
                   const daily = m.expandableDailySubColumns;
                   const isOnline = m.status === 'Online' || m.status === 'OPEN';
@@ -757,14 +770,14 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
             <div className="text-gray-500 font-medium">
               <span>Menampilkan </span>
               <span className="font-bold text-gray-900">
-                {merchants.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}
+                {totalCount === 0 ? 0 : (currentPage - 1) * pageSize + 1}
               </span>
               <span> - </span>
               <span className="font-bold text-gray-900">
-                {Math.min(currentPage * pageSize, merchants.length)}
+                {Math.min(currentPage * pageSize, totalCount)}
               </span>
               <span> dari </span>
-              <span className="font-bold text-gray-900">{merchants.length}</span>
+              <span className="font-bold text-gray-900">{totalCount}</span>
               <span> merchant</span>
             </div>
           </div>

@@ -15,6 +15,7 @@ export interface KycListParams {
   search?: string;
   page?: number;
   limit?: number;
+  cursor?: string;
 }
 
 // Struktur response backend belum pasti, jadi dibuat longgar.
@@ -27,6 +28,8 @@ export interface KycListResult {
   limit: number;
   total: number | null;
   totalPages: number | null;
+  hasMore?: boolean;
+  nextCursor?: string | null;
   raw: unknown;
 }
 
@@ -79,6 +82,8 @@ function extractPagination(body: AnyRecord | null) {
   return {
     total: num(src.total ?? src.totalItems ?? src.total_items ?? src.count),
     totalPages: num(src.totalPages ?? src.total_pages ?? src.lastPage ?? src.last_page ?? src.pages),
+    hasMore: Boolean(src.hasMore),
+    nextCursor: (src.nextCursor as string | null | undefined) ?? null,
   };
 }
 
@@ -94,14 +99,15 @@ export const kycApi = {
       limit: String(limit),
     });
     if (params.search && params.search.trim()) qs.set('search', params.search.trim());
+    if (params.cursor) qs.set('cursor', params.cursor);
 
     const res = await fetch(`${BASE_URL}/kyc/submissions?${qs.toString()}`, {
       headers: getHeaders(),
       credentials: "include",
     });
     const body = await handle(res, 'KYC List');
-    const { total, totalPages } = extractPagination(body);
-    return { items: extractItems(body), page, limit, total, totalPages, raw: body };
+    const { total, totalPages, hasMore, nextCursor } = extractPagination(body);
+    return { items: extractItems(body), page, limit, total, totalPages, hasMore, nextCursor, raw: body };
   },
 
   /** 2. Lihat detail request KYC */

@@ -421,15 +421,31 @@ export const adminService = {
    * 15. Daftar Staf Admin Aktif
    * GET /admin/staff atau GET /workers?role=STAFF_ADMIN
    */
-  getAdminStaff: async (role = 'STAFF_ADMIN'): Promise<{ staff: any[] }> => {
+  getAdminStaff: async (param: string | { role?: string; page?: number; limit?: number; cursor?: string } = 'STAFF_ADMIN'): Promise<{ staff: any[]; pagination?: any }> => {
     try {
-      const res: any = await fetchApi<any>(`/admin/staff?role=${role}`);
+      const role = typeof param === 'string' ? param : (param.role || 'STAFF_ADMIN');
+      const query = new URLSearchParams({ role });
+      if (typeof param === 'object') {
+        if (param.page) query.set('page', String(param.page));
+        if (param.limit) query.set('limit', String(param.limit));
+        if (param.cursor) query.set('cursor', param.cursor);
+      }
+      const qs = query.toString();
+      const res: any = await fetchApi<any>(`/admin/staff?${qs}`);
       const list = res?.data || res?.staff || (Array.isArray(res) ? res : []);
-      return { staff: list };
+      return { staff: list, pagination: res?.pagination };
     } catch {
-      const res: any = await fetchApi<any>(`/workers?role=${role}`).catch(() => ({ data: [] }));
+      const role = typeof param === 'string' ? param : (param.role || 'STAFF_ADMIN');
+      const query = new URLSearchParams({ role });
+      if (typeof param === 'object') {
+        if (param.page) query.set('page', String(param.page));
+        if (param.limit) query.set('limit', String(param.limit));
+        if (param.cursor) query.set('cursor', param.cursor);
+      }
+      const qs = query.toString();
+      const res: any = await fetchApi<any>(`/workers?${qs}`).catch(() => ({ data: [] }));
       const list = res?.data || res?.workers || (Array.isArray(res) ? res : []);
-      return { staff: list };
+      return { staff: list, pagination: res?.pagination };
     }
   },
 };
