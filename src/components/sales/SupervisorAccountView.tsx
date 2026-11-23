@@ -1,9 +1,10 @@
 // src/components/sales/SupervisorAccountView.tsx
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { LOGIN_HISTORY_DATA } from '@/constants/salesData';
 import { SUPERVISOR_PROFILE } from '@/constants/salesSupervisorData';
+import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
 
 interface SupervisorAccountViewProps {
   onBackToDashboard: () => void;
@@ -13,7 +14,15 @@ export const SupervisorAccountView: React.FC<SupervisorAccountViewProps> = ({
   onBackToDashboard,
 }) => {
   const [requestSent, setRequestSent] = useState(false);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const profile = SUPERVISOR_PROFILE;
+
+  const totalPages = Math.ceil(LOGIN_HISTORY_DATA.length / pageSize) || 1;
+  const paginatedHistory = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return LOGIN_HISTORY_DATA.slice(start, start + pageSize);
+  }, [currentPage, pageSize]);
 
   const handleRequestPassword = () => {
     setRequestSent(true);
@@ -176,7 +185,7 @@ export const SupervisorAccountView: React.FC<SupervisorAccountViewProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-xs">
-              {LOGIN_HISTORY_DATA.map((row) => (
+              {paginatedHistory.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50/70 transition-colors">
                   <td className="py-3 px-4 font-semibold text-gray-900">{row.dateTime}</td>
                   <td className="py-3 px-4 font-medium text-gray-700">{row.loginFrom}</td>
@@ -194,6 +203,72 @@ export const SupervisorAccountView: React.FC<SupervisorAccountViewProps> = ({
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Pagination Footer */}
+        <div className="mt-3 px-4 py-2.5 border border-gray-200 bg-gray-50/70 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="flex items-center space-x-3">
+            <ShowEntriesDropdown
+              value={pageSize}
+              onChange={(val) => {
+                setPageSize(val);
+                setCurrentPage(1);
+              }}
+            />
+            <div className="text-gray-500 font-medium">
+              <span>Menampilkan </span>
+              <span className="font-bold text-gray-900">
+                {LOGIN_HISTORY_DATA.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}
+              </span>
+              <span> - </span>
+              <span className="font-bold text-gray-900">
+                {Math.min(currentPage * pageSize, LOGIN_HISTORY_DATA.length)}
+              </span>
+              <span> dari </span>
+              <span className="font-bold text-gray-900">{LOGIN_HISTORY_DATA.length}</span>
+              <span> riwayat</span>
+            </div>
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center space-x-1.5">
+              <button
+                type="button"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className="px-2.5 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-gray-700 transition-colors"
+              >
+                Sebelumnya
+              </button>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }).map((_, idx) => {
+                  const pNum = idx + 1;
+                  return (
+                    <button
+                      key={pNum}
+                      type="button"
+                      onClick={() => setCurrentPage(pNum)}
+                      className={`w-7 h-7 rounded-md text-xs font-semibold transition-colors ${
+                        currentPage === pNum
+                          ? 'bg-teal-600 text-white font-bold'
+                          : 'hover:bg-gray-200 text-gray-700'
+                      }`}
+                    >
+                      {pNum}
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                className="px-2.5 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-gray-700 transition-colors"
+              >
+                Selanjutnya
+              </button>
+            </div>
+          )}
         </div>
       </section>
     </div>

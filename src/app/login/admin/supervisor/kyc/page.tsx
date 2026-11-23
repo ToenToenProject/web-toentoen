@@ -6,6 +6,7 @@ import { kycApi, pick, type AnyRecord, type KycRole, type KycStatus } from '@/co
 import KycStatusBadge from '@/components/admin/kyc/KycStatusBadge';
 import { RoleGuard } from '@/components/auth/RoleGuard';
 import { PERMISSIONS } from '@/types/auth';
+import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
 
 const STATUS_OPTIONS: { value: KycStatus; label: string }[] = [
   { value: 'all', label: 'Semua status' },
@@ -33,7 +34,7 @@ function SupervisorKycContent() {
   const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const [limit, setLimit] = useState(10);
 
   const [items, setItems] = useState<AnyRecord[]>([]);
   const [totalPages, setTotalPages] = useState<number | null>(null);
@@ -55,7 +56,7 @@ function SupervisorKycContent() {
     } finally {
       setLoading(false);
     }
-  }, [status, role, search, page]);
+  }, [status, role, search, page, limit]);
 
   useEffect(() => {
     let active = true;
@@ -170,10 +171,19 @@ function SupervisorKycContent() {
       </div>
 
       {/* PAGINATION */}
-      <div className="flex items-center justify-between text-sm text-gray-600">
-        <span>
-          Halaman {page}{totalPages ? ` dari ${totalPages}` : ''}{total != null ? ` - ${total} data` : ''}
-        </span>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-600">
+        <div className="flex items-center space-x-3">
+          <ShowEntriesDropdown
+            value={limit}
+            onChange={(val) => {
+              setLimit(val);
+              setPage(1);
+            }}
+          />
+          <span>
+            Halaman {page}{totalPages ? ` dari ${totalPages}` : ''}{total != null ? ` - ${total} data` : ''}
+          </span>
+        </div>
         <div className="flex gap-2">
           <button
             disabled={page <= 1 || loading}

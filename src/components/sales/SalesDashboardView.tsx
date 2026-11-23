@@ -9,8 +9,7 @@ import {
 } from '@/services/salesService';
 import { RegisterMerchantModal } from './RegisterMerchantModal';
 import { MerchantHistoryModal } from './MerchantHistoryModal';
-
-const PAGE_SIZE = 10;
+import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
 
 const DEFAULT_OVERVIEW: SalesOverviewCards = {
   managedMerchants: {
@@ -65,6 +64,7 @@ export const SalesDashboardView: React.FC = () => {
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Modals
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
@@ -77,6 +77,8 @@ export const SalesDashboardView: React.FC = () => {
         date: selectedDate,
         status: statusFilter,
         search: searchQuery.trim() || undefined,
+        limit: pageSize,
+        page: currentPage,
       });
 
       if (res) {
@@ -93,7 +95,11 @@ export const SalesDashboardView: React.FC = () => {
   useEffect(() => {
     setCurrentPage(1);
     fetchDashboard();
-  }, [selectedDate, statusFilter]);
+  }, [selectedDate, statusFilter, pageSize]);
+
+  useEffect(() => {
+    fetchDashboard();
+  }, [currentPage]);
 
   // Handle Search Debounce
   useEffect(() => {
@@ -125,11 +131,11 @@ export const SalesDashboardView: React.FC = () => {
   };
 
   // Pagination calculation
-  const totalPages = Math.max(1, Math.ceil(merchants.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(merchants.length / pageSize));
   const paginatedMerchants = useMemo(() => {
-    const start = (currentPage - 1) * PAGE_SIZE;
-    return merchants.slice(start, start + PAGE_SIZE);
-  }, [merchants, currentPage]);
+    const start = (currentPage - 1) * pageSize;
+    return merchants.slice(start, start + pageSize);
+  }, [merchants, currentPage, pageSize]);
 
   const overviewCards = [
     {
@@ -552,20 +558,29 @@ export const SalesDashboardView: React.FC = () => {
           </table>
         </div>
 
-        {/* Pagination Footer (Maksimal 10 baris per halaman) */}
+        {/* Pagination Footer */}
         <div className="px-6 py-4 border-t border-gray-200/80 bg-gray-50/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-          <div className="text-gray-500 font-medium">
-            <span>Menampilkan </span>
-            <span className="font-bold text-gray-900">
-              {merchants.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1}
-            </span>
-            <span> - </span>
-            <span className="font-bold text-gray-900">
-              {Math.min(currentPage * PAGE_SIZE, merchants.length)}
-            </span>
-            <span> dari </span>
-            <span className="font-bold text-gray-900">{merchants.length}</span>
-            <span> merchant</span>
+          <div className="flex items-center space-x-4">
+            <ShowEntriesDropdown
+              value={pageSize}
+              onChange={(newVal) => {
+                setPageSize(newVal);
+                setCurrentPage(1);
+              }}
+            />
+            <div className="text-gray-500 font-medium">
+              <span>Menampilkan </span>
+              <span className="font-bold text-gray-900">
+                {merchants.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}
+              </span>
+              <span> - </span>
+              <span className="font-bold text-gray-900">
+                {Math.min(currentPage * pageSize, merchants.length)}
+              </span>
+              <span> dari </span>
+              <span className="font-bold text-gray-900">{merchants.length}</span>
+              <span> merchant</span>
+            </div>
           </div>
 
           {totalPages > 1 && (

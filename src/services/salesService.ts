@@ -199,6 +199,8 @@ export const salesService = {
     salesIds?: string;
     status?: string;
     search?: string;
+    limit?: number;
+    page?: number;
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   } = {}): Promise<SalesDashboardData> => {
@@ -208,6 +210,8 @@ export const salesService = {
     if (params.salesIds) query.set("salesIds", params.salesIds);
     if (params.status && params.status !== "ALL") query.set("status", params.status);
     if (params.search) query.set("search", params.search);
+    if (params.limit) query.set("limit", String(params.limit));
+    if (params.page) query.set("page", String(params.page));
     if (params.sortBy) query.set("sortBy", params.sortBy);
     if (params.sortOrder) query.set("sortOrder", params.sortOrder);
 

@@ -13,6 +13,7 @@ import {
   TableRowSkeleton 
 } from '@/components/ui/Skeleton';
 import { DatePickerModal } from '@/components/ui/DatePickerModal';
+import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
 
 const getInitialTodayString = () => {
   const now = new Date();
@@ -86,13 +87,13 @@ function SupervisorDashboardContent() {
     const [categoryTab, setCategoryTab] = useState<'TICKET' | 'REPORT'>('TICKET');
     const [team, setTeam] = useState<any[]>([]);
     const [teamPage, setTeamPage] = useState(1);
-    const TEAM_PAGE_SIZE = 5;
+    const [teamPageSize, setTeamPageSize] = useState(10);
 
-    const totalTeamPages = Math.ceil(team.length / TEAM_PAGE_SIZE) || 1;
+    const totalTeamPages = Math.ceil(team.length / teamPageSize) || 1;
     const paginatedTeam = useMemo(() => {
-      const start = (teamPage - 1) * TEAM_PAGE_SIZE;
-      return team.slice(start, start + TEAM_PAGE_SIZE);
-    }, [team, teamPage]);
+      const start = (teamPage - 1) * teamPageSize;
+      return team.slice(start, start + teamPageSize);
+    }, [team, teamPage, teamPageSize]);
 
     const [currentDate, setCurrentDate] = useState(getInitialTodayString());
     const [selectedDateObj, setSelectedDateObj] = useState<Date>(new Date());
@@ -784,20 +785,29 @@ function SupervisorDashboardContent() {
                                 </table>
                             </div>
 
-                            {/* Pagination Footer Team Capacity (Maks 5 item per halaman) */}
+                            {/* Pagination Footer Team Capacity */}
                             <div className="px-5 py-3 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs bg-gray-50/70">
-                                <div className="text-gray-500">
-                                    <span>Menampilkan </span>
-                                    <span className="font-bold text-gray-900">
-                                        {team.length === 0 ? 0 : (teamPage - 1) * TEAM_PAGE_SIZE + 1}
-                                    </span>
-                                    <span> - </span>
-                                    <span className="font-bold text-gray-900">
-                                        {Math.min(teamPage * TEAM_PAGE_SIZE, team.length)}
-                                    </span>
-                                    <span> dari </span>
-                                    <span className="font-bold text-gray-900">{team.length}</span>
-                                    <span> staf agen</span>
+                                <div className="flex items-center space-x-3">
+                                    <ShowEntriesDropdown
+                                        value={teamPageSize}
+                                        onChange={(val) => {
+                                            setTeamPageSize(val);
+                                            setTeamPage(1);
+                                        }}
+                                    />
+                                    <div className="text-gray-500">
+                                        <span>Menampilkan </span>
+                                        <span className="font-bold text-gray-900">
+                                            {team.length === 0 ? 0 : (teamPage - 1) * teamPageSize + 1}
+                                        </span>
+                                        <span> - </span>
+                                        <span className="font-bold text-gray-900">
+                                            {Math.min(teamPage * teamPageSize, team.length)}
+                                        </span>
+                                        <span> dari </span>
+                                        <span className="font-bold text-gray-900">{team.length}</span>
+                                        <span> staf agen</span>
+                                    </div>
                                 </div>
 
                                 {totalTeamPages > 1 && (
