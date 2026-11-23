@@ -49,10 +49,20 @@ export const checkSession = async (): Promise<UserData | null> => {
       credentials: "include",
     });
 
-    if (!response.ok) return null;
+    if (!response.ok) {
+      if (typeof window !== 'undefined') {
+        const cached = localStorage.getItem('user');
+        if (cached) return JSON.parse(cached);
+      }
+      return null;
+    }
     const json = await response.json();
     return json.data?.user || null;
   } catch {
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem('user');
+      if (cached) return JSON.parse(cached);
+    }
     return null;
   }
 };

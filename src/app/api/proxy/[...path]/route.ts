@@ -43,12 +43,21 @@ async function handleProxy(req: NextRequest, { params }: { params: Promise<{ pat
       }
     }
 
-    const backendRes = await fetch(targetUrl, {
-      method: req.method,
-      headers,
-      body,
-      redirect: 'manual',
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    let backendRes: Response;
+    try {
+      backendRes = await fetch(targetUrl, {
+        method: req.method,
+        headers,
+        body,
+        redirect: 'manual',
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     const resContentType = backendRes.headers.get('content-type') || '';
     let responseData: any;
