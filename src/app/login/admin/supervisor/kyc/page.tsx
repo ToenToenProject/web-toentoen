@@ -82,12 +82,26 @@ function SupervisorKycContent() {
   const displayedItems = useMemo(() => {
     if (!searchInput.trim()) return items;
     const q = searchInput.toLowerCase().trim();
+    const cleanQ = q.replace(/[\s.-]/g, '');
+
     return items.filter((item) => {
       const name = String(pick(item, ['name', 'fullName', 'full_name', 'account.name', 'user.name', 'ktpName', 'ktp_name']) ?? '').toLowerCase();
       const contact = String(pick(item, ['email', 'account.email', 'user.email', 'phone', 'phoneNumber', 'account.phone']) ?? '').toLowerCase();
       const accountId = String(pick(item, ['accountId', 'account_id', 'id']) ?? '').toLowerCase();
       const store = String(pick(item, ['storeName', 'store_name']) ?? '').toLowerCase();
-      return name.includes(q) || contact.includes(q) || accountId.includes(q) || store.includes(q);
+      const nik = String(pick(item, ['ktp.number', 'ktp.nik', 'nik', 'ktpNumber', 'ktp_number', 'ktp_no', 'idCardNumber', 'ktp.no']) ?? '').toLowerCase();
+      const cleanNik = nik.replace(/[\s.-]/g, '');
+      const ktpName = String(pick(item, ['ktp.name', 'ktpName']) ?? '').toLowerCase();
+
+      return (
+        name.includes(q) ||
+        contact.includes(q) ||
+        accountId.includes(q) ||
+        store.includes(q) ||
+        ktpName.includes(q) ||
+        nik.includes(q) ||
+        (cleanQ.length > 2 && cleanNik.includes(cleanQ))
+      );
     });
   }, [items, searchInput]);
 
