@@ -30,6 +30,7 @@ export default function SalesStaffPage() {
               {/* Top Bar with user pill & logout */}
               <SalesTopBar
                 profile={profile}
+                referralCode="SL01"
                 onOpenAccount={() => setCurrentView('account')}
                 onLogout={onLogout}
               />

@@ -40,6 +40,7 @@ export default function SalesSupervisorPage() {
               {/* Top Bar with user pill & logout */}
               <SalesTopBar
                 profile={SUPERVISOR_PROFILE}
+                referralCode="SS01"
                 onOpenAccount={() => setCurrentView('account')}
                 onLogout={onLogout}
               />
