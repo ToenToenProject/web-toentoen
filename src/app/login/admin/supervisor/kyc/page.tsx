@@ -141,8 +141,8 @@ function SupervisorKycContent() {
                 const itemRole = pick(item, ['role', 'kycRole', 'type']);
                 const name = pick(item, ['name', 'fullName', 'full_name', 'account.name', 'user.name', 'ktpName', 'ktp_name']);
                 const contact = pick(item, ['email', 'account.email', 'user.email', 'phone', 'phoneNumber', 'account.phone']);
-                const st = pick(item, ['status', 'kycStatus', 'kyc_status']);
-                const date = pick(item, ['submittedAt', 'submitted_at', 'createdAt', 'created_at', 'updatedAt']);
+                const st = pick(item, ['kycStatus', 'kyc_status', 'status', 'state']);
+                const date = pick(item, ['kycSubmittedAt', 'kyc_submitted_at', 'submittedAt', 'submitted_at', 'createdAt', 'created_at', 'updatedAt', 'date']);
                 const href = `/login/admin/supervisor/kyc/${encodeURIComponent(accountId)}${
                   itemRole === 'owner' || itemRole === 'business_admin' ? `?role=${itemRole}` : ''
                 }`;
@@ -208,7 +208,7 @@ function SupervisorKycContent() {
 export default function SupervisorKycPage() {
   return (
     <RoleGuard
-      allowedRoles={['ADMIN_SPV', 'SUPERVISOR_ADMIN']}
+      allowedRoles={['ADMIN_SPV', 'SUPERVISOR_ADMIN', 'C_LEVEL', 'CMO']}
       requiredPermission={PERMISSIONS.KYC_VIEW_ALL}
     >
       <SupervisorKycContent />
