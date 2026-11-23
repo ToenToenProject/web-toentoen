@@ -1,62 +1,105 @@
-// src/components/sales/SalesTopBar.tsx
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SalesProfile } from '@/constants/salesData';
+import { Check, Copy } from 'lucide-react';
 
 interface SalesTopBarProps {
   profile: SalesProfile;
   onOpenAccount: () => void;
   onLogout: () => void;
+  referralCode?: string;
 }
 
-export const SalesTopBar: React.FC<SalesTopBarProps> = ({ profile, onOpenAccount, onLogout }) => {
+export const SalesTopBar: React.FC<SalesTopBarProps> = ({ 
+  profile, 
+  onOpenAccount, 
+  onLogout,
+  referralCode
+}) => {
+  const [copied, setCopied] = useState(false);
+  const activeReferral = referralCode || profile.referralCode || 'SL01';
+  const cleanAvatar = (profile.avatar && !profile.avatar.includes('unsplash.com') && !profile.avatar.includes('pravatar.cc'))
+    ? profile.avatar
+    : "/assets/avatars/starter-photo-profile.jpg";
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(activeReferral);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className="flex items-center justify-end w-full gap-2 sm:gap-4 pb-4 sm:pb-6 flex-wrap sm:flex-nowrap">
-      {/* User profile button / pill */}
-      <button
-        type="button"
+    <header className="bg-white border border-gray-300 px-3 sm:px-6 py-3 flex justify-between items-center gap-3 m-3 sm:m-4 rounded-xl shadow-sm">
+      {/* Profil Pengguna (Sama persis seperti Header Admin) */}
+      <div 
         onClick={onOpenAccount}
-        className="flex items-center gap-3 p-1.5 pr-3 rounded-full hover:bg-gray-100 transition-colors text-left group"
+        className="flex items-center space-x-3 min-w-0 cursor-pointer group"
         title="Buka Pengaturan Akun"
       >
-        <img
-          src={profile.avatar}
-          alt={profile.name}
-          className="w-10 h-10 rounded-full object-cover border-2 border-yellow-400 shadow-xs"
-        />
-        <div className="flex flex-col">
-          <span className="text-sm font-bold text-gray-900 group-hover:text-[#00c2a8] transition-colors leading-tight">
+        <div className="w-10 h-10 shrink-0 rounded-full bg-gray-200 overflow-hidden border border-gray-200">
+          <img 
+            src={cleanAvatar} 
+            alt="Profile" 
+            onError={(e) => { e.currentTarget.src = "/assets/avatars/starter-photo-profile.jpg"; }}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform" 
+          />
+        </div>
+        <div>
+          <h2 className="text-sm font-bold text-gray-900 leading-none group-hover:text-teal-600 transition-colors">
             {profile.name}
-          </span>
-          <span className="text-xs text-gray-500 leading-tight">
+          </h2>
+          <span className="text-xs text-gray-500 block mt-1">
             {profile.role}
           </span>
         </div>
-      </button>
+      </div>
 
-      {/* Notification Bell */}
-      <button
-        type="button"
-        aria-label="Notifications"
-        className="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-      </button>
+      {/* Bagian Kanan: Kartu Referral Code & Tombol Logout */}
+      <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+        {/* Kartu Kode Referral */}
+        <div className="flex items-center space-x-2 bg-teal-50/70 border border-teal-200 rounded-lg px-2.5 py-1.5 shadow-2xs">
+          <div className="leading-tight">
+            <span className="text-[9px] text-gray-500 uppercase tracking-wider font-semibold block">
+              Referral Code
+            </span>
+            <span className="text-xs font-mono font-black text-teal-800 tracking-wider">
+              {activeReferral}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-teal-300 text-teal-700 hover:bg-teal-100 transition-colors shadow-2xs inline-flex items-center gap-1 cursor-pointer"
+            title="Salin Kode Referral"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3 h-3 text-emerald-600" />
+                <span>Tersalin</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3 h-3 text-teal-600" />
+                <span>Salin</span>
+              </>
+            )}
+          </button>
+        </div>
 
-      {/* Log Out Button */}
-      <button
-        type="button"
-        onClick={onLogout}
-        className="flex items-center gap-2 px-4 py-2 bg-[#00A896] hover:bg-[#008f80] text-white text-sm font-semibold rounded-lg shadow-sm transition-colors"
-      >
-        <span>Log Out</span>
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
-      </button>
-    </div>
+        {/* Tombol Log Out (Gaya identik Admin) */}
+        <button 
+          onClick={onLogout} 
+          className="shrink-0 bg-teal-500 hover:bg-teal-600 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-colors cursor-pointer"
+          title="Keluar dari akun"
+        >
+          <span className="hidden sm:inline">Log Out</span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </button>
+      </div>
+    </header>
   );
 };

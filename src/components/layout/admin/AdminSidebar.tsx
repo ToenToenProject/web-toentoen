@@ -2,9 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-
-// Mobile: navigasi bawah (bottom bar). md ke atas: sidebar ikon di kiri.
 const GRID_ICON = (
   <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
     <rect x="3" y="3" width="7" height="7" rx="1.5" />
@@ -42,9 +41,15 @@ export default function AdminSidebar() {
 
   return (
     <aside className="fixed inset-x-0 bottom-0 z-40 flex h-16 w-full shrink-0 select-none items-center border-t border-gray-200 bg-white pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:h-screen md:w-16 md:flex-col md:border-r md:border-t-0 md:py-4 md:pb-4">
-      <div className="hidden h-10 w-10 items-center justify-center rounded bg-teal-500 text-center text-xs font-bold leading-none text-white md:mb-8 md:flex">
-        TO<br />EN
-      </div>
+      <Link href="/login/admin/staff" className="hidden md:flex md:mb-8">
+        <Image
+          src="/assets/logo/toentoen-logo.png"
+          alt="ToenToen Logo"
+          width={40}
+          height={40}
+          className="h-10 w-10 rounded-xl object-contain shadow-xs hover:opacity-90 transition-opacity"
+        />
+      </Link>
       <nav className="flex w-full flex-row items-center justify-around text-gray-400 md:w-auto md:flex-col md:justify-start md:gap-6">
         {ITEMS.map((item) => {
           const active = isActive(item.href, item.exact);

@@ -1,10 +1,9 @@
-// src/constants/salesSupervisorData.ts
 import { SalesProfile, SalesMetric } from './salesData';
 
 export const SUPERVISOR_PROFILE: SalesProfile = {
   name: 'Silvi',
   role: 'Sales Supervisor',
-  avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&q=80&fit=crop',
+  avatar: '/assets/avatars/starter-photo-profile.jpg',
   referralCode: 'A12345',
   registeredEmail: 'silviindah@gmail.com',
   territory: 'Jakarta Selatan',
@@ -28,35 +27,35 @@ export const SUPERVISOR_TEAM_MEMBERS: SupervisorSalesMember[] = [
     name: 'Farel Dimas',
     salesCode: 'SLS-REP-104',
     storeCount: 12,
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop',
+    avatar: '/assets/avatars/starter-photo-profile.jpg',
   },
   {
     id: 'fitri',
     name: 'Fitri',
     salesCode: 'SLS-REP-104',
     storeCount: 12,
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80&fit=crop',
+    avatar: '/assets/avatars/starter-photo-profile.jpg',
   },
   {
     id: 'lexy',
     name: 'Lexy',
     salesCode: 'SLS-REP-104',
     storeCount: 12,
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&q=80&fit=crop',
+    avatar: '/assets/avatars/starter-photo-profile.jpg',
   },
   {
     id: 'masya',
     name: 'Masya',
     salesCode: 'SLS-REP-104',
     storeCount: 12,
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&q=80&fit=crop',
+    avatar: '/assets/avatars/starter-photo-profile.jpg',
   },
   {
     id: 'lyana',
     name: 'Lyana',
     salesCode: 'SLS-REP-104',
     storeCount: 12,
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&q=80&fit=crop',
+    avatar: '/assets/avatars/starter-photo-profile.jpg',
   },
 ];
 
@@ -80,7 +79,6 @@ export interface SupervisorTeamCapacityRow {
 }
 
 export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
-  // Farel Dimas (membawahi 4 toko)
   {
     id: '1',
     salesMember: SUPERVISOR_TEAM_MEMBERS[0],
@@ -132,7 +130,6 @@ export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
     dailyGoals: { minOpenHours: false, postsToday: true, signalReply: true },
   },
 
-  // Lyana
   {
     id: '5',
     salesMember: SUPERVISOR_TEAM_MEMBERS[4],
@@ -148,7 +145,6 @@ export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
     dailyGoals: { minOpenHours: false, postsToday: false, signalReply: false },
   },
 
-  // Fitri
   {
     id: '6',
     salesMember: SUPERVISOR_TEAM_MEMBERS[1],
@@ -164,7 +160,6 @@ export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
     dailyGoals: { minOpenHours: false, postsToday: true, signalReply: true },
   },
 
-  // Masya
   {
     id: '7',
     salesMember: SUPERVISOR_TEAM_MEMBERS[3],
@@ -180,7 +175,6 @@ export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
     dailyGoals: { minOpenHours: false, postsToday: true, signalReply: true },
   },
 
-  // Lexy
   {
     id: '8',
     salesMember: SUPERVISOR_TEAM_MEMBERS[2],
@@ -197,7 +191,7 @@ export const SUPERVISOR_CAPACITY_DATA: SupervisorTeamCapacityRow[] = [
   },
 ];
 
-// Detail Merchant Invited oleh Staff (Tampilan Gambar 1)
+// Invited merchants directory
 export interface StaffMerchantInvitedItem {
   id: string;
   merchantName: string;

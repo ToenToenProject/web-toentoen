@@ -3,25 +3,25 @@ export const MerchantIllustration = () => (
     {/* Tabs */}
     <div className="flex items-center gap-1.5">
       <span className="rounded bg-[#0d4f47] px-2 py-1 text-[9px] font-bold text-white">
-        Daily Today
+        Demand Live
       </span>
       <span className="rounded px-2 py-1 text-[9px] font-medium text-gray-500">
-        Monthly Sales
+        Heatmap Area
       </span>
       <span className="rounded px-2 py-1 text-[9px] font-medium text-gray-500">
-        Custom
+        Radius 5-25km
       </span>
     </div>
 
-    {/* Mini KPIs */}
+    {/* Mini KPIs (Toko & Leads, bukan checkout e-commerce) */}
     <div className="grid grid-cols-2 gap-1.5">
       <div className="rounded border border-gray-100 px-2 py-1.5">
-        <p className="text-[8px] text-gray-400">Sales Today</p>
-        <p className="text-[11px] font-bold text-gray-900">Rp 1.230K</p>
+        <p className="text-[8px] text-gray-400">Demand Signal</p>
+        <p className="text-[11px] font-bold text-gray-900">128 Masuk</p>
       </div>
       <div className="rounded border border-gray-100 px-2 py-1.5">
-        <p className="text-[8px] text-gray-400">Traffic Sources</p>
-        <p className="text-[11px] font-bold text-[#00c2a8]">+82.1%</p>
+        <p className="text-[8px] text-gray-400">Respon Chat</p>
+        <p className="text-[11px] font-bold text-[#00c2a8]">94.2%</p>
       </div>
     </div>
 
@@ -36,12 +36,12 @@ export const MerchantIllustration = () => (
       ))}
     </div>
 
-    {/* Table rows */}
+    {/* Table rows: Leads & Discovery metrics, bukan order toko online */}
     <div className="flex flex-col gap-1">
       {[
-        { label: 'Total Orders', value: '128', delta: '+12%' },
-        { label: 'Avg Rating', value: '4.8', delta: '+0.2' },
-        { label: 'Visits', value: '2.1K', delta: '+18%' },
+        { label: 'Demand Signal Masuk', value: '128', delta: '+12%' },
+        { label: 'Chat Terbalas', value: '119', delta: '+15%' },
+        { label: 'Visits Profil Toko', value: '2.1K', delta: '+18%' },
       ].map((row) => (
         <div
           key={row.label}

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { ChatSession } from '@/constants/api/admin/types';
 import { StatusBadge } from './StatusBadge';
 
@@ -8,8 +8,7 @@ interface MainChatAreaProps {
   isUpdatingStatus: boolean;
   onUpdateStatus: () => void;
   onSendMessage: (text: string) => Promise<void>;
-  /** Mobile: kembali ke daftar chat */
-  onBack?: () => void;
+    onBack?: () => void;
 }
 
 export const MainChatArea: React.FC<MainChatAreaProps> = ({ 
@@ -22,8 +21,6 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
 }) => {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
-
-  // Handler untuk mengirim pesan
   const handleSend = async () => {
     if (!message.trim()) return;
     
@@ -37,8 +34,6 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
       setIsSending(false);
     }
   };
-
-  // Handler agar user bisa menekan Enter untuk mengirim (Shift+Enter untuk baris baru)
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -86,7 +81,7 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
         {/* Chat Messages — skeleton saat loading, pesan saat sudah ada data */}
         <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-4 sm:space-y-6">
           {isLoadingDetail ? (
-            /* Skeleton ringan — tidak unmount, hanya shimmer di area messages */
+            /* Lightweight shimmer placeholder in messages container */
             <>
               {[...Array(3)].map((_, i) => (
                 <div key={i} className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'} gap-2`}>
@@ -101,24 +96,36 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
               ))}
             </>
           ) : (
-            activeChat.messages?.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-start' : 'justify-end'}`}>
-                {msg.sender === 'user' && (
-                  <img src={activeChat.avatar} alt="Avatar" className="w-8 h-8 rounded-full mr-2 mt-auto mb-1 object-cover" />
-                )}
-                <div className={`max-w-[85%] sm:max-w-[70%] rounded-2xl p-3 sm:p-4 shadow-sm relative group break-words
-                  ${msg.sender === 'user' ? 'bg-white border border-gray-200 rounded-bl-sm' : 'bg-[#e0f5f0] text-gray-800 rounded-br-sm'}
-                `}>
-                  {msg.sender === 'user' && <p className="font-bold text-sm mb-1 text-gray-900">{activeChat.name}</p>}
-                  {msg.sender === 'admin' && <p className="font-bold text-sm mb-1 text-gray-900">You</p>}
-                  <p className="text-sm text-gray-700">{msg.text}</p>
-                  <div className="text-[10px] text-gray-400 mt-2 flex items-center justify-end">
-                    {msg.time}
-                    {msg.sender === 'admin' && <svg className="w-3 h-3 ml-1 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>}
+            activeChat.messages?.map((msg, idx) => {
+              const isUser = msg.sender === 'user';
+              return (
+                <div key={idx} className={`flex ${isUser ? 'justify-start' : 'justify-end'}`}>
+                  {isUser && (
+                    <img 
+                      src={activeChat.avatar || "/assets/avatars/starter-photo-profile.jpg"} 
+                      alt="Avatar" 
+                      onError={(e) => { e.currentTarget.src = "/assets/avatars/starter-photo-profile.jpg"; }}
+                      className="w-8 h-8 rounded-full mr-2 mt-auto mb-1 object-cover" 
+                    />
+                  )}
+                  <div className={`max-w-[85%] sm:max-w-[70%] rounded-2xl p-3 sm:p-4 shadow-sm relative group break-words
+                    ${isUser ? 'bg-white border border-gray-200 rounded-bl-sm' : 'bg-[#e0f5f0] text-gray-800 rounded-br-sm'}
+                  `}>
+                    {isUser && <p className="font-bold text-sm mb-1 text-gray-900">{activeChat.name}</p>}
+                    {!isUser && (
+                      <p className="font-bold text-sm mb-1 text-gray-900">
+                        {msg.senderName || 'You'}
+                      </p>
+                    )}
+                    <p className="text-sm text-gray-700 leading-relaxed">{msg.text}</p>
+                    <div className="text-[10px] text-gray-400 mt-2 flex items-center justify-end">
+                      {msg.time}
+                      {!isUser && <svg className="w-3 h-3 ml-1 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
@@ -174,7 +181,12 @@ export const MainChatArea: React.FC<MainChatAreaProps> = ({
       <aside className="w-[300px] bg-white border-l border-gray-200 hidden xl:flex flex-col p-6 overflow-y-auto overflow-x-hidden min-w-0">
         <div className="flex flex-col items-center text-center mb-8 pt-4">
           <div className="relative">
-            <img src={activeChat.avatar} alt={activeChat.name} className="w-24 h-24 rounded-full bg-gray-200 object-cover shadow-sm mb-4 border-4 border-white" />
+            <img 
+              src={activeChat.avatar || "/assets/avatars/starter-photo-profile.jpg"} 
+              alt={activeChat.name} 
+              onError={(e) => { e.currentTarget.src = "/assets/avatars/starter-photo-profile.jpg"; }}
+              className="w-24 h-24 rounded-full bg-gray-200 object-cover shadow-sm mb-4 border-4 border-white" 
+            />
             {activeChat.isVip && (
               <span className="absolute bottom-2 right-0 bg-yellow-400 text-black text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-white">VIP</span>
             )}

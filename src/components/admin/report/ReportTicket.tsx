@@ -1,10 +1,8 @@
-﻿// src/components/admin/report/ReportTicket.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { adminApi } from '@/constants/api/admin/report';
-
-// --- TIPE DATA ---
+import { Flag } from 'lucide-react';
 type TicketStatus = 'Unsolved' | 'Pending' | 'Solved';
 type Priority = 1 | 2 | 3 | null;
 
@@ -33,8 +31,6 @@ export default function ReportTicketComponent() {
   
   const [chatInput, setChatInput] = useState("");
   const [showFlagDropdown, setShowFlagDropdown] = useState(false);
-
-  // --- FETCH AWAL ---
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -42,11 +38,7 @@ export default function ReportTicketComponent() {
           adminApi.getReportCategories(),
           adminApi.getKanbanBoard()
         ]);
-        
-        // 1. Mapping Categories
         if (catData?.data) setCategories(catData.data);
-        
-        // 2. Mapping Kanban Board ke format `Ticket`
         if (boardData?.data?.columns) {
           const { unsolved, pending, solved } = boardData.data.columns;
           
@@ -67,7 +59,9 @@ export default function ReportTicketComponent() {
               priority: priorityMapped,
               isApproved: item.status === 'RESOLVED',
               message: item.description,
-              avatar: item.reporter?.avatar_url || 'https://i.pravatar.cc/150'
+              avatar: (item.reporter?.avatar_url && !item.reporter.avatar_url.includes('pravatar.cc') && !item.reporter.avatar_url.includes('unsplash.com'))
+                ? item.reporter.avatar_url
+                : '/assets/avatars/starter-photo-profile.jpg'
             };
           };
 
@@ -86,14 +80,11 @@ export default function ReportTicketComponent() {
     };
     fetchInitialData();
   }, []);
-
-  // --- FETCH LOG SAAT TIKET DIPILIH ---
   useEffect(() => {
     if (!selectedTicketId) return;
     const fetchLogs = async () => {
       try {
         const logData = await adminApi.getLogDetail(selectedTicketId);
-        // TODO: Simpan logData ke dalam state setLogs jika JSON response logs sudah tersedia
       } catch (error) {
         console.error("Gagal memuat log:", error);
       }
@@ -105,8 +96,6 @@ export default function ReportTicketComponent() {
   const unsolvedTickets = tickets.filter(t => t.status === 'Unsolved');
   const pendingTickets = tickets.filter(t => t.status === 'Pending');
   const solvedTickets = tickets.filter(t => t.status === 'Solved');
-
-  // --- ACTIONS ---
   const handleActionClick = async (action: string) => {
     if (!selectedTicketId) return alert("Pilih tiket terlebih dahulu");
     try {
@@ -121,12 +110,12 @@ export default function ReportTicketComponent() {
   const handleSendMessage = async () => {
     if (!selectedTicketId || !chatInput.trim()) return;
     const textToSend = chatInput;
-    setChatInput(""); // Reset langsung sebelum kirim (ala WhatsApp)
+    setChatInput("");
     try {
       await adminApi.postMessage(selectedTicketId, textToSend);
     } catch (error) {
       console.error("Send message failed:", error);
-      setChatInput(textToSend); // Kembalikan teks jika gagal
+      setChatInput(textToSend);
     }
   };
 
@@ -214,7 +203,12 @@ export default function ReportTicketComponent() {
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
                 </button>
-                <img src={activeTicket.avatar} alt={activeTicket.name} className="w-12 h-12 rounded-full object-cover" />
+                <img 
+                  src={activeTicket.avatar || '/assets/avatars/starter-photo-profile.jpg'} 
+                  alt={activeTicket.name} 
+                  onError={(e) => { e.currentTarget.src = '/assets/avatars/starter-photo-profile.jpg'; }}
+                  className="w-12 h-12 rounded-full object-cover" 
+                />
                 <div>
                   <div className="flex items-center space-x-2">
                     <span className="font-bold text-gray-900 text-base">{activeTicket.name}</span>
@@ -257,8 +251,6 @@ export default function ReportTicketComponent() {
     </div>
   );
 }
-
-// --- SUB-KOMPONEN KARTU KANBAN ---
 function TicketCard({ ticket, isActive, onClick }: { ticket: Ticket, isActive: boolean, onClick: () => void }) {
   const flagColor =
     ticket.priority === 1 ? 'bg-green-500 text-white' :
@@ -268,7 +260,12 @@ function TicketCard({ ticket, isActive, onClick }: { ticket: Ticket, isActive: b
   return (
     <div onClick={onClick} className={`bg-white p-4 rounded-xl border cursor-pointer transition-all relative ${isActive ? 'border-teal-500 shadow-md ring-1 ring-teal-500' : 'border-gray-200 shadow-sm'}`}>
       <div className="flex items-start space-x-3 pr-4">
-        <img src={ticket.avatar} alt={ticket.name} className="w-10 h-10 rounded-full object-cover" />
+        <img 
+          src={ticket.avatar || '/assets/avatars/starter-photo-profile.jpg'} 
+          alt={ticket.name} 
+          onError={(e) => { e.currentTarget.src = '/assets/avatars/starter-photo-profile.jpg'; }}
+          className="w-10 h-10 rounded-full object-cover" 
+        />
         <div className="flex-1">
           <div className="flex items-center space-x-1 flex-wrap">
             <span className="font-bold text-gray-900 text-sm">{ticket.name}</span>
@@ -280,8 +277,9 @@ function TicketCard({ ticket, isActive, onClick }: { ticket: Ticket, isActive: b
             <div className="flex flex-col items-end gap-1">
               <span className="text-xs text-gray-400">{ticket.time}</span>
               {ticket.priority !== null && (
-                <span className={`text-xs font-bold px-2 py-0.5 rounded ${flagColor}`}>
-                  🚩 {ticket.priority}
+                <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded ${flagColor}`}>
+                  <Flag className="w-3 h-3 shrink-0" />
+                  <span>{ticket.priority}</span>
                 </span>
               )}
             </div>

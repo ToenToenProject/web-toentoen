@@ -16,7 +16,6 @@ export const CustomerServiceWorkspace = () => {
   const [view, setView] = useState<View>("chats-list");
   const [selectedChatIdx, setSelectedChatIdx] = useState<number>(3);
   const [selectedTicketIdx, setSelectedTicketIdx] = useState<number>(3);
-  // Mobile: sidebar filter bisa dibuka/tutup
   const [showMenu, setShowMenu] = useState(false);
 
   const statsMode = view === "tickets-list" ? "tickets" : "chats";

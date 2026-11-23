@@ -1,13 +1,14 @@
-// src/components/social-media/SmCredentialsView.tsx
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   SM_CHANNEL_CONNECTIONS,
   SM_LOGIN_HISTORY,
   SmChannelConnection,
   SmLoginHistoryEntry,
 } from '@/constants/socialMediaData';
+import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
+import { Check } from 'lucide-react';
 
 interface SmCredentialsViewProps {
   onBack?: () => void;
@@ -17,6 +18,14 @@ export const SmCredentialsView: React.FC<SmCredentialsViewProps> = ({ onBack }) 
   const [channels, setChannels] = useState<SmChannelConnection[]>(SM_CHANNEL_CONNECTIONS);
   const [history] = useState<SmLoginHistoryEntry[]>(SM_LOGIN_HISTORY);
   const [requested, setRequested] = useState<boolean>(false);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(history.length / pageSize) || 1;
+  const paginatedHistory = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return history.slice(start, start + pageSize);
+  }, [history, currentPage, pageSize]);
 
   const toggleConnection = (chan: string) => {
     setChannels((prev) =>
@@ -96,7 +105,14 @@ export const SmCredentialsView: React.FC<SmCredentialsViewProps> = ({ onBack }) 
               onClick={() => setRequested(true)}
               className="px-3.5 py-2 bg-[#00A896] hover:bg-[#008f80] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors shrink-0"
             >
-              {requested ? 'Requested ✓' : 'Request password change'}
+              {requested ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-white" />
+                  <span>Requested</span>
+                </span>
+              ) : (
+                'Request password change'
+              )}
             </button>
           </div>
 
@@ -125,7 +141,7 @@ export const SmCredentialsView: React.FC<SmCredentialsViewProps> = ({ onBack }) 
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-xs">
-              {history.map((item, idx) => (
+              {paginatedHistory.map((item, idx) => (
                 <tr key={idx} className="hover:bg-gray-50/60 transition-colors">
                   <td className="py-3 px-4 font-medium text-gray-900">{item.dateTime}</td>
                   <td className="py-3 px-4 text-gray-600">{item.loginFrom}</td>
@@ -145,6 +161,72 @@ export const SmCredentialsView: React.FC<SmCredentialsViewProps> = ({ onBack }) 
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Pagination Footer */}
+        <div className="mt-3 px-4 py-2.5 border border-gray-200 bg-gray-50/70 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="flex items-center space-x-3">
+            <ShowEntriesDropdown
+              value={pageSize}
+              onChange={(val) => {
+                setPageSize(val);
+                setCurrentPage(1);
+              }}
+            />
+            <div className="text-gray-500 font-medium">
+              <span>Menampilkan </span>
+              <span className="font-bold text-gray-900">
+                {history.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}
+              </span>
+              <span> - </span>
+              <span className="font-bold text-gray-900">
+                {Math.min(currentPage * pageSize, history.length)}
+              </span>
+              <span> dari </span>
+              <span className="font-bold text-gray-900">{history.length}</span>
+              <span> riwayat</span>
+            </div>
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center space-x-1.5">
+              <button
+                type="button"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className="px-2.5 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-gray-700 transition-colors"
+              >
+                Sebelumnya
+              </button>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }).map((_, idx) => {
+                  const pNum = idx + 1;
+                  return (
+                    <button
+                      key={pNum}
+                      type="button"
+                      onClick={() => setCurrentPage(pNum)}
+                      className={`w-7 h-7 rounded-md text-xs font-semibold transition-colors ${
+                        currentPage === pNum
+                          ? 'bg-teal-600 text-white font-bold'
+                          : 'hover:bg-gray-200 text-gray-700'
+                      }`}
+                    >
+                      {pNum}
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                className="px-2.5 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-gray-700 transition-colors"
+              >
+                Selanjutnya
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

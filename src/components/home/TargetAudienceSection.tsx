@@ -1,6 +1,4 @@
 import React from 'react';
-
-// Sub-komponen untuk list checklist biar rapi
 const CheckItem = ({ text }: { text: string }) => (
     <li className="flex items-center gap-3 text-sm text-gray-200">
         <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#00c2a8]">

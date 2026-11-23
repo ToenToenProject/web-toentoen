@@ -9,10 +9,7 @@ type Props = {
   className?: string;
 };
 
-/**
- * Client-side <img> dengan fallback otomatis ketika source utama gagal load.
- * Dipakai untuk asset yang belum tersedia di /public.
- */
+/** Image component with automatic fallback handling when target source fails to load. */
 export const ImageWithFallback = ({ src, alt, fallback, className }: Props) => {
   const [current, setCurrent] = useState(src);
   return (

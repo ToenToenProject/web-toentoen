@@ -1,8 +1,5 @@
-// src/components/privacy-policy/PrivacyPolicyContent.tsx
 
 import { PRIVACY_POLICY_META, PRIVACY_POLICY_SECTIONS, PolicyBlock } from '@/constants/privacy-policy';
-
-// --- SUB-KOMPONEN: Render tiap blok konten ---
 function RenderBlock({ block }: { block: PolicyBlock }) {
   switch (block.type) {
     case 'paragraph':
@@ -64,8 +61,6 @@ function RenderBlock({ block }: { block: PolicyBlock }) {
       return null;
   }
 }
-
-// --- KOMPONEN UTAMA ---
 export function PrivacyPolicyContent() {
   return (
     <section className="min-h-screen bg-slate-50 px-4 py-10 sm:py-16">

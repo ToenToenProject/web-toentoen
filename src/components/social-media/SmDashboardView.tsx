@@ -1,4 +1,3 @@
-// src/components/social-media/SmDashboardView.tsx
 "use client";
 
 import React, { useState } from 'react';

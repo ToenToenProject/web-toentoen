@@ -1,82 +1,109 @@
-import Link from 'next/link';
+"use client";
+
 import { PLATFORM_POWER } from '@/constants/product';
-
-const AppleIcon = () => (
-    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
-        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 3.53c.63-.78 1.07-1.85.95-2.93-.93.04-2.07.63-2.73 1.41-.58.68-1.1 1.77-.96 2.83 1.04.08 2.11-.53 2.74-1.31z" />
-    </svg>
-);
-
-const GooglePlayIcon = () => (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-        <path fill="#00c2a8" d="M3.6 1.7c-.4.4-.6 1-.6 1.7v17.2c0 .7.2 1.3.6 1.7l10.3-10.3L3.6 1.7Z" />
-        <path fill="#fff" d="m17.7 8.1-3.8 3.9 3.8 3.9 4.6-2.6c1.3-.7 1.3-2.6 0-3.3l-4.6-2.9Z" />
-        <path fill="#fff" opacity=".7" d="M3.6 22.3c.6.6 1.5.7 2.3.2l11.8-6.7-3.8-3.8L3.6 22.3Z" />
-        <path fill="#fff" opacity=".85" d="M17.7 8.1 5.9 1.5C5.1 1 4.2 1.1 3.6 1.7l10.3 10.3 3.8-3.9Z" />
-    </svg>
-);
-
-// Komponen kecil untuk Checklist Centang Hijau
+import { useEarlyAccess } from '@/context/EarlyAccessContext';
 const CheckItem = ({ text }: { text: string }) => (
     <li className="flex items-start gap-3 text-sm text-gray-700">
         <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#00c2a8]">
-        <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+            <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
         </div>
-        <span className="font-medium">{text}</span>
+        <span className="font-medium leading-relaxed">{text}</span>
     </li>
 );
 
 export const ProductCTA = () => {
+    const { openEarlyAccess } = useEarlyAccess();
+
     return (
         <>
         {/* Platform Power Section */}
         <section className="w-full bg-[#00c2a8] py-20 lg:py-24">
             <div className="container mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-12 text-center text-3xl font-extrabold text-white sm:text-4xl">
-                Satu Platform, Dua Kekuatan
-            </h2>
+            <div className="text-center mb-12">
+                <span className="text-xs uppercase tracking-widest font-bold text-teal-100 bg-[#0d4f47] px-3.5 py-1.5 rounded-full inline-block mb-3">
+                    Keunggulan Ekosistem
+                </span>
+                <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+                    Satu Ekosistem, Dua Kekuatan Nyata
+                </h2>
+            </div>
             
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 {/* Card User */}
-                <div className="flex flex-col rounded-3xl bg-white p-10 shadow-xl">
-                <div className="mb-6 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#e6f9f6] text-3xl">👤</div>
-                <h3 className="mb-8 text-center text-2xl font-bold text-black">User</h3>
-                <ul className="flex flex-col gap-4">
+                <div className="flex flex-col rounded-3xl bg-white p-8 sm:p-10 shadow-xl">
+                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#e6f9f6] text-teal-700">
+                    <svg className="h-7 w-7 text-[#00c2a8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">Untuk Konsumen (Toeners)</h3>
+                <p className="text-xs text-gray-500 mb-6">Pencarian offline pintar tanpa bias algoritma iklan</p>
+                <ul className="flex flex-col gap-4 mb-8">
                     {PLATFORM_POWER.user.map((text, idx) => <CheckItem key={idx} text={text} />)}
                 </ul>
+                <button
+                    type="button"
+                    onClick={() => openEarlyAccess("user")}
+                    className="mt-auto w-full py-3 rounded-full bg-[#00c2a8] text-white font-bold text-sm hover:bg-[#00a892] transition-colors cursor-pointer"
+                >
+                    Daftar Akses Awal Konsumen
+                </button>
                 </div>
 
                 {/* Card Merchant */}
-                <div className="flex flex-col rounded-3xl bg-white p-10 shadow-xl">
-                <div className="mb-6 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#e6f9f6] text-3xl">🏪</div>
-                <h3 className="mb-8 text-center text-2xl font-bold text-black">Merchant</h3>
-                <ul className="flex flex-col gap-4">
+                <div className="flex flex-col rounded-3xl bg-white p-8 sm:p-10 shadow-xl">
+                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#e6f9f6] text-teal-700">
+                    <svg className="h-7 w-7 text-[#00c2a8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">Untuk Pelaku Usaha (Merchants)</h3>
+                <p className="text-xs text-gray-500 mb-6">Jemput bola pelanggan sekitar dan dominasi area hyperlocal</p>
+                <ul className="flex flex-col gap-4 mb-8">
                     {PLATFORM_POWER.merchant.map((text, idx) => <CheckItem key={idx} text={text} />)}
                 </ul>
+                <button
+                    type="button"
+                    onClick={() => openEarlyAccess("merchant")}
+                    className="mt-auto w-full py-3 rounded-full bg-[#083D39] text-white font-bold text-sm hover:bg-[#0d4f47] transition-colors cursor-pointer"
+                >
+                    Daftarkan Bisnis Anda (Mulai Rp 0)
+                </button>
                 </div>
             </div>
             </div>
         </section>
 
-        {/* Bottom CTA Banner */}
-        <section className="w-full bg-white py-16">
+        {/* Bottom CTA Banner (Akses Awal & Daftarkan Bisnis) */}
+        <section id="cta-early-access" className="w-full bg-white py-16 sm:py-20">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col items-center justify-center rounded-3xl bg-[#083D39] px-6 py-16 text-center shadow-lg md:px-16">
+            <div className="flex flex-col items-center justify-center rounded-3xl bg-[#083D39] px-6 py-16 text-center shadow-xl md:px-16 border border-[#0d4f47]">
+                <span className="text-xs uppercase tracking-widest font-bold text-[#5fd9c4] bg-white/10 px-3.5 py-1.5 rounded-full inline-block mb-4">
+                    Tahap Pilot Proyek Jakarta &middot; Rilis Q4 2026
+                </span>
                 <h2 className="mb-4 max-w-3xl text-3xl font-extrabold text-white sm:text-4xl lg:text-5xl leading-tight">
-                Apapun yang kamu butuhkan, Toentoen adalah jawabannya
+                    Jadilah yang Pertama Menggunakan Toentoen
                 </h2>
-                <p className="mb-10 max-w-2xl text-gray-300">
-                Satu aplikasi untuk mengeksplorasi sesuai keinginan, satu aplikasi untuk mengembangkan bisnismu. Unduh sekarang.
+                <p className="mb-10 max-w-2xl text-base text-gray-300 leading-relaxed">
+                    Dapatkan akses eksklusif awal untuk mencari kebutuhan sekitarmu, atau daftarkan toko/jasa lokal Anda sekarang secara gratis untuk mendapatkan pendampingan onboarding langsung di Jakarta.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">
-                <Link href="#" className="flex items-center gap-2 rounded-full bg-[#00c2a8] px-8 py-3.5 font-bold text-white transition hover:bg-[#00a892]">
-                    <AppleIcon />
-                    <span>App Store</span>
-                </Link>
-                <Link href="#" className="flex items-center gap-2 rounded-full bg-white/20 px-8 py-3.5 font-bold text-white backdrop-blur-md transition hover:bg-white/30">
-                    <GooglePlayIcon />
-                    <span>Google Play</span>
-                </Link>
+                    <button
+                        type="button"
+                        onClick={() => openEarlyAccess("user")}
+                        className="flex items-center gap-2 rounded-full bg-[#00c2a8] px-8 py-3.5 font-bold text-white transition hover:bg-[#00a892] shadow-lg shadow-[#00c2a8]/25 cursor-pointer"
+                    >
+                        <span>Daftar Akses Awal Konsumen</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => openEarlyAccess("merchant")}
+                        className="flex items-center gap-2 rounded-full bg-white/15 px-8 py-3.5 font-bold text-white ring-1 ring-white/25 backdrop-blur-md transition hover:bg-white/25 cursor-pointer"
+                    >
+                        <span>Daftarkan Bisnis (Mulai Rp 0)</span>
+                    </button>
                 </div>
             </div>
             </div>

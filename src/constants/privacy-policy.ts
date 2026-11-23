@@ -1,5 +1,3 @@
-// src/constants/privacy-policy.ts
-
 export const PRIVACY_POLICY_META = {
   lastUpdated: '4 November 2026',
   title: 'Kebijakan Privasi Toentoen',

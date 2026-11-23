@@ -1,12 +1,12 @@
-// src/components/sales/SupervisorStaffDetailView.tsx
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SALES_OVERVIEW_METRICS } from '@/constants/salesData';
 import {
   STAFF_MERCHANT_INVITED_LIST,
   SupervisorSalesMember,
 } from '@/constants/salesSupervisorData';
+import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
 
 interface SupervisorStaffDetailViewProps {
   staff: SupervisorSalesMember;
@@ -18,6 +18,14 @@ export const SupervisorStaffDetailView: React.FC<SupervisorStaffDetailViewProps>
   onBack,
 }) => {
   const [selectedDate, setSelectedDate] = useState('Today, January 27, 2027');
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(STAFF_MERCHANT_INVITED_LIST.length / pageSize) || 1;
+  const paginatedList = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return STAFF_MERCHANT_INVITED_LIST.slice(start, start + pageSize);
+  }, [currentPage, pageSize]);
 
   return (
     <div className="space-y-6">
@@ -105,7 +113,7 @@ export const SupervisorStaffDetailView: React.FC<SupervisorStaffDetailViewProps>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-xs">
-                {STAFF_MERCHANT_INVITED_LIST.map((row) => (
+                {paginatedList.map((row) => (
                   <tr key={row.id} className="hover:bg-gray-50/70 transition-colors">
                     <td className="py-3 px-4">
                       <div className="font-bold text-gray-900">{row.merchantName}</div>
@@ -122,6 +130,72 @@ export const SupervisorStaffDetailView: React.FC<SupervisorStaffDetailViewProps>
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Pagination Footer */}
+          <div className="mt-3 px-4 py-2.5 border border-gray-200 bg-gray-50/70 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div className="flex items-center space-x-3">
+              <ShowEntriesDropdown
+                value={pageSize}
+                onChange={(val) => {
+                  setPageSize(val);
+                  setCurrentPage(1);
+                }}
+              />
+              <div className="text-gray-500 font-medium">
+                <span>Menampilkan </span>
+                <span className="font-bold text-gray-900">
+                  {STAFF_MERCHANT_INVITED_LIST.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}
+                </span>
+                <span> - </span>
+                <span className="font-bold text-gray-900">
+                  {Math.min(currentPage * pageSize, STAFF_MERCHANT_INVITED_LIST.length)}
+                </span>
+                <span> dari </span>
+                <span className="font-bold text-gray-900">{STAFF_MERCHANT_INVITED_LIST.length}</span>
+                <span> merchant</span>
+              </div>
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex items-center space-x-1.5">
+                <button
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  className="px-2.5 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-gray-700 transition-colors"
+                >
+                  Sebelumnya
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }).map((_, idx) => {
+                    const pNum = idx + 1;
+                    return (
+                      <button
+                        key={pNum}
+                        type="button"
+                        onClick={() => setCurrentPage(pNum)}
+                        className={`w-7 h-7 rounded-md text-xs font-semibold transition-colors ${
+                          currentPage === pNum
+                            ? 'bg-teal-600 text-white font-bold'
+                            : 'hover:bg-gray-200 text-gray-700'
+                        }`}
+                      >
+                        {pNum}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button
+                  type="button"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  className="px-2.5 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-gray-700 transition-colors"
+                >
+                  Selanjutnya
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

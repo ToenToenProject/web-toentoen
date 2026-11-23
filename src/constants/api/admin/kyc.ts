@@ -1,9 +1,10 @@
-// src/constants/api/admin/kyc.ts
-// API KYC (verifikasi identitas: KTP, dll) untuk Supervisor Admin
+/**
+ * KYC verification API endpoints and response normalization helpers for administrators.
+ */
 
 import { getToken } from './report';
 
-const BASE_URL = 'https://api-ops.toentoen.com/api/v1';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api/proxy';
 
 export type KycStatus = 'pending' | 'verified' | 'rejected' | 'unverified' | 'all';
 export type KycRole = 'owner' | 'business_admin' | 'all';
@@ -15,9 +16,10 @@ export interface KycListParams {
   search?: string;
   page?: number;
   limit?: number;
+  cursor?: string;
 }
 
-// Struktur response backend belum pasti, jadi dibuat longgar.
+// Dynamic record typing for variable backend payload structures
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyRecord = Record<string, any>;
 
@@ -27,13 +29,21 @@ export interface KycListResult {
   limit: number;
   total: number | null;
   totalPages: number | null;
+  hasMore?: boolean;
+  nextCursor?: string | null;
   raw: unknown;
 }
 
-const getHeaders = () => ({
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${getToken()}`,
-});
+const getHeaders = () => {
+  const token = getToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+};
 
 async function handle(res: Response, label: string) {
   let body: AnyRecord | null = null;
@@ -49,7 +59,7 @@ async function handle(res: Response, label: string) {
   return body;
 }
 
-/** Cari array data di dalam response dengan berbagai kemungkinan bentuk. */
+/** Extracts array payload from diverse backend response envelopes. */
 function extractItems(body: AnyRecord | null): AnyRecord[] {
   if (!body) return [];
   if (Array.isArray(body)) return body;
@@ -73,11 +83,13 @@ function extractPagination(body: AnyRecord | null) {
   return {
     total: num(src.total ?? src.totalItems ?? src.total_items ?? src.count),
     totalPages: num(src.totalPages ?? src.total_pages ?? src.lastPage ?? src.last_page ?? src.pages),
+    hasMore: Boolean(src.hasMore),
+    nextCursor: (src.nextCursor as string | null | undefined) ?? null,
   };
 }
 
 export const kycApi = {
-  /** 1. Lihat semua request KYC */
+  /** Fetch paginated list of KYC verification submissions. */
   getSubmissions: async (params: KycListParams = {}): Promise<KycListResult> => {
     const page = params.page ?? 1;
     const limit = params.limit ?? 10;
@@ -88,50 +100,64 @@ export const kycApi = {
       limit: String(limit),
     });
     if (params.search && params.search.trim()) qs.set('search', params.search.trim());
+    if (params.cursor) qs.set('cursor', params.cursor);
 
-    const res = await fetch(`${BASE_URL}/kyc/submissions?${qs.toString()}`, { headers: getHeaders() });
+    const res = await fetch(`${BASE_URL}/kyc/submissions?${qs.toString()}`, {
+      headers: getHeaders(),
+      credentials: "include",
+    });
     const body = await handle(res, 'KYC List');
-    const { total, totalPages } = extractPagination(body);
-    return { items: extractItems(body), page, limit, total, totalPages, raw: body };
+    const { total, totalPages, hasMore, nextCursor } = extractPagination(body);
+    return { items: extractItems(body), page, limit, total, totalPages, hasMore, nextCursor, raw: body };
   },
 
-  /** 2. Lihat detail request KYC */
+  /** Retrieve detailed KYC submission payload for a specific account. */
   getSubmissionDetail: async (accountId: string, role?: KycReviewRole): Promise<AnyRecord> => {
     if (!accountId) throw new Error('Account ID is required');
     const qs = role ? `?role=${encodeURIComponent(role)}` : '';
     const res = await fetch(`${BASE_URL}/kyc/submissions/${encodeURIComponent(accountId)}${qs}`, {
       headers: getHeaders(),
+      credentials: "include",
     });
     const body = await handle(res, 'KYC Detail');
     return (body && typeof body.data === 'object' && body.data !== null ? body.data : body) || {};
   },
 
-  /** 3a. Setujui KYC */
-  approve: async (accountId: string, role: KycReviewRole) => {
+  /** Approve KYC submission. */
+  approve: async (accountId: string, role?: KycReviewRole, notes?: string) => {
     if (!accountId) throw new Error('Account ID is required');
+    const noteText = notes || 'Dokumen KYC telah disetujui.';
     const res = await fetch(`${BASE_URL}/kyc/review/${encodeURIComponent(accountId)}`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ role, action: 'APPROVE' }),
+      credentials: "include",
+      body: JSON.stringify({ role, action: 'APPROVE', notes: noteText }),
     });
     return handle(res, 'KYC Approve');
   },
 
-  /** 3b. Tolak KYC (alasan minimal 5 kata) */
-  reject: async (accountId: string, role: KycReviewRole, rejectionReason: string) => {
+  /** Reject KYC submission with minimum word count validation. */
+  reject: async (accountId: string, role: KycReviewRole | undefined, rejectionReason: string) => {
     if (!accountId) throw new Error('Account ID is required');
     const wordCount = rejectionReason.trim().split(/\s+/).filter(Boolean).length;
     if (wordCount < 5) throw new Error('Alasan penolakan minimal 5 kata.');
+    const noteText = rejectionReason.trim();
     const res = await fetch(`${BASE_URL}/kyc/review/${encodeURIComponent(accountId)}`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ role, action: 'REJECT', rejectionReason: rejectionReason.trim() }),
+      credentials: "include",
+      body: JSON.stringify({
+        role,
+        action: 'REJECT',
+        notes: noteText,
+        rejectionReason: noteText,
+      }),
     });
     return handle(res, 'KYC Reject');
   },
 };
 
-/** Ambil nilai pertama yang ada dari beberapa kemungkinan key (mendukung nested "a.b"). */
+/** Resolves first truthy key path from object (supports dot notation). */
 export function pick(obj: AnyRecord | null | undefined, keys: string[]): unknown {
   if (!obj) return undefined;
   for (const k of keys) {

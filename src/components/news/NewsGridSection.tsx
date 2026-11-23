@@ -4,7 +4,7 @@ import { NewsArticle } from '@/constants/news';
 interface NewsGridSectionProps {
     title: string;
     articles: NewsArticle[];
-    showViewMore?: boolean; // Opsional: Tombol view more untuk All News
+    showViewMore?: boolean;
 }
 
 export const NewsGridSection = ({ title, articles, showViewMore = false }: NewsGridSectionProps) => {

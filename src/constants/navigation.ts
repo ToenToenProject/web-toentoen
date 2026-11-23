@@ -18,26 +18,26 @@ export type FooterSection = {
 
 export const FOOTER_SECTIONS: FooterSection[] = [
     {
-        title: 'LAYANAN',
+        title: 'PRODUK & LAYANAN',
         links: [
-        { label: 'Discovery', href: '/discovery' },
-        { label: 'Demand Signal', href: '/demand-signal' },
-        { label: 'Merchant', href: '/merchant' },
+            { label: 'Unbiased Discovery', href: '/#platform-section' },
+            { label: 'Sinyal Permintaan (Demand Signal)', href: '/product' },
+            { label: 'Paket Harga Merchant', href: '/product#pricing' },
         ],
     },
     {
         title: 'PERUSAHAAN',
         links: [
-        { label: 'About Us', href: '/about' },
-        { label: 'Careers', href: '/careers' },
-        { label: 'News', href: '/news' },
+            { label: 'Tentang Kami', href: '/about' },
+            { label: 'Tim & Karir', href: '/team' },
+            { label: 'Berita & Edukasi', href: '/news' },
         ],
     },
     {
-        title: 'SUPPORT',
+        title: 'BANTUAN & LEGAL',
         links: [
-        { label: 'Help Center', href: '/help-center' },
-        { label: 'Privacy Policy', href: '/privacy-policy' },
+            { label: 'Customer Service', href: '/customer-service' },
+            { label: 'Kebijakan Privasi', href: '/privacy-policy' },
         ],
     },
 ];

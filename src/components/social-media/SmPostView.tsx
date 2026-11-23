@@ -1,8 +1,8 @@
-// src/components/social-media/SmPostView.tsx
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
 import { SM_POST_CARDS, SmPostCard } from '@/constants/socialMediaData';
+import { ThumbsUp, MessageSquare, Eye, Repeat2, Bookmark } from 'lucide-react';
 
 export const SmPostView: React.FC = () => {
   const [selectedChannel, setSelectedChannel] = useState<string>('All');
@@ -13,8 +13,6 @@ export const SmPostView: React.FC = () => {
 
   const channels = ['All', 'Tiktok', 'Facebook', 'Instagram', 'Linkedin'];
   const sortOptions = ['Like', 'Comment', 'Repost', 'Save/Bookmark'];
-
-  // Tutup dropdown jika klik di luar
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
@@ -38,14 +36,10 @@ export const SmPostView: React.FC = () => {
       setSelectedSortOptions([...sortOptions]);
     }
   };
-
-  // Filter posts berdasarkan channel
   const filteredPosts = SM_POST_CARDS.filter((post) => {
     if (selectedChannel === 'All') return true;
     return post.channel.toLowerCase() === selectedChannel.toLowerCase();
   });
-
-  // Sort posts berdasarkan metrik yang dipilih
   const sortedPosts = [...filteredPosts].sort((a, b) => {
     if (selectedSortOptions.includes('Like') && b.likes !== a.likes) {
       return b.likes - a.likes;
@@ -334,19 +328,24 @@ export const SmPostView: React.FC = () => {
             <div className="border-t border-gray-100 pt-3 flex flex-col sm:flex-row items-center justify-between gap-3">
               <div className="flex items-center gap-3 text-xs text-gray-600">
                 <span className="flex items-center gap-1">
-                  👍 {activeModalPost.likes}
+                  <ThumbsUp className="w-3.5 h-3.5 text-gray-500" />
+                  <span>{activeModalPost.likes}</span>
                 </span>
                 <span className="flex items-center gap-1">
-                  💬 {activeModalPost.comments}
+                  <MessageSquare className="w-3.5 h-3.5 text-gray-500" />
+                  <span>{activeModalPost.comments}</span>
                 </span>
                 <span className="flex items-center gap-1">
-                  👁 {activeModalPost.views}
+                  <Eye className="w-3.5 h-3.5 text-gray-500" />
+                  <span>{activeModalPost.views}</span>
                 </span>
                 <span className="flex items-center gap-1">
-                  🔁 {activeModalPost.reposts}
+                  <Repeat2 className="w-3.5 h-3.5 text-gray-500" />
+                  <span>{activeModalPost.reposts}</span>
                 </span>
                 <span className="flex items-center gap-1">
-                  🔖 {activeModalPost.bookmarks}
+                  <Bookmark className="w-3.5 h-3.5 text-gray-500" />
+                  <span>{activeModalPost.bookmarks}</span>
                 </span>
               </div>
 

@@ -1,4 +1,3 @@
-// src/components/cmo/CmoPostView.tsx
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -12,8 +11,6 @@ export const CmoPostView: React.FC = () => {
 
   const channels = ['All', 'Tiktok', 'Facebook', 'Instagram', 'Linkedin'];
   const sortOptions = ['Like', 'Comment', 'Repost', 'Save/Bookmark'];
-
-  // Tutup dropdown jika klik di luar
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
@@ -37,14 +34,10 @@ export const CmoPostView: React.FC = () => {
       setSelectedSortOptions([...sortOptions]);
     }
   };
-
-  // Filter posts berdasarkan channel
   const filteredPosts = CMO_POST_CARDS.filter((post) => {
     if (selectedChannel === 'All') return true;
     return post.channel.toLowerCase() === selectedChannel.toLowerCase();
   });
-
-  // Sort posts berdasarkan metrik yang dipilih
   const sortedPosts = [...filteredPosts].sort((a, b) => {
     if (selectedSortOptions.includes('Like') && b.likes !== a.likes) {
       return b.likes - a.likes;

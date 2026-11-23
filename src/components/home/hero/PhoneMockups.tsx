@@ -1,7 +1,5 @@
-/**
- * Dua mockup HP berbentuk SVG inline (chat list + radar map).
- * Pure SVG/CSS — tidak butuh asset gambar.
- */
+/** Inline vector mockups representing chat and geographic radar interfaces. */
+import { Search, Home, MessageSquare, User } from "lucide-react";
 
 const PhoneFrame = ({
   rotation,
@@ -38,8 +36,9 @@ const ChatScreen = () => (
       <p className="text-[8px] text-white/80">5 pesan baru</p>
     </div>
     {/* Search bar */}
-    <div className="mx-3 -mt-2 rounded-md bg-white px-2 py-1.5 shadow ring-1 ring-gray-100">
-      <span className="text-[8px] text-gray-400">🔍 Cari...</span>
+    <div className="mx-3 -mt-2 rounded-md bg-white px-2 py-1.5 shadow ring-1 ring-gray-100 flex items-center gap-1">
+      <Search className="w-2.5 h-2.5 text-gray-400" />
+      <span className="text-[8px] text-gray-400">Cari...</span>
     </div>
     {/* List */}
     <div className="mt-3 flex-1 space-y-2 overflow-hidden px-3">
@@ -66,11 +65,11 @@ const ChatScreen = () => (
       ))}
     </div>
     {/* Tab bar */}
-    <div className="flex justify-around border-t border-gray-100 py-2 text-[8px] text-gray-400">
-      <span>🏠</span>
-      <span className="text-[#00c2a8]">💬</span>
-      <span>🔍</span>
-      <span>👤</span>
+    <div className="flex justify-around items-center border-t border-gray-100 py-2 text-gray-400">
+      <Home className="w-3 h-3" />
+      <MessageSquare className="w-3 h-3 text-[#00c2a8]" />
+      <Search className="w-3 h-3" />
+      <User className="w-3 h-3" />
     </div>
   </div>
 );

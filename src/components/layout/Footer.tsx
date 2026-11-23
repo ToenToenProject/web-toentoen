@@ -2,8 +2,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FOOTER_SECTIONS } from "@/constants/navigation";
 import { Logo } from "@/components/ui/Logo";
-
-// Komponen kecil khusus untuk Icon Social Media agar kode lebih bersih (DRY)
 const SocialLink = ({
     href,
     children,
@@ -32,8 +30,8 @@ export const Footer = () => {
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8">
             {/* Logo & deskripsi */}
             <div className="lg:col-span-5">
-                <Link href="/" className="mb-5 inline-block">
-                <Logo variant="light" />
+                <Link href="/" className="mb-5 inline-flex items-center" aria-label="ToenToen">
+                <Logo variant="light" size={40} />
                 </Link>
                 <p className="mb-6 max-w-xs text-xs leading-relaxed text-gray-500">
                 Jembatan digital yang menghubungkan kebutuhan masyarakat dengan

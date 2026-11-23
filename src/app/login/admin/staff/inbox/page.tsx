@@ -4,8 +4,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ChatSession, Message, ChatStatus } from '@/constants/api/admin/types';
 import { ChatListPanel } from '@/components/admin/inbox/ChatListPanel';
 import { MainChatArea } from '@/components/admin/inbox/MainChatArea';
+import { adminService } from '@/services/adminService';
+import { RoleGuard } from '@/components/auth/RoleGuard';
 
-// Helper Mapping Status dari API ke UI
+// Map API status to UI labels and styling
 const mapStatusToUI = (apiStatus: string): ChatStatus => {
   const status = apiStatus?.toLowerCase() || '';
   if (status.includes('queue') || status.includes('open') || status.includes('unsolved')) return 'Unsolved';
@@ -14,7 +16,7 @@ const mapStatusToUI = (apiStatus: string): ChatStatus => {
   return 'Unsolved'; 
 };
 
-export default function InboxPage() {
+function InboxPageContent() {
   const [chatList, setChatList] = useState<ChatSession[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [activeChat, setActiveChat] = useState<ChatSession | null>(null);
@@ -23,42 +25,41 @@ export default function InboxPage() {
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  // Mobile: tampilkan daftar ATAU chat (pola master-detail)
-  const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
+    const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
 
-  const getToken = () => localStorage.getItem("token") || "";
-
-  // 1. FETCH TICKETS LIST
-  const fetchTickets = useCallback(async () => {
+    const fetchTickets = useCallback(async () => {
     try {
       setIsLoadingList(true);
-      const res = await fetch("https://api-ops.toentoen.com/api/v1/tickets", {
-        headers: { "Authorization": `Bearer ${getToken()}` }
-      });
-      if (!res.ok) throw new Error("Gagal mengambil daftar tiket");
+      const res = await adminService.getTickets().catch(() => null);
       
-      const json = await res.json();
-      const ticketsArray = json.data?.tickets || json.tickets || []; 
+      const ticketsArray = res?.tickets || []; 
 
-      const mappedList: ChatSession[] = ticketsArray.map((item: any) => ({
-        id: item.ticket_id,
-        name: item.requester?.name || "Unknown User",
-        role: item.requester?.role || "User",
-        isVip: item.requester?.is_vip || false,
-        avatar: item.requester?.avatar_url || "https://ui-avatars.com/api/?name=User&background=random",
-        lastTime: item.date || "00:00",
-        lastMessage: item.last_message || item.subject || "No message",
-        status: mapStatusToUI(item.status),
-        isInactive: false,
-        ticketTitle: item.subject || "Ticket Issue",
-        ticketId: item.ticket_code || `#TK-${item.ticket_id}`,
-        email: item.requester?.email || "",
-        phone: item.requester?.phone || "",
-        accountSince: "-",
-        subscription: item.priority || "Standard",
-        totalTickets: 1,
-        messages: []
-      }));
+      const mappedList: ChatSession[] = ticketsArray.map((item: any) => {
+        const rawAvatar = item.customer?.avatar || item.requester?.avatar_url;
+        const custAvatar = (rawAvatar && !rawAvatar.includes('unsplash.com') && !rawAvatar.includes('pravatar.cc'))
+          ? rawAvatar
+          : "/assets/avatars/starter-photo-profile.jpg";
+
+        return {
+          id: item.id || item.ticket_id || `TKT-${Math.random()}`,
+          name: item.customer?.name || item.requester?.name || "Customer",
+          role: item.customer?.tier || item.requester?.role || "User",
+          isVip: item.priority === "VIP" || item.requester?.is_vip || false,
+          avatar: custAvatar,
+          lastTime: item.updatedAt ? new Date(item.updatedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : (item.date || "00:00"),
+          lastMessage: item.lastMessage || item.last_message || item.subject || "No message",
+          status: mapStatusToUI(item.status),
+          isInactive: false,
+          ticketTitle: item.subject || "Ticket Issue",
+          ticketId: item.id ? (item.id.startsWith('#') ? item.id : `#${item.id}`) : `#TK-${item.ticket_id}`,
+          email: item.customer?.email || item.requester?.email || "",
+          phone: item.customer?.phone || item.requester?.phone || "",
+          accountSince: "-",
+          subscription: item.priority || "Standard",
+          totalTickets: 1,
+          messages: []
+        };
+      });
 
       setChatList(mappedList);
       if (mappedList.length > 0 && !selectedChatId) {
@@ -75,115 +76,100 @@ export default function InboxPage() {
     fetchTickets();
   }, [fetchTickets]);
 
-  // 2. FETCH TICKET DETAIL & CUSTOMER PROFILE
+  // Parallel retrieval of ticket details and customer profile
   useEffect(() => {
     const fetchTicketDetail = async () => {
       if (!selectedChatId) return;
       try {
         setIsLoadingDetail(true);
-        
-        // A. Ambil Detail Tiket & Pesan
-        const res = await fetch(`https://api-ops.toentoen.com/api/v1/tickets/${selectedChatId}/messages`, {
-          headers: { "Authorization": `Bearer ${getToken()}` }
-        });
-        if (!res.ok) throw new Error("Gagal mengambil detail tiket");
-        
-        const json = await res.json();
-        const data = json.data;
-
-        if (!data) return;
-
-        // B. Ambil Data Profil Customer (Menggunakan API yang baru)
-        const customerId = data.requester?.id || data.customer_id;
-        let customerProfile = null;
-
-        if (customerId) {
-          try {
-            const customerRes = await fetch(`https://api-ops.toentoen.com/api/v1/customers/${customerId}`, {
-              headers: { "Authorization": `Bearer ${getToken()}` }
-            });
-            if (customerRes.ok) {
-              const customerJson = await customerRes.json();
-              customerProfile = customerJson.data || customerJson; // Sesuaikan jika tidak ada wrapper "data"
-            }
-          } catch (error) {
-            console.error("Gagal mengambil profil customer", error);
-          }
-        }
-
         const baseChatItem = chatList.find(c => c.id === selectedChatId);
-        const userComplaint = data.description || baseChatItem?.ticketTitle || "Tidak ada detail keluhan";
 
-        const initialMessages: Message[] = [
-          {
-            sender: 'user',
-            text: userComplaint,
-            time: data.started_at || data.waiting_time || baseChatItem?.lastTime || "00:00"
+                const [messagesRes, customerRes] = await Promise.allSettled([
+          adminService.getTicketMessages(selectedChatId),
+          baseChatItem?.email ? adminService.getCustomerProfile(selectedChatId).catch(() => null) : Promise.resolve(null),
+        ]);
+
+        const messagesData: any = messagesRes.status === "fulfilled" ? messagesRes.value : null;
+        const customerData: any = customerRes.status === "fulfilled" ? customerRes.value : null;
+
+        let mappedMessages: Message[] = [];
+
+        if (messagesData?.messages && Array.isArray(messagesData.messages) && messagesData.messages.length > 0) {
+          mappedMessages = messagesData.messages.map((m: any) => {
+            const isSystem = m.sender === 'SYSTEM' || m.sender_type === 'SYSTEM' || m.is_auto_reply;
+            const isAdmin = m.sender?.toLowerCase() === 'agent' || m.sender?.toLowerCase() === 'admin' || m.sender_type === 'AGENT';
+            return {
+              sender: isSystem ? 'system' : (isAdmin ? 'admin' : 'user'),
+              text: m.message || m.text || "",
+              time: m.timestamp || (m.createdAt ? new Date(m.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : "00:00"),
+              senderName: m.senderName || m.sender_name,
+            };
+          });
+        } else {
+                    mappedMessages = [
+            {
+              sender: 'user',
+              text: baseChatItem?.ticketTitle || "Halo, saya membutuhkan bantuan terkait pesanan.",
+              time: baseChatItem?.lastTime || "00:00",
+            }
+          ];
+          if (baseChatItem?.lastMessage && baseChatItem.lastMessage !== baseChatItem.ticketTitle) {
+            mappedMessages.push({
+              sender: 'admin',
+              text: baseChatItem.lastMessage,
+              time: baseChatItem.lastTime || "00:00",
+            });
           }
-        ];
-
-        if (baseChatItem?.lastMessage && baseChatItem.lastMessage !== userComplaint) {
-           initialMessages.push({
-             sender: 'admin',
-             text: baseChatItem.lastMessage,
-             time: baseChatItem.lastTime || "00:00"
-           });
         }
 
-        // C. Gabungkan data tiket list, detail pesan tiket, dan profil customer
-        setActiveChat(prev => ({
-          ...(baseChatItem || prev || {}),
+        const custProfile = customerData?.profile;
+        const custHistory = customerData?.history;
+
+        const currentSession: ChatSession = {
           id: selectedChatId,
-          name: customerProfile?.name || data.requester?.name || baseChatItem?.name || "Unknown User",
-          role: customerProfile?.role || data.requester?.role || baseChatItem?.role || "User",
-          isVip: customerProfile?.is_vip ?? data.requester?.is_vip ?? baseChatItem?.isVip ?? false,
-          avatar: customerProfile?.avatar || data.requester?.avatar_url || baseChatItem?.avatar || "https://ui-avatars.com/api/?name=User",
-          email: customerProfile?.email || data.requester?.email || baseChatItem?.email || "-",
-          phone: customerProfile?.phone || data.requester?.phone || baseChatItem?.phone || "-",
-          subscription: customerProfile?.subscription_type || data.priority || baseChatItem?.subscription || "Standard",
-          accountSince: customerProfile?.created_at ? new Date(customerProfile.created_at).getFullYear().toString() : "-",
-          totalTickets: customerProfile?.total_tickets || 1,
-          ticketTitle: data.title || data.current_ticket_summary?.issue_type || baseChatItem?.ticketTitle || "Ticket Issue",
-          ticketId: data.ticket_code || baseChatItem?.ticketId || `#TK-${selectedChatId}`,
-          status: mapStatusToUI(data.status || baseChatItem?.status || 'QUEUE'),
+          name: custProfile?.name || baseChatItem?.name || "Customer",
+          role: custProfile?.tier || baseChatItem?.role || "User",
+          isVip: baseChatItem?.isVip ?? (custProfile?.tier?.includes("VIP") ?? false),
+          avatar: (baseChatItem?.avatar && !baseChatItem.avatar.includes('unsplash.com') && !baseChatItem.avatar.includes('pravatar.cc'))
+            ? baseChatItem.avatar
+            : "/assets/avatars/starter-photo-profile.jpg",
           lastTime: baseChatItem?.lastTime || "00:00",
           lastMessage: baseChatItem?.lastMessage || "No message",
+          status: baseChatItem?.status || 'Unsolved',
           isInactive: false,
-          messages: initialMessages 
-        }));
+          ticketTitle: baseChatItem?.ticketTitle || "Ticket Issue",
+          ticketId: baseChatItem?.ticketId || `#TK-${selectedChatId}`,
+          email: custProfile?.email || baseChatItem?.email || "-",
+          phone: custProfile?.phone || baseChatItem?.phone || "-",
+          accountSince: custProfile?.registeredAt || "-",
+          subscription: custProfile?.tier || baseChatItem?.subscription || "Standard",
+          totalTickets: custHistory?.totalTickets ?? baseChatItem?.totalTickets ?? 1,
+          messages: mappedMessages,
+        };
+
+        setActiveChat(currentSession);
+
       } catch (error) {
-        console.error(error);
+        console.error("Gagal mengambil detail tiket", error);
       } finally {
         setIsLoadingDetail(false);
       }
     };
 
-    if (chatList.length > 0) {
-      fetchTicketDetail();
-    }
-  }, [selectedChatId, chatList]);
+    fetchTicketDetail();
+  }, [selectedChatId]);
 
-  // 3. PATCH UPDATE TICKET STATUS
-  const handleUpdateStatus = async () => {
+    const handleUpdateStatus = async () => {
     if (!activeChat || isUpdatingStatus) return;
-    const nextStatusAPI = activeChat.status === 'Done' ? 'open' : (activeChat.status === 'Process' ? 'resolved' : 'process');
+    const nextStatusAPI = activeChat.status === 'Done' ? 'QUEUE' : (activeChat.status === 'Process' ? 'SOLVED' : 'IN_PROGRESS');
     
     try {
       setIsUpdatingStatus(true);
-      const res = await fetch(`https://api-ops.toentoen.com/api/v1/tickets/${activeChat.id}/status`, {
-        method: "PATCH",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${getToken()}` 
-        },
-        body: JSON.stringify({ status: nextStatusAPI })
-      });
-      if (!res.ok) throw new Error("Gagal update status");
-      
+      await adminService.updateTicketStatus(activeChat.id, nextStatusAPI);
       await fetchTickets(); 
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Gagal memperbarui status tiket.");
+      alert(`Gagal memperbarui status tiket: ${error.message || 'Error server'}`);
     } finally {
       setIsUpdatingStatus(false);
     }
@@ -204,20 +190,7 @@ export default function InboxPage() {
     } : prev);
 
     try {
-      const res = await fetch(`https://api-ops.toentoen.com/api/v1/tickets/${activeChat.id}/messages`, {
-        method: "POST", 
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${getToken()}` 
-        },
-        body: JSON.stringify({ message: text }) 
-      });
-      
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
-        throw new Error(errorData?.message || "Gagal mengirim pesan");
-      }
-      
+      await adminService.sendTicketMessage(activeChat.id, text);
     } catch (error: any) {
       console.error("Send Message Error:", error);
       alert(`Pesan gagal dikirim ke server: ${error.message}`);
@@ -250,8 +223,7 @@ export default function InboxPage() {
           onBack={() => setMobileView('list')}
         />
       ) : isLoadingDetail ? (
-        /* Skeleton awal saat belum ada chat sama sekali */
-        <section className="flex-1 flex flex-col bg-gray-50/50">
+                <section className="flex-1 flex flex-col bg-gray-50/50">
           <div className="m-4 h-16 bg-gray-200 rounded-xl animate-pulse" />
           <div className="flex-1 px-6 py-4 space-y-4">
             {[...Array(4)].map((_, i) => (
@@ -268,5 +240,13 @@ export default function InboxPage() {
       )}
       </div>
     </div>
+  );
+}
+
+export default function InboxPage() {
+  return (
+    <RoleGuard allowedRoles={['ADMIN', 'ADMIN_SPV', 'SUPERVISOR_ADMIN', 'STAFF']}>
+      <InboxPageContent />
+    </RoleGuard>
   );
 }

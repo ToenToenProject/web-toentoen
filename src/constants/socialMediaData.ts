@@ -1,6 +1,3 @@
-// src/constants/socialMediaData.ts
-
-// --- PROFILE ---
 export interface SmProfile {
   name: string;
   role: string;
@@ -13,7 +10,6 @@ export const SM_PROFILE: SmProfile = {
   avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&q=80&fit=crop',
 };
 
-// --- SOCIAL METRICS ---
 export interface SocialMetric {
   title: string;
   value: string;
@@ -48,7 +44,6 @@ export const SM_SOCIAL_METRICS: SocialMetric[] = [
   },
 ];
 
-// --- WEEKLY CALENDAR ---
 export interface CalendarPostItem {
   channel: 'IG' | 'FB' | 'TikTok' | 'LinkedIn';
   title: string;
@@ -117,7 +112,6 @@ export const SM_WEEKLY_CALENDAR: CalendarDay[] = [
   },
 ];
 
-// --- TEAM MEMBERS ---
 export interface SocialTeamMember {
   id: string;
   name: string;
@@ -134,7 +128,6 @@ export const SM_TEAM_MEMBERS: SocialTeamMember[] = [
   { id: '6', name: 'Farel Dimas', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop', status: 'Offline' },
 ];
 
-// --- CHANNEL CONNECTIONS (Credentials page) ---
 export interface SmChannelConnection {
   channel: 'Instagram' | 'Facebook' | 'LinkedIn' | 'Tiktok' | 'Whatsapp';
   handle: string;
@@ -149,7 +142,6 @@ export const SM_CHANNEL_CONNECTIONS: SmChannelConnection[] = [
   { channel: 'Whatsapp', handle: '@Toentoen', status: 'Pending' },
 ];
 
-// --- LOGIN HISTORY ---
 export interface SmLoginHistoryEntry {
   dateTime: string;
   loginFrom: string;
@@ -163,7 +155,6 @@ export const SM_LOGIN_HISTORY: SmLoginHistoryEntry[] = [
   { dateTime: 'January 8, 2025 09:15 AM', loginFrom: 'Chrome', location: 'Jakarta Selatan', status: 'Signed Out' },
 ];
 
-// --- CHAT CONTACTS ---
 export interface SmChatContact {
   id: string;
   name: string;
@@ -178,7 +169,6 @@ export const SM_CHAT_CONTACTS: SmChatContact[] = Array.from({ length: 15 }, (_, 
   avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80&fit=crop',
 }));
 
-// --- CHAT MESSAGES ---
 export interface SmChatMessage {
   id: string;
   sender: 'sarah' | 'you';
@@ -216,7 +206,6 @@ export const SM_CHAT_MESSAGES: SmChatMessage[] = [
   },
 ];
 
-// --- POST CARDS ---
 export interface SmPostCard {
   id: string;
   channel: 'Tiktok' | 'Facebook' | 'Instagram' | 'Linkedin';

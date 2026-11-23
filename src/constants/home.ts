@@ -1,4 +1,4 @@
-export type FeatureIcon = "pin" | "signal" | "bolt" | "compass";
+export type FeatureIcon = "compass" | "signal" | "bolt" | "pin";
 
 export type Feature = {
     id: number;
@@ -10,67 +10,67 @@ export type Feature = {
 export const FEATURES_DATA: Feature[] = [
     {
         id: 1,
-        icon: "pin",
-        title: "Penemuan Lokal",
+        icon: "compass",
+        title: "Unbiased Discovery",
         description:
-        "Temukan tempat paling aktif di wilayah Anda dengan peta panas waktu nyata dan data lokasi pilihan.",
+        "Hasil pencarian ditampilkan berdasarkan relevansi, jarak terdekat, dan kepercayaan—bukan semata siapa yang membayar iklan terbesar.",
     },
     {
         id: 2,
         icon: "signal",
-        title: "Sinyal Permintaan",
+        title: "Sinyal Permintaan (Demand Signal)",
         description:
-        "Jelajahi berbagai layanan, restoran, dan toko di sekitarmu menggunakan tampilan peta interaktif yang akurat.",
+        "Posting kebutuhan mendesak beserta radius lokasi, lalu terima penawaran langsung dari merchant terdekat secara real-time.",
     },
     {
         id: 3,
         icon: "bolt",
-        title: "Koneksi Instan",
+        title: "Koneksi 2 Arah Instan",
         description:
-        "Seamlessly book, order, or navigate to locations with a single tap from the map interface.",
+        "Chat langsung dengan merchant untuk cek stok, jadwal, atau negosiasi—tanpa perantara kurir atau potongan komisi yang mencekik.",
     },
     {
         id: 4,
-        icon: "compass",
-        title: "Eksplorasi Lokal",
+        icon: "pin",
+        title: "Eksplorasi Peta Hyperlocal",
         description:
-        "Jelajahi berbagai layanan dan toko di sekitarmu menggunakan tampilan peta interaktif yang akurat.",
+        "Jelajahi toko fisik, warung, pasar tradisional, dan penyedia jasa lokal yang sedang buka di sekitarmu dalam radius 1–50 km.",
     },
-    ];
+];
 
-    export type PlatformCard = {
+export type PlatformCard = {
     id: "user" | "merchant";
     tag: string;
     title: string;
     description: string;
     bullets: string[];
     image: string;
-    };
+};
 
-    export const PLATFORM_CARDS: PlatformCard[] = [
+export const PLATFORM_CARDS: PlatformCard[] = [
     {
         id: "user",
         tag: "User",
-        title: "Cari Apapun di Sekitarmu Jadi Lebih Mudah.",
+        title: "Cari Barang & Jasa Nyata di Sekitarmu Jadi Lebih Mudah.",
         description:
-        "Temukan produk, jasa, dan layanan dari pelaku bisnis lokal terdekat dengan radius 1km hingga 50km. Permudah hidupmu dengan Demand Signal.",
+        "Keluar dari filter bubble pencarian online. Temukan bisnis offline terpercaya, bandingkan penawaran dari Demand Signal, dan akses Promo Cards aktif di sekitarmu—gratis selamanya.",
         bullets: [
-        "Diskon hingga Rp 0,- Juta",
-        "Pemetaan Pencarian Lokal",
-        "Sinyal Permintaan (Demand Signal)",
+        "Pencarian Bersih Bebas Bias Iklan",
+        "Sinyal Permintaan (Demand Signal) Real-time",
+        "Akses Promo Cards Langsung dari Toko Sekitar",
         ],
         image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80&fit=crop",
     },
     {
         id: "merchant",
         tag: "Merchant",
-        title: "Kelola bisnis mu dalam Genggaman.",
+        title: "Kelola Bisnismu & Jemput Pelanggan Sekitar.",
         description:
-        "Manajemen toko lebih efektif dan akurat dari pelaku bisnis lokal, gunakan sinyal permintaan dan keluasan jangkauan pelanggan di sekitarmu.",
+        "Dapatkan visibilitas nyata tanpa perang iklan yang menggerus margin. Pantau Analitik Kinerja, Demand Heatmap, dan balas Sinyal Permintaan konsumen langsung dari aplikasi—mulai Rp 0/bulan.",
         bullets: [
-        "Manajemen katalog yang mudah",
-        "Analitik Kinerja",
-        "Respon Sinyal Permintaan",
+        "Katalog Digital & Live Store yang Praktis",
+        "Respon Cepat Sinyal Permintaan Konsumen",
+        "Analitik Kinerja Toko & Demand Heatmap",
         ],
         image: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=800&q=80&fit=crop",
     },
@@ -87,42 +87,26 @@ export type Article = {
 export const NEWS_ARTICLES: Article[] = [
     {
         id: 1,
-        category: "NEWS",
-        title: "Fitur Sinyal Permintaan Kini Makin Akurat",
+        category: "UPDATE",
+        title: "Mengenal Demand Signal: Cara Baru Konsumen & Merchant Saling Menemukan",
         excerpt:
-        "Pembaruan terbaru algoritma kami memungkinkan rekomendasi menjadi lebih presisi sesuai lokasi pengguna.",
+        "Bagaimana fitur Sinyal Permintaan membalik model pencarian tradisional dan membantu toko offline menjemput pembeli sekitar.",
         image: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=600&q=80&fit=crop",
     },
     {
         id: 2,
-        category: "EVENT",
-        title: "Toentoen Hadir di Festival Kuliner Jakarta",
+        category: "TIPS UMKM",
+        title: "Cara Meningkatkan Visibilitas Toko Offline Tanpa Perang Diskon",
         excerpt:
-        "Kunjungi booth kami dan dapatkan berbagai promo menarik dari merchant lokal pilihan di acara komunitas terbesar tahun ini.",
-        image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80&fit=crop",
-    },
-    {
-        id: 3,
-        category: "TIPS",
-        title: "Cara Efektif Menarik Pelanggan Sekitar",
-        excerpt:
-        "Strategi simple yang bisa merchant lokal terapkan untuk menggandakan visibilitas di aplikasi. Lakukan sekarang!",
+        "Panduan praktis pelaku usaha lokal membangun reputasi dan menjangkau pelanggan hyperlocal secara organik.",
         image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80&fit=crop",
     },
     {
-        id: 4,
-        category: "UPDATE",
-        title: "Fitur Sinyal Permintaan Kini Makin Akurat",
+        id: 3,
+        category: "INSIGHT",
+        title: "Potensi Rp 150 Triliun Pasar Tradisional Jakarta di Era Digital",
         excerpt:
-        "Pembaruan terbaru algoritma kami memungkinkan rekomendasi menjadi lebih presisi sesuai lokasi pengguna.",
-        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80&fit=crop",
-    },
-    {
-        id: 5,
-        category: "EVENT",
-        title: "Toentoen Hadir di Festival Kuliner Jakarta",
-        excerpt:
-        "Kunjungi booth kami dan dapatkan berbagai promo menarik dari merchant lokal pilihan di acara komunitas terbesar tahun ini.",
-        image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80&fit=crop",
+        "Mengapa digitalisasi dua arah berbasis lokasi menjadi kunci kebangkitan pedagang pasar dan UMKM lokal ibu kota.",
+        image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80&fit=crop",
     },
 ];
