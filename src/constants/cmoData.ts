@@ -68,39 +68,70 @@ export const CMO_DIVISIONS_DATA: DivisionData[] = [
     name: 'Division A',
     supervisor: {
       id: 'sup-1',
-      name: 'Farel Dimas',
+      name: 'Dewi Lestari (Admin Supervisor)',
       role: 'Supervisor',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop',
-      metrics: DEFAULT_METRICS,
+      avatar: '/assets/avatars/starter-photo-profile.jpg',
+      metrics: {
+        activeTickets: {
+          total: 9,
+          open: 1,
+          pending: 2,
+          unassigned: 6,
+        },
+        responseTime: '0m 45s',
+        responseTimeTrend: '↗ 12% faster than yesterday',
+        avgResolutionTime: '7h 42m',
+        resolutionTimeTrend: '↗ 6% faster than yesterday',
+        csatScore: '100%',
+        csatScoreDetail: '+2 pts from 1 responses',
+        slaCompliance: '91%',
+        slaBreaches: '1 breaches in current period',
+      },
     },
     members: [
       {
         id: 'mem-1',
-        name: 'Farel Dimas',
+        name: 'Citra Amelia (Admin)',
         role: 'Admin',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop',
-        metrics: DEFAULT_METRICS,
+        avatar: '/assets/avatars/starter-photo-profile.jpg',
+        metrics: {
+          activeTickets: {
+            total: 4,
+            open: 2,
+            pending: 1,
+            unassigned: 1,
+          },
+          responseTime: '0m 45s',
+          responseTimeTrend: '↗ 12% faster than yesterday',
+          avgResolutionTime: '7h 42m',
+          resolutionTimeTrend: '↗ 6% faster than yesterday',
+          csatScore: '100%',
+          csatScoreDetail: '+2 pts from 1 responses',
+          slaCompliance: '91%',
+          slaBreaches: '0 breaches in current period',
+        },
       },
       {
         id: 'mem-2',
-        name: 'Farel Dimas',
+        name: 'Staff Admin',
         role: 'Admin',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop',
-        metrics: DEFAULT_METRICS,
-      },
-      {
-        id: 'mem-3',
-        name: 'Farel Dimas',
-        role: 'Admin',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop',
-        metrics: DEFAULT_METRICS,
-      },
-      {
-        id: 'mem-4',
-        name: 'Farel Dimas',
-        role: 'Admin',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop',
-        metrics: DEFAULT_METRICS,
+        avatar: '/assets/avatars/starter-photo-profile.jpg',
+        metrics: {
+          activeTickets: {
+            total: 4,
+            open: 2,
+            pending: 1,
+            unassigned: 1,
+          },
+          responseTime: '0m 45s',
+          responseTimeTrend: '↗ 12% faster than yesterday',
+          avgResolutionTime: '7h 42m',
+          resolutionTimeTrend: '↗ 6% faster than yesterday',
+          csatScore: '100%',
+          csatScoreDetail: '+2 pts from 1 responses',
+          slaCompliance: '91%',
+          slaBreaches: '0 breaches in current period',
+        },
       },
     ],
   },
@@ -111,8 +142,23 @@ export const CMO_DIVISIONS_DATA: DivisionData[] = [
       id: 'sup-2',
       name: 'Farel Dimas',
       role: 'Supervisor',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop',
-      metrics: DEFAULT_METRICS,
+      avatar: '/assets/avatars/starter-photo-profile.jpg',
+      metrics: {
+        activeTickets: {
+          total: 9,
+          open: 1,
+          pending: 2,
+          unassigned: 6,
+        },
+        responseTime: '0m 45s',
+        responseTimeTrend: '↗ 12% faster than yesterday',
+        avgResolutionTime: '7h 42m',
+        resolutionTimeTrend: '↗ 6% faster than yesterday',
+        csatScore: '100%',
+        csatScoreDetail: '+2 pts from 1 responses',
+        slaCompliance: '91%',
+        slaBreaches: '1 breaches in current period',
+      },
     },
     members: [],
   },
@@ -121,10 +167,25 @@ export const CMO_DIVISIONS_DATA: DivisionData[] = [
     name: 'Division C',
     supervisor: {
       id: 'sup-3',
-      name: 'Farel Dimas',
+      name: 'Rian Pratama',
       role: 'Supervisor',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop',
-      metrics: DEFAULT_METRICS,
+      avatar: '/assets/avatars/starter-photo-profile.jpg',
+      metrics: {
+        activeTickets: {
+          total: 9,
+          open: 1,
+          pending: 2,
+          unassigned: 6,
+        },
+        responseTime: '0m 45s',
+        responseTimeTrend: '↗ 12% faster than yesterday',
+        avgResolutionTime: '7h 42m',
+        resolutionTimeTrend: '↗ 6% faster than yesterday',
+        csatScore: '100%',
+        csatScoreDetail: '+2 pts from 1 responses',
+        slaCompliance: '91%',
+        slaBreaches: '1 breaches in current period',
+      },
     },
     members: [],
   },
@@ -241,12 +302,12 @@ export interface SocialTeamMember {
 }
 
 export const CMO_SOCIAL_TEAM_MEMBERS: SocialTeamMember[] = [
-  { id: '1', name: 'Farel Dimas', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop', status: 'Online' },
-  { id: '2', name: 'Farel Dimas', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop', status: 'Online' },
-  { id: '3', name: 'Farel Dimas', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop', status: 'Online' },
-  { id: '4', name: 'Farel Dimas', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop', status: 'Offline' },
-  { id: '5', name: 'Farel Dimas', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop', status: 'Offline' },
-  { id: '6', name: 'Farel Dimas', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop', status: 'Offline' },
+  { id: '1', name: 'Dewi Lestari', avatar: '/assets/avatars/starter-photo-profile.jpg', status: 'Online' },
+  { id: '2', name: 'Citra Amelia', avatar: '/assets/avatars/starter-photo-profile.jpg', status: 'Online' },
+  { id: '3', name: 'Farel Dimas', avatar: '/assets/avatars/starter-photo-profile.jpg', status: 'Online' },
+  { id: '4', name: 'Rian Pratama', avatar: '/assets/avatars/starter-photo-profile.jpg', status: 'Offline' },
+  { id: '5', name: 'Nadia Safitri', avatar: '/assets/avatars/starter-photo-profile.jpg', status: 'Offline' },
+  { id: '6', name: 'Kevin Sanjaya', avatar: '/assets/avatars/starter-photo-profile.jpg', status: 'Offline' },
 ];
 
 export interface ChannelConnection {
@@ -269,9 +330,9 @@ export const CMO_DIVISION_CHANNELS: DivisionChannelRow[] = [
   {
     id: 'sup-a',
     member: {
-      name: 'Farel Dimas',
+      name: 'Dewi Lestari',
       role: 'Supervisor',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop',
+      avatar: '/assets/avatars/starter-photo-profile.jpg',
     },
     channels: [
       { channel: 'Instagram', handle: '@Toentoen', connected: true },
@@ -284,9 +345,9 @@ export const CMO_DIVISION_CHANNELS: DivisionChannelRow[] = [
   {
     id: 'mem-a1',
     member: {
-      name: 'Farel Dimas',
-      role: 'Supervisor',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop',
+      name: 'Citra Amelia',
+      role: 'Admin',
+      avatar: '/assets/avatars/starter-photo-profile.jpg',
     },
     channels: [
       { channel: 'Instagram', handle: '@Toentoen', connected: true },
@@ -300,8 +361,8 @@ export const CMO_DIVISION_CHANNELS: DivisionChannelRow[] = [
     id: 'mem-a2',
     member: {
       name: 'Farel Dimas',
-      role: 'Supervisor',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop',
+      role: 'Content Creator',
+      avatar: '/assets/avatars/starter-photo-profile.jpg',
     },
     channels: [
       { channel: 'Instagram', handle: '@Toentoen', connected: true },
@@ -314,9 +375,9 @@ export const CMO_DIVISION_CHANNELS: DivisionChannelRow[] = [
   {
     id: 'mem-a3',
     member: {
-      name: 'Farel Dimas',
-      role: 'Supervisor',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop',
+      name: 'Nadia Safitri',
+      role: 'Specialist',
+      avatar: '/assets/avatars/starter-photo-profile.jpg',
     },
     channels: [
       { channel: 'Instagram', handle: '@Toentoen', connected: true },
@@ -329,9 +390,9 @@ export const CMO_DIVISION_CHANNELS: DivisionChannelRow[] = [
   {
     id: 'mem-a4',
     member: {
-      name: 'Farel Dimas',
-      role: 'Supervisor',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop',
+      name: 'Kevin Sanjaya',
+      role: 'Specialist',
+      avatar: '/assets/avatars/starter-photo-profile.jpg',
     },
     channels: [
       { channel: 'Instagram', handle: '@Toentoen', connected: true },

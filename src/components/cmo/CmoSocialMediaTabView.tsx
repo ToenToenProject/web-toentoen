@@ -11,13 +11,69 @@ import {
   CalendarDay,
   CalendarPostItem,
 } from '@/constants/cmoData';
+import { DatePickerModal } from '@/components/ui/DatePickerModal';
+
+const getSafeAvatar = (url?: string) => {
+  if (!url || url.includes('unsplash.com') || url.includes('pravatar.cc') || url.includes('dummy')) {
+    return '/assets/avatars/starter-photo-profile.jpg';
+  }
+  return url;
+};
 
 export const CmoSocialMediaTabView: React.FC = () => {
   const [calendarView, setCalendarView] = useState<'weekly' | 'monthly'>('weekly');
   const [isDivisionAExpanded, setIsDivisionAExpanded] = useState<boolean>(true);
 
+  // Date State & Modal
+  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [selectedDateObj, setSelectedDateObj] = useState<Date>(() => new Date());
+  const [dateLabel, setDateLabel] = useState<string>(() => {
+    const now = new Date();
+    const day = now.getDate();
+    const months = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+    return `Hari Ini, ${day} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  });
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
   const supervisorRow = CMO_DIVISION_CHANNELS[0];
   const memberRows = CMO_DIVISION_CHANNELS.slice(1);
+
+  const handleApplyDate = (date: Date, formattedLabel: string, isoDate: string) => {
+    setSelectedDate(isoDate);
+    setSelectedDateObj(date);
+    setDateLabel(formattedLabel);
+  };
+
+  const handleExportReport = () => {
+    const csvHeaders = ["Channel", "Handle", "Owner", "Role", "Status"];
+    const rows: (string | number)[][] = [];
+
+    CMO_DIVISION_CHANNELS.forEach((row) => {
+      row.channels.forEach((chan) => {
+        rows.push([
+          chan.channel,
+          `"${chan.handle}"`,
+          `"${row.member.name}"`,
+          `"${row.member.role}"`,
+          chan.connected ? "Connected" : "Not Connected",
+        ]);
+      });
+    });
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [csvHeaders.join(","), ...rows.map((e) => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `cmo_social_operations_${selectedDate}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="space-y-5">
@@ -32,9 +88,10 @@ export const CmoSocialMediaTabView: React.FC = () => {
           <div className="relative">
             <button
               type="button"
-              className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-50 shadow-xs"
+              onClick={() => setIsDatePickerOpen(true)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-50 shadow-xs cursor-pointer transition-colors"
             >
-              <span>Today, January 27, 2027</span>
+              <span>{dateLabel}</span>
               <svg className="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
@@ -44,7 +101,8 @@ export const CmoSocialMediaTabView: React.FC = () => {
           {/* Export Report */}
           <button
             type="button"
-            className="flex items-center gap-2 px-3.5 py-1.5 bg-[#00A896] hover:bg-[#008f80] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+            onClick={handleExportReport}
+            className="flex items-center gap-2 px-3.5 py-1.5 bg-[#00A896] hover:bg-[#008f80] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors cursor-pointer"
           >
             <span>Export report</span>
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
@@ -185,7 +243,7 @@ export const CmoSocialMediaTabView: React.FC = () => {
               <div key={member.id} className="pt-3 first:pt-0 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <img
-                    src={member.avatar}
+                    src={getSafeAvatar(member.avatar)}
                     alt={member.name}
                     className="w-7 h-7 rounded-full object-cover border border-gray-200 shadow-2xs"
                   />
@@ -235,7 +293,7 @@ export const CmoSocialMediaTabView: React.FC = () => {
                   </svg>
                 </button>
                 <img
-                  src={supervisorRow.member.avatar}
+                  src={getSafeAvatar(supervisorRow.member.avatar)}
                   alt={supervisorRow.member.name}
                   className="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-2xs shrink-0"
                 />
@@ -282,7 +340,7 @@ export const CmoSocialMediaTabView: React.FC = () => {
                 >
                   <div className="lg:col-span-3 flex items-center gap-2.5">
                     <img
-                      src={member.member.avatar}
+                      src={getSafeAvatar(member.member.avatar)}
                       alt={member.member.name}
                       className="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-2xs shrink-0"
                     />
@@ -319,6 +377,14 @@ export const CmoSocialMediaTabView: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Modal Popup Date Picker */}
+      <DatePickerModal
+        isOpen={isDatePickerOpen}
+        onClose={() => setIsDatePickerOpen(false)}
+        selectedDate={selectedDateObj}
+        onApply={handleApplyDate}
+      />
     </div>
   );
 };
