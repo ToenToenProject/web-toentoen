@@ -20,6 +20,9 @@ export const SalesTopBar: React.FC<SalesTopBarProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
   const activeReferral = referralCode || profile.referralCode || 'SL01';
+  const cleanAvatar = (profile.avatar && !profile.avatar.includes('unsplash.com') && !profile.avatar.includes('pravatar.cc'))
+    ? profile.avatar
+    : "/assets/avatars/starter-photo-profile.jpg";
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -36,9 +39,9 @@ export const SalesTopBar: React.FC<SalesTopBarProps> = ({
         className="flex items-center space-x-3 min-w-0 cursor-pointer group"
         title="Buka Pengaturan Akun"
       >
-        <div className="w-10 h-10 shrink-0 rounded-full bg-gray-300 overflow-hidden border border-gray-200">
+        <div className="w-10 h-10 shrink-0 rounded-full bg-gray-200 overflow-hidden border border-gray-200">
           <img 
-            src={profile.avatar || "/assets/avatars/starter-photo-profile.jpg"} 
+            src={cleanAvatar} 
             alt="Profile" 
             onError={(e) => { e.currentTarget.src = "/assets/avatars/starter-photo-profile.jpg"; }}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform" 

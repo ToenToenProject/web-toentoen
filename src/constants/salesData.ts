@@ -48,7 +48,7 @@ export interface LoginHistoryItem {
 export const INITIAL_SALES_PROFILE: SalesProfile = {
   name: 'Fitri',
   role: 'Sales',
-  avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80&fit=crop',
+  avatar: '/assets/avatars/starter-photo-profile.jpg',
   referralCode: 'A12345',
   registeredEmail: 'Fitri@gmail.com',
   territory: 'Jakarta Selatan',

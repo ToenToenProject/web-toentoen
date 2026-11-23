@@ -15,7 +15,6 @@ import { MerchantHistoryModal } from './MerchantHistoryModal';
 import { ReassignMerchantModal } from './ReassignMerchantModal';
 import { ShowEntriesDropdown } from '@/components/common/ShowEntriesDropdown';
 import {
-  Coins,
   Check,
   X,
   Clock,
@@ -267,41 +266,38 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
           </svg>
-          <span>+ Daftarkan Toko Baru</span>
+          <span>Daftarkan Toko Baru</span>
         </button>
       </div>
 
-      {/* OVERVIEW BAR (Sama persis seperti Admin) */}
-      <div className="bg-white border border-gray-300 rounded-xl p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 shadow-sm">
-        <h3 className="font-semibold text-gray-800 text-sm">Support Operations Overview</h3>
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-          {/* Filter Tanggal */}
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3.5 py-2 text-xs sm:text-sm bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-800 font-semibold cursor-pointer shadow-2xs"
-          />
-
-          {/* Export Report (Warna Teal persis Admin) */}
-          <a
-            href={salesService.getExportReportUrl(selectedDate)}
-            target="_blank"
-            rel="noreferrer"
-            className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 transition-colors cursor-pointer shadow-2xs"
-            title="Unduh laporan kinerja tim sales format CSV"
-          >
-            <span>Export report</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-          </a>
-        </div>
-      </div>
-
-      {/* PERFORMANCE METRICS GRID (Sama persis seperti Admin) */}
+      {/* SUPPORT OPERATIONS OVERVIEW (Single Combined Card) */}
       <div className="bg-white border border-gray-300 rounded-xl p-4 sm:p-6 shadow-sm">
-        <h3 className="font-semibold text-gray-800 text-sm mb-4">Performance overview</h3>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
+          <h3 className="font-semibold text-gray-800 text-sm">Support Operations Overview</h3>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            {/* Filter Tanggal */}
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3.5 py-2 text-xs sm:text-sm bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-800 font-semibold cursor-pointer shadow-2xs"
+            />
+
+            {/* Export Report (Warna Teal persis Admin) */}
+            <a
+              href={salesService.getExportReportUrl(selectedDate)}
+              target="_blank"
+              rel="noreferrer"
+              className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 transition-colors cursor-pointer shadow-2xs"
+              title="Unduh laporan kinerja tim sales format CSV"
+            >
+              <span>Export report</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </a>
+          </div>
+        </div>
 
         {/* 5 Cards Overview */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
@@ -318,9 +314,9 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
               </div>
               <div className="text-xs text-gray-500">
                 {metric.isHighlight ? (
-                  <span className="text-emerald-600 font-semibold flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
-                    <span>{metric.subtitle}</span>
+                  <span className="text-emerald-600 font-semibold flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block shrink-0 animate-pulse"></span>
+                    <span>{metric.subtitle?.replace(/^[●•\s]+/, '')}</span>
                   </span>
                 ) : (
                   <span className="text-teal-700 font-semibold">{metric.subtitle}</span>
@@ -329,28 +325,6 @@ export const SupervisorDashboardView: React.FC<SupervisorDashboardViewProps> = (
             </div>
           ))}
         </div>
-
-        {/* Incentive Summary Banner */}
-        {overview.incentiveSummary && (
-          <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-teal-50 via-emerald-50/50 to-white border border-teal-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center space-x-3">
-              <span className="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-                <Coins className="w-5 h-5 text-amber-300" />
-              </span>
-              <div>
-                <h4 className="text-xs font-bold text-gray-900">
-                  Total Estimasi Insentif Tim: <span className="text-teal-700 font-black">{overview.incentiveSummary.formattedEstimatedIncentive}</span>
-                </h4>
-                <p className="text-[11px] text-gray-500">
-                  {overview.incentiveSummary.achievedMonthlyStores} toko binaan telah mencapai target bulanan &amp; {overview.incentiveSummary.achievedWeeklyStores} toko mencapai target mingguan.
-                </p>
-              </div>
-            </div>
-            <span className="text-[11px] font-bold px-3 py-1 bg-teal-600 text-white rounded-full shadow-2xs whitespace-nowrap">
-              Supervisor Overview
-            </span>
-          </div>
-        )}
       </div>
 
       {/* SECTION 2: Team Capacity (Toko Binaan Tim Sales) */}

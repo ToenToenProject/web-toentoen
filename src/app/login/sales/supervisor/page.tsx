@@ -27,10 +27,16 @@ export default function SalesSupervisorPage() {
   return (
     <SalesAuthGuard allowedRoles={['SALES_MARKETING_SPV', 'SUPER_ADMIN', 'C_LEVEL']}>
       {({ onLogout, user }) => {
+        const userAvatar = (user as any)?.avatar || (user as any)?.avatarUrl || SUPERVISOR_PROFILE.avatar;
+        const cleanAvatar = (userAvatar && !userAvatar.includes('unsplash.com') && !userAvatar.includes('pravatar.cc'))
+          ? userAvatar
+          : "/assets/avatars/starter-photo-profile.jpg";
+
         const dynamicProfile: SalesProfile = {
           ...SUPERVISOR_PROFILE,
           name: user?.name || SUPERVISOR_PROFILE.name,
           role: 'Supervisor Sales',
+          avatar: cleanAvatar,
           registeredEmail: user?.email || SUPERVISOR_PROFILE.registeredEmail,
         };
 
