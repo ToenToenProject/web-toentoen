@@ -4,13 +4,14 @@
 // pada browser client development yang mengakses backend DEV (dev-api-ops.toentoen.com).
 
 import { NextRequest, NextResponse } from 'next/server';
+import { getBackendBaseUrl, isStrictTlsRequired, resolveCurrentStage } from '@/config/apiConfig';
 
-// Abaikan validasi TLS pada dev backend jika sertifikat belum mencakup subdomain multi-level
-if (process.env.NODE_ENV !== 'production' || process.env.ALLOW_INSECURE_DEV_TLS === 'true') {
+// Konfigurasi validasi TLS berdasarkan stage
+if (!isStrictTlsRequired()) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+} else {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1';
 }
-
-const BACKEND_BASE_URL = process.env.INTERNAL_API_BASE_URL || 'https://dev-api-ops.toentoen.com/api/v1';
 
 async function handleProxy(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   try {
@@ -19,7 +20,8 @@ async function handleProxy(req: NextRequest, { params }: { params: Promise<{ pat
     const url = new URL(req.url);
     const search = url.search; // termasuk ?query=...
 
-    const targetUrl = `${BACKEND_BASE_URL}/${pathString}${search}`;
+    const backendBaseUrl = getBackendBaseUrl();
+    const targetUrl = `${backendBaseUrl}/${pathString}${search}`;
 
     // Ekstrak headers dari client request
     const headers: Record<string, string> = {};
