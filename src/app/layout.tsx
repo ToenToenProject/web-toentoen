@@ -12,7 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "ToenToen Web",
+  title: "ToenToen",
   description: "Jembatan digital untuk kebutuhan masyarakat dan bisnis lokal",
   icons: {
     icon: "/assets/logo/toentoen-logo.png",
