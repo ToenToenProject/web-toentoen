@@ -43,7 +43,7 @@ export const CmoTopBar: React.FC<CmoTopBarProps> = ({ profile, onLogout }) => {
           <span>CMO Hub</span>
         </span>
         <Link
-          href="/login/admin/supervisor"
+          href="/admin/supervisor"
           className="px-3 py-1 text-gray-600 hover:text-teal-700 hover:bg-white rounded-lg transition-all flex items-center gap-1 cursor-pointer"
           title="Buka Dashboard Operasional Admin & CS"
         >
@@ -53,7 +53,7 @@ export const CmoTopBar: React.FC<CmoTopBarProps> = ({ profile, onLogout }) => {
           </svg>
         </Link>
         <Link
-          href="/login/sales/supervisor"
+          href="/sales/supervisor"
           className="px-3 py-1 text-gray-600 hover:text-teal-700 hover:bg-white rounded-lg transition-all flex items-center gap-1 cursor-pointer"
           title="Buka Dashboard Monitoring Tim Sales"
         >

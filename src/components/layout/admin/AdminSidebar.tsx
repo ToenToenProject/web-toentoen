@@ -20,14 +20,14 @@ const pathIcon = (d: string) => (
 );
 
 const ITEMS = [
-  { href: '/login/admin/staff', label: 'Dashboard', exact: true, icon: GRID_ICON },
+  { href: '/admin/staff', label: 'Dashboard', exact: true, icon: GRID_ICON },
   {
-    href: '/login/admin/staff/inbox',
+    href: '/admin/staff/inbox',
     label: 'Inbox',
     icon: pathIcon('M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'),
   },
   {
-    href: '/login/admin/staff/report',
+    href: '/admin/staff/report',
     label: 'Report',
     icon: pathIcon('M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'),
   },
@@ -41,7 +41,7 @@ export default function AdminSidebar() {
 
   return (
     <aside className="fixed inset-x-0 bottom-0 z-40 flex h-16 w-full shrink-0 select-none items-center border-t border-gray-200 bg-white pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:h-screen md:w-16 md:flex-col md:border-r md:border-t-0 md:py-4 md:pb-4">
-      <Link href="/login/admin/staff" className="hidden md:flex md:mb-8">
+      <Link href="/admin/staff" className="hidden md:flex md:mb-8">
         <Image
           src="/assets/logo/toentoen-logo.png"
           alt="ToenToen Logo"

@@ -2,30 +2,27 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { DashboardShellSkeleton } from '@/components/ui/Skeleton';
 
 export default function SalesRedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
-        try {
+    try {
       const userStr = localStorage.getItem('user');
       if (userStr) {
         const user = JSON.parse(userStr);
         const role = (user?.role || '').toUpperCase();
         if (role.includes('SUPERVISOR') || role.includes('SPV') || role === 'SALES_MARKETING_SPV') {
-          router.replace('/login/sales/supervisor');
+          router.replace('/sales/supervisor');
           return;
         }
       }
     } catch {
-          }
+    }
 
-        router.replace('/login/sales/staff');
+    router.replace('/sales/staff');
   }, [router]);
 
-  return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gray-50">
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#00c2a8]" />
-    </div>
-  );
+  return <DashboardShellSkeleton />;
 }

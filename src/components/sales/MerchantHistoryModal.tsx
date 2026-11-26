@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { salesService, MerchantHistoryResponse } from '@/services/salesService';
+import { MerchantHistorySkeleton } from '@/components/ui/Skeleton';
 import { Check, X } from 'lucide-react';
 
 interface MerchantHistoryModalProps {
@@ -97,13 +98,7 @@ export const MerchantHistoryModal: React.FC<MerchantHistoryModalProps> = ({
         {/* Content */}
         <div className="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4">
           {loading ? (
-            <div className="py-12 flex flex-col items-center justify-center space-y-3 text-gray-400">
-              <svg className="w-8 h-8 animate-spin text-teal-600" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-              </svg>
-              <p className="text-xs">Memuat data riwayat 30 hari...</p>
-            </div>
+            <MerchantHistorySkeleton />
           ) : (
             <>
               {/* Summary Stats */}

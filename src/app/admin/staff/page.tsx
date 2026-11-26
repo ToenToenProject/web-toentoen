@@ -9,6 +9,7 @@ import { Header } from '@/components/admin/dashboard/Header';
 import { PerformanceGrid } from '@/components/admin/dashboard/PerformanceGrid';
 import { UrgentAlerts } from '@/components/admin/dashboard/UrgentAlerts';
 import { RoleGuard } from '@/components/auth/RoleGuard';
+import { MetricCardSkeleton, AlertCardSkeleton, Skeleton } from '@/components/ui/Skeleton';
 
 function AdminStaffDashboardContent() {
   const router = useRouter();
@@ -202,7 +203,39 @@ function AdminStaffDashboardContent() {
     router.push('/login');
   };
 
-  if (isLoading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div></div>;
+  if (isLoading) {
+    return (
+      <main className="w-full bg-gray-50 min-h-screen">
+        <Header
+          onLogout={handleLogout}
+          userName={profile.name}
+          userRole={profile.role}
+          avatarUrl={profile.avatarUrl}
+        />
+        <div className="p-3 sm:p-6 pt-0 sm:pt-0 space-y-4 sm:space-y-6">
+          <div className="flex flex-wrap justify-between items-end gap-2">
+            <Skeleton className="h-7 w-36 rounded-md" />
+            <Skeleton className="h-7 w-40 rounded-md" />
+          </div>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6 space-y-4">
+            <Skeleton className="h-4 w-40 rounded" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <MetricCardSkeleton key={i} />
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
+              <Skeleton className="h-4 w-44 rounded" />
+              <AlertCardSkeleton />
+              <AlertCardSkeleton />
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
   if (error) return <div className="text-red-500 text-center mt-10">Error: {error}</div>;
 
   return (

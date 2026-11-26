@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChatSession } from '@/constants/api/admin/types';
 import { StatusBadge } from './StatusBadge';
+import { InboxTicketCardSkeleton } from '@/components/ui/Skeleton';
 
 interface ChatListPanelProps {
   chatList: ChatSession[];
@@ -100,8 +101,10 @@ export const ChatListPanel: React.FC<ChatListPanelProps> = ({
 
       <div className="flex-1 overflow-y-auto">
         {isLoadingList ? (
-          <div className="flex justify-center items-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500"></div>
+          <div className="p-3 space-y-2.5">
+            {Array.from({ length: 5 }).map((_, idx) => (
+              <InboxTicketCardSkeleton key={idx} />
+            ))}
           </div>
         ) : filteredChatList.length === 0 ? (
             <div className="text-center p-6 text-gray-500 text-sm">Belum ada tiket masuk</div>

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { logoutUser, checkSession } from '@/services/authService';
 import { useAuth } from '@/context/AuthContext';
 import { UserSession } from '@/types/auth';
+import { DashboardShellSkeleton } from '@/components/ui/Skeleton';
 
 interface SalesAuthGuardProps {
   allowedRoles?: string[];
@@ -89,7 +90,7 @@ export const SalesAuthGuard: React.FC<SalesAuthGuardProps> = ({ allowedRoles, ch
         if (!hasMatchingRole) {
           // Redirect field sales staff attempting to access supervisor dashboard
           if (isSalesStaff && !isSupervisor) {
-            router.replace('/login/sales/staff');
+            router.replace('/sales/staff');
             return;
           }
           // Redirect non-sales roles to login
@@ -114,14 +115,7 @@ export const SalesAuthGuard: React.FC<SalesAuthGuardProps> = ({ allowedRoles, ch
     };
   }, [contextUser, contextLoading, allowedRoles, router]);
   if (isVerifying || !isAuthorized) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-[#F9FAFB]">
-        <div className="flex flex-col items-center gap-3 text-gray-500">
-          <div className="h-8 w-8 animate-spin rounded-full border-3 border-teal-600 border-t-transparent" />
-          <p className="text-xs font-semibold text-gray-700">Memverifikasi sesi & hak akses Sales...</p>
-        </div>
-      </div>
-    );
+    return <DashboardShellSkeleton />;
   }
 
   return <>{children({ onLogout: handleLogout, user: currentUser })}</>;

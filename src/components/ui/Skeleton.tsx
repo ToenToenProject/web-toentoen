@@ -289,3 +289,84 @@ export function CmoDivisionSkeleton({ count = 3 }: { count?: number }) {
     </div>
   );
 }
+
+export function DashboardShellSkeleton({ withSidebar = true }: { withSidebar?: boolean }) {
+  return (
+    <div className="flex h-[100dvh] w-full bg-gray-50 overflow-hidden">
+      {withSidebar && (
+        <aside className="hidden md:flex w-16 shrink-0 flex-col items-center gap-6 border-r border-gray-200 bg-white py-4">
+          <Skeleton className="w-10 h-10 rounded-xl" />
+          <div className="flex flex-col gap-4 mt-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="w-9 h-9 rounded-xl" />
+            ))}
+          </div>
+        </aside>
+      )}
+      <div className="flex-1 min-w-0 bg-white overflow-hidden">
+        <div className="bg-white border border-gray-200 px-3 sm:px-6 py-3 flex justify-between items-center m-3 sm:m-4 rounded-xl">
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-10 h-10 rounded-full shrink-0" />
+            <div className="space-y-1.5">
+              <Skeleton className="h-3.5 w-28 rounded" />
+              <Skeleton className="h-2.5 w-20 rounded" />
+            </div>
+          </div>
+          <Skeleton className="h-9 w-24 rounded-lg" />
+        </div>
+        <div className="px-3 sm:px-6 pt-2 space-y-4">
+          <Skeleton className="h-7 w-36 rounded-md" />
+          <div className="border border-gray-200 rounded-xl p-4 flex justify-between items-center">
+            <Skeleton className="h-4 w-48 rounded" />
+            <div className="flex gap-2">
+              <Skeleton className="h-9 w-40 rounded-lg" />
+              <Skeleton className="h-9 w-28 rounded-lg" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <MetricCardSkeleton key={i} />
+            ))}
+          </div>
+          <div className="border border-gray-200 rounded-xl p-4 space-y-3">
+            <Skeleton className="h-4 w-36 rounded" />
+            <CmoDivisionSkeleton count={2} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function MerchantHistorySkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="p-3 rounded-xl border border-gray-100 bg-gray-50/60 space-y-2">
+            <Skeleton className="h-2.5 w-20 rounded" />
+            <Skeleton className="h-6 w-16 rounded" />
+          </div>
+        ))}
+      </div>
+      <div className="border border-gray-200 rounded-xl overflow-hidden">
+        <div className="bg-gray-100 px-3 py-2.5 flex gap-4">
+          <Skeleton className="h-3 w-20 rounded" />
+          <Skeleton className="h-3 w-24 rounded" />
+          <Skeleton className="h-3 w-16 rounded" />
+          <Skeleton className="h-3 w-20 rounded" />
+        </div>
+        <div className="divide-y divide-gray-100">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="px-3 py-3 flex items-center justify-between gap-4">
+              <Skeleton className="h-3.5 w-24 rounded" />
+              <Skeleton className="h-3.5 w-16 rounded" />
+              <Skeleton className="h-5 w-14 rounded-full" />
+              <Skeleton className="h-3.5 w-20 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

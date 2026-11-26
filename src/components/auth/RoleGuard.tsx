@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePermission } from "@/hooks/usePermission";
+import { DashboardShellSkeleton } from "@/components/ui/Skeleton";
 
 interface RoleGuardProps {
   allowedRoles?: string[];
@@ -33,14 +34,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
   }, [isLoading, user, router]);
 
   if (isLoading || !user) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center p-8">
-        <div className="flex flex-col items-center gap-3 text-gray-500">
-          <div className="h-8 w-8 animate-spin rounded-full border-3 border-[#00c2a8] border-t-transparent" />
-          <p className="text-xs font-medium">Memverifikasi hak akses...</p>
-        </div>
-      </div>
-    );
+    return <DashboardShellSkeleton withSidebar={false} />;
   }
 
   const isRoleAuthorized = !effectiveRoles || hasRole(effectiveRoles);

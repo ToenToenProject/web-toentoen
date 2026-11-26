@@ -109,16 +109,16 @@ function SupervisorDashboardContent() {
       let url = alert.action_url;
       if (!url) {
         if (alert.type === 'REPORT' || alert.action_type === 'INVESTIGATION') {
-          url = `/login/admin/supervisor/report?id=${encodeURIComponent(alert.ticket_id || alert.id)}`;
+          url = `/admin/supervisor/report?id=${encodeURIComponent(alert.ticket_id || alert.id)}`;
         } else {
-          url = `/login/admin/supervisor/inbox?id=${encodeURIComponent(alert.ticket_id || alert.id)}`;
+          url = `/admin/supervisor/inbox?id=${encodeURIComponent(alert.ticket_id || alert.id)}`;
         }
       }
       // Normalize route path if backend returns /supervisor prefix
       if (url.startsWith('/supervisor/')) {
-        url = url.replace('/supervisor/', '/login/admin/supervisor/');
-      } else if (!url.startsWith('/login/admin/supervisor/')) {
-        url = `/login/admin/supervisor${url.startsWith('/') ? '' : '/'}${url}`;
+        url = url.replace('/supervisor/', '/admin/supervisor/');
+      } else if (!url.startsWith('/admin/supervisor/')) {
+        url = `/admin/supervisor${url.startsWith('/') ? '' : '/'}${url}`;
       }
       router.push(url);
     };
@@ -261,7 +261,7 @@ function SupervisorDashboardContent() {
                   ticket_id: tId,
                   type: isReport ? 'REPORT' : 'SUPPORT_TICKET',
                   action_type: a.action_type || (isReport ? 'INVESTIGATION' : 'INBOX'),
-                  action_url: a.action_url || (isReport ? `/login/admin/supervisor/report?id=${tId}` : `/login/admin/supervisor/inbox?id=${tId}`),
+                  action_url: a.action_url || (isReport ? `/admin/supervisor/report?id=${tId}` : `/admin/supervisor/inbox?id=${tId}`),
                   time_remaining: a.time_remaining || (a.priority === 'VIP' ? '1 hours remaining' : '4 hours remaining'),
                   issue_type: a.issue_type || a.subject || "Customer Support Escalation",
                   target_name: a.target_name || a.customerName || a.customer_name || "",
@@ -371,7 +371,7 @@ function SupervisorDashboardContent() {
                   ticket_id: tId,
                   type: isReport ? 'REPORT' : 'SUPPORT_TICKET',
                   action_type: isReport ? 'INVESTIGATION' : 'INBOX',
-                  action_url: isReport ? `/login/admin/supervisor/report?id=${tId}` : `/login/admin/supervisor/inbox?id=${tId}`,
+                  action_url: isReport ? `/admin/supervisor/report?id=${tId}` : `/admin/supervisor/inbox?id=${tId}`,
                   time_remaining: item.priority === 'VIP' ? '1 hours remaining' : '3 hours remaining',
                   issue_type: item.subject || item.title || item.category || "Tiket Laporan Dukungan",
                   target_name: item.target_name || item.reporter?.name || "",

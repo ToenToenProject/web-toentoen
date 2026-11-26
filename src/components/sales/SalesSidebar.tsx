@@ -34,7 +34,7 @@ export const SalesSidebar: React.FC<SalesSidebarProps> = ({ currentView, onNavig
         {/* Tombol kembali ke CMO Hub jika akun adalah CMO / C_LEVEL */}
         {isCLevel() && (
           <Link
-            href="/login/cmo"
+            href="/cmo"
             title="Kembali ke CMO Hub"
             className="p-2.5 rounded-xl transition-all text-teal-600 hover:bg-teal-50"
           >

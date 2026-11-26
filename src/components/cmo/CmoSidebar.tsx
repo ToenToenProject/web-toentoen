@@ -50,7 +50,7 @@ export const CmoSidebar: React.FC<CmoSidebarProps> = ({ currentView, onNavigate 
 
         {/* Akses Admin Hub */}
         <Link
-          href="/login/admin/supervisor"
+          href="/admin/supervisor"
           aria-label="Admin & CS Operations"
           title="Akses Admin & CS Operations"
           className="p-2.5 rounded-xl transition-all text-gray-400 hover:text-teal-600 hover:bg-teal-50"
@@ -62,7 +62,7 @@ export const CmoSidebar: React.FC<CmoSidebarProps> = ({ currentView, onNavigate 
 
         {/* Akses Sales Hub */}
         <Link
-          href="/login/sales/supervisor"
+          href="/sales/supervisor"
           aria-label="Sales Operations"
           title="Akses Sales Operations & Merchant Matrix"
           className="p-2.5 rounded-xl transition-all text-gray-400 hover:text-teal-600 hover:bg-teal-50"

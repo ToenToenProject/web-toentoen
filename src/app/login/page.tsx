@@ -7,6 +7,7 @@ import { loginUser } from "@/services/authService";
 import { LoginPayload } from "@/constants/api/admin/login";
 import { useAuth } from "@/context/AuthContext";
 import { UserSession } from "@/types/auth";
+import { getDashboardPathByRole } from "@/utils/roleRedirect";
 
 export default function LoginPage() {
   const [error, setError] = useState<string>("");
@@ -46,52 +47,8 @@ export default function LoginPage() {
         document.cookie = `token=true; path=/; max-age=86400; SameSite=Lax`;
       }
 
-            const userRole = response.data?.user?.role;
-      const roleUpper = userRole ? userRole.toUpperCase() : "";
-
-      // Role-based redirection mapping
-            if (
-        roleUpper === "SALES_MARKETING_SPV" ||
-        roleUpper.includes("SALES_SUPERVISOR") ||
-        (roleUpper.includes("SALES") && (roleUpper.includes("SPV") || roleUpper.includes("SUPERVISOR")))
-      ) {
-        router.push("/login/sales/supervisor");
-      } else if (roleUpper === "SALES" || roleUpper.includes("SALES")) {
-        router.push("/login/sales/staff");
-      } 
-            else if (
-        roleUpper.includes("CONTENT_CREATOR") ||
-        roleUpper.includes("SOCIAL") ||
-        roleUpper.includes("SMM") ||
-        roleUpper.includes("SOSMED")
-      ) {
-        router.push("/login/social-media");
-      } 
-            else if (
-        roleUpper.includes("CMO") ||
-        (roleUpper.includes("MARKETING") && !roleUpper.includes("SALES")) ||
-        roleUpper.includes("C_LEVEL")
-      ) {
-        router.push("/login/cmo");
-      } 
-            else if (
-        roleUpper === "ADMIN_SPV" ||
-        roleUpper === "SUPERVISOR_ADMIN" ||
-        (roleUpper.includes("ADMIN") && (roleUpper.includes("SPV") || roleUpper.includes("SUPERVISOR")))
-      ) {
-        router.push("/login/admin/supervisor");
-      } 
-            else if (
-        roleUpper === "ADMIN" ||
-        roleUpper === "STAFF_ADMIN" ||
-        roleUpper === "STAFF" ||
-        roleUpper.includes("CS") ||
-        roleUpper.includes("SUPPORT")
-      ) {
-        router.push("/login/admin/staff");
-      } else {
-                router.push("/login/sales/staff");
-      }
+      const userRole = response.data?.user?.role;
+      router.push(getDashboardPathByRole(userRole));
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

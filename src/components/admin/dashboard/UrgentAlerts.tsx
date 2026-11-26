@@ -13,9 +13,9 @@ export const UrgentAlerts: React.FC<Props> = ({ alerts }) => {
 
   const handleTakeAction = (alert: UrgentAlert) => {
     if (alert.type === 'report') {
-      router.push('/login/admin/staff/report');
+      router.push('/admin/staff/report');
     } else {
-      router.push('/login/admin/staff/inbox');
+      router.push('/admin/staff/inbox');
     }
   };
 
