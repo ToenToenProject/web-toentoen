@@ -134,7 +134,7 @@ function KycDetailContent() {
       await kycApi.approve(accountId, reviewRole);
       setActionMsg({ type: 'ok', text: 'KYC berhasil disetujui. Mengalihkan...' });
       // Redirect to KYC submission queue following approval
-      router.push('/login/admin/supervisor/kyc');
+      router.push('/admin/supervisor/kyc');
     } catch (e) {
       setActionMsg({ type: 'err', text: e instanceof Error ? e.message : 'Gagal menyetujui KYC' });
       setSubmitting(false);
@@ -154,7 +154,7 @@ function KycDetailContent() {
       setShowReject(false);
       setReason('');
       // Redirect to KYC submission queue following rejection
-      router.push('/login/admin/supervisor/kyc');
+      router.push('/admin/supervisor/kyc');
     } catch (e) {
       setActionMsg({ type: 'err', text: e instanceof Error ? e.message : 'Gagal menolak KYC' });
       setSubmitting(false);
@@ -174,7 +174,7 @@ function KycDetailContent() {
 
   return (
     <main className="w-full bg-white min-h-screen p-6 space-y-4">
-      <Link href="/login/admin/supervisor/kyc" className="text-sm text-teal-600 hover:underline inline-flex items-center gap-1.5 font-medium">
+      <Link href="/admin/supervisor/kyc" className="text-sm text-teal-600 hover:underline inline-flex items-center gap-1.5 font-medium">
         <span>&larr;</span>
         <span>Kembali ke daftar KYC</span>
       </Link>

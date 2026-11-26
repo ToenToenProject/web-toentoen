@@ -64,14 +64,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               document.cookie = `token=true; path=/; max-age=86400; SameSite=Lax`;
             }
           } else {
-            // Retain cached session if cross-origin cookies are restricted during local development
-            const hasLocalCache = typeof window !== "undefined" && !!localStorage.getItem("user");
-            if (!hasLocalCache) {
+            const hasCookieToken =
+              typeof document !== "undefined" &&
+              /(?:^|;\s*)(auth_token|token|toentoen_session)=/.test(document.cookie);
+
+            if (!hasCookieToken) {
               setUser(null);
               if (typeof window !== "undefined") {
+                localStorage.removeItem("user");
+                localStorage.removeItem("token");
                 document.cookie = "auth_token=; path=/; max-age=0;";
                 document.cookie = "token=; path=/; max-age=0;";
                 document.cookie = "toentoen_session=; path=/; max-age=0;";
+                const p = window.location.pathname;
+                if (
+                  p.startsWith("/admin") ||
+                  p.startsWith("/sales") ||
+                  p.startsWith("/cmo") ||
+                  p.startsWith("/social-media")
+                ) {
+                  window.location.replace(`/login?redirect=${encodeURIComponent(p)}`);
+                }
               }
             }
           }
@@ -87,8 +100,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     initAuth();
 
+    const verifyTokenIntegrity = () => {
+      if (typeof window === "undefined") return;
+      const p = window.location.pathname;
+      const isProtected =
+        p.startsWith("/admin") ||
+        p.startsWith("/sales") ||
+        p.startsWith("/cmo") ||
+        p.startsWith("/social-media");
+      if (!isProtected) return;
+
+      const hasCookieToken = /(?:^|;\s*)(auth_token|token|toentoen_session)=/.test(document.cookie);
+      const hasCachedUser = !!localStorage.getItem("user");
+      if (!hasCookieToken || !hasCachedUser) {
+        setUser(null);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        document.cookie = "auth_token=; path=/; max-age=0;";
+        document.cookie = "token=; path=/; max-age=0;";
+        document.cookie = "toentoen_session=; path=/; max-age=0;";
+        window.location.replace(`/login?redirect=${encodeURIComponent(p)}`);
+      }
+    };
+
+    window.addEventListener("focus", verifyTokenIntegrity);
+    window.addEventListener("storage", verifyTokenIntegrity);
+
     return () => {
       isMounted = false;
+      window.removeEventListener("focus", verifyTokenIntegrity);
+      window.removeEventListener("storage", verifyTokenIntegrity);
     };
   }, []);
 

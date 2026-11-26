@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { logoutUser, checkSession } from '@/services/authService';
 import { useAuth } from '@/context/AuthContext';
 import { UserSession } from '@/types/auth';
+import { DashboardShellSkeleton } from '@/components/ui/Skeleton';
 
 interface SmAuthGuardProps {
   children: (props: { onLogout: () => void; user: UserSession | null }) => React.ReactNode;
@@ -102,14 +103,7 @@ export const SmAuthGuard: React.FC<SmAuthGuardProps> = ({ children }) => {
   }, [contextUser, router]);
 
   if (isVerifying) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-gray-50">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#249990] border-t-transparent" />
-          <p className="text-xs text-gray-500 font-medium">Memverifikasi sesi...</p>
-        </div>
-      </div>
-    );
+    return <DashboardShellSkeleton />;
   }
 
   if (!isAuthorized) {

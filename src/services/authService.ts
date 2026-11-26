@@ -50,6 +50,16 @@ export const checkSession = async (): Promise<UserData | null> => {
     });
 
     if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('user');
+          localStorage.removeItem('token');
+          document.cookie = 'auth_token=; path=/; max-age=0;';
+          document.cookie = 'token=; path=/; max-age=0;';
+          document.cookie = 'toentoen_session=; path=/; max-age=0;';
+        }
+        return null;
+      }
       if (typeof window !== 'undefined') {
         const cached = localStorage.getItem('user');
         if (cached) return JSON.parse(cached);

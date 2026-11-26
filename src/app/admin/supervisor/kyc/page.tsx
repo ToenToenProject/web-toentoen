@@ -193,7 +193,7 @@ function SupervisorKycContent() {
                 const contact = pick(item, ['email', 'account.email', 'user.email', 'phone', 'phoneNumber', 'account.phone']);
                 const st = pick(item, ['kycStatus', 'kyc_status', 'status', 'state']);
                 const date = pick(item, ['kycSubmittedAt', 'kyc_submitted_at', 'submittedAt', 'submitted_at', 'createdAt', 'created_at', 'updatedAt', 'date']);
-                const href = `/login/admin/supervisor/kyc/${encodeURIComponent(accountId)}${
+                const href = `/admin/supervisor/kyc/${encodeURIComponent(accountId)}${
                   itemRole === 'owner' || itemRole === 'business_admin' ? `?role=${itemRole}` : ''
                 }`;
                 return (

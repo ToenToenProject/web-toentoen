@@ -41,7 +41,14 @@ export const Header = () => {
 
   const isHiddenPage =
     pathname.startsWith("/dashboard") ||
-    (pathname.startsWith("/login/") && pathname !== "/login");
+    pathname === "/admin" ||
+    pathname.startsWith("/admin/") ||
+    pathname === "/sales" ||
+    pathname.startsWith("/sales/") ||
+    pathname === "/cmo" ||
+    pathname.startsWith("/cmo/") ||
+    pathname === "/social-media" ||
+    pathname.startsWith("/social-media/");
   const [lastPath, setLastPath] = useState(pathname);
   if (lastPath !== pathname) {
     setLastPath(pathname);

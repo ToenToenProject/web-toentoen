@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { adminApi } from '@/constants/api/admin/report';
 import { Flag } from 'lucide-react';
+import { KanbanCardSkeleton, Skeleton } from '@/components/ui/Skeleton';
 type TicketStatus = 'Unsolved' | 'Pending' | 'Solved';
 type Priority = 1 | 2 | 3 | null;
 
@@ -31,9 +32,11 @@ export default function ReportTicketComponent() {
   
   const [chatInput, setChatInput] = useState("");
   const [showFlagDropdown, setShowFlagDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
+        setIsLoading(true);
         const [catData, boardData] = await Promise.all([
           adminApi.getReportCategories(),
           adminApi.getKanbanBoard()
@@ -76,6 +79,8 @@ export default function ReportTicketComponent() {
         }
       } catch (error) {
         console.error("Gagal memuat data awal:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchInitialData();
@@ -182,9 +187,15 @@ export default function ReportTicketComponent() {
                 <span className={`${col.color} text-white font-bold text-sm px-2.5 py-1 rounded-md`}>{col.data.length}</span>
               </div>
               <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-[#f8f9fa]">
-                {col.data.map(ticket => (
-                  <TicketCard key={ticket.id} ticket={ticket} isActive={selectedTicketId === ticket.id} onClick={() => setSelectedTicketId(ticket.id)} />
-                ))}
+                {isLoading ? (
+                  Array.from({ length: 3 }).map((_, idx) => (
+                    <KanbanCardSkeleton key={idx} />
+                  ))
+                ) : (
+                  col.data.map(ticket => (
+                    <TicketCard key={ticket.id} ticket={ticket} isActive={selectedTicketId === ticket.id} onClick={() => setSelectedTicketId(ticket.id)} />
+                  ))
+                )}
               </div>
             </div>
           ))}

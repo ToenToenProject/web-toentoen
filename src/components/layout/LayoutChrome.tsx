@@ -7,10 +7,14 @@ import { AuthProvider } from "@/context/AuthContext";
 import { EarlyAccessProvider } from "@/context/EarlyAccessContext";
 import { EarlyAccessModal } from "@/components/common/EarlyAccessModal";
 
+const INTERNAL_PREFIXES = ["/admin", "/sales", "/cmo", "/social-media"];
+
 export const LayoutChrome = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
-  // Root /login displays marketing chrome; operational subroutes (/login/admin, /login/sales, etc.) suppress chrome
-  const isInternalAdmin = pathname.startsWith("/login/") && pathname !== "/login";
+  // Suppress marketing chrome on internal operational dashboards and customer-service
+  const isInternalAdmin = INTERNAL_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
   const hideChrome = pathname.startsWith("/customer-service") || isInternalAdmin;
 
   return (

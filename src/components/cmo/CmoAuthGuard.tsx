@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { logoutUser, checkSession } from '@/services/authService';
 import { useAuth } from '@/context/AuthContext';
 import { UserSession } from '@/types/auth';
+import { DashboardShellSkeleton } from '@/components/ui/Skeleton';
 
 interface CmoAuthGuardProps {
   children: (props: { onLogout: () => void; user: UserSession | null }) => React.ReactNode;
@@ -98,14 +99,7 @@ export const CmoAuthGuard: React.FC<CmoAuthGuardProps> = ({ children }) => {
   }, [contextUser, router]);
 
   if (isVerifying) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-[#F9FAFB]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-9 w-9 animate-spin rounded-full border-3 border-[#00A896] border-t-transparent" />
-          <p className="text-xs font-semibold text-gray-500">Memverifikasi otorisasi CMO...</p>
-        </div>
-      </div>
-    );
+    return <DashboardShellSkeleton />;
   }
 
   if (!isAuthorized) {
