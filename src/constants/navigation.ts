@@ -38,6 +38,7 @@ export const FOOTER_SECTIONS: FooterSection[] = [
         links: [
             { label: 'Customer Service', href: '/customer-service' },
             { label: 'Kebijakan Privasi', href: '/privacy-policy' },
+            { label: 'Syarat & Ketentuan', href: '/terms-of-service' },
         ],
     },
 ];
